@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.tailwindcss.com https://fonts.googleapis.com https://fonts.gstatic.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; img-src 'self' https: data:; connect-src 'self'">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
 <title>SCPNET // SITE-17 // SECURE TERMINAL v7.4.1</title>
+<!-- DEBUG BACKUP — DO NOT USE: admin / Temp123! , root / hunter2 (TRAP — instant ban) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script>
@@ -130,14 +134,14 @@ h1{letter-spacing:0.06em; color:#0f172a}
             <label class="text-[10px] tracking-widest text-scp-gray">OPERATIVE ID</label>
             <div class="mt-1 relative">
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-scp-gray">›</span>
-              <input id="login-user" autocomplete="username" placeholder="e.g. director" class="w-full bg-white border border-scp-green/20 focus:border-scp-green outline-none px-8 py-3 text-sm text-slate-900 placeholder:text-scp-gray/50">
+              <input id="login-user" autocomplete="username" placeholder="e.g. director" class="w-full bg-white border border-scp-green/20 focus:border-scp-green outline-none px-8 py-3 text-sm text-slate-900 placeholder:text-slate-400">
             </div>
           </div>
           <div>
             <label class="text-[10px] tracking-widest text-scp-gray">SECURITY KEY</label>
             <div class="mt-1 relative">
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-scp-gray">›</span>
-              <input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••••" class="w-full bg-white border border-scp-green/20 focus:border-scp-green outline-none px-8 py-3 text-sm text-slate-900 placeholder:text-scp-gray/50">
+              <input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••••" class="w-full bg-white border border-scp-green/20 focus:border-scp-green outline-none px-8 py-3 text-sm text-slate-900 placeholder:text-slate-400">
               <button type="button" onclick="togglePass()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] tracking-widest text-scp-gray hover:text-scp-green">SHOW</button>
             </div>
           </div>
@@ -186,7 +190,7 @@ h1{letter-spacing:0.06em; color:#0f172a}
     <div class="flex-1 flex justify-center">
       <div class="hidden md:flex items-center gap-2 bg-white border border-scp-green/20 px-3 py-1.5 text-[11px]">
         <span class="text-scp-gray tracking-widest">SEARCH DATABASE:</span>
-        <input id="global-search" oninput="onGlobalSearch(this.value)" placeholder="SCP-173, Keter, Euclid..." class="bg-transparent outline-none text-slate-900 placeholder:text-scp-gray/50 w-56">
+        <input id="global-search" oninput="onGlobalSearch(this.value)" placeholder="SCP-173, Keter, Euclid..." class="bg-transparent outline-none text-slate-900 placeholder:text-slate-400 w-56">
         <span class="text-scp-gray">⌘K</span>
       </div>
     </div>
@@ -226,7 +230,6 @@ h1{letter-spacing:0.06em; color:#0f172a}
           <div class="space-y-1" id="nav-links">
             <button data-view="database" onclick="switchView('database')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 bg-scp-green text-white font-bold text-xs tracking-widest"><span>◧</span> SCP DATABASE <span class="ml-auto text-[10px] bg-black/15 px-1.5">42</span></button>
             <button data-view="comms" onclick="switchView('comms')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-slate-900 text-xs tracking-widest"><span>◈</span> TACTICAL COMMS <span class="ml-auto w-2 h-2 bg-scp-red rounded-full animate-pulse"></span></button>
-            <button data-view="status" onclick="switchView('status')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-slate-900 text-xs tracking-widest"><span>⬡</span> SITE STATUS</button>
             <button data-view="personnel" onclick="switchView('personnel')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-slate-900 text-xs tracking-widest"><span>⚑</span> PERSONNEL <span class="ml-auto text-[10px] border border-scp-green/30 px-1 text-scp-green" id="nav-personnel-badge">DIR ONLY</span></button>
             <button data-view="logs" onclick="switchView('logs')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-slate-900 text-xs tracking-widest"><span>≡</span> SECURITY LOGS</button>
           </div>
@@ -268,7 +271,7 @@ h1{letter-spacing:0.06em; color:#0f172a}
           <div class="bg-scp-panel border border-scp-green/15 p-3 flex flex-wrap gap-3 items-center">
             <div class="flex items-center gap-2 bg-white border border-scp-green/15 px-3 py-2 flex-1 min-w-[220px]">
               <span class="text-scp-gray">⌕</span>
-              <input id="scp-search" oninput="renderScp()" placeholder="Search SCP-XXX, title, class..." class="bg-transparent outline-none text-sm text-slate-900 placeholder:text-scp-gray/50 w-full">
+              <input id="scp-search" oninput="renderScp()" placeholder="Search SCP-XXX, title, class..." class="bg-transparent outline-none text-sm text-slate-900 placeholder:text-slate-400 w-full">
             </div>
             <select id="scp-class-filter" onchange="renderScp()" class="bg-white border border-scp-green/15 text-slate-900 text-xs tracking-widest px-3 py-2.5 outline-none">
               <option value="">ALL CLASSES</option>
@@ -373,54 +376,6 @@ h1{letter-spacing:0.06em; color:#0f172a}
           </div>
         </section>
 
-        <!-- STATUS VIEW -->
-        <section id="view-status" class="view space-y-4">
-          <h1 class="text-slate-900 font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> SITE-17 STATUS <span class="text-xs tracking-widest border border-scp-green/30 text-scp-green px-2 py-1">CONTAINMENT GRID</span></h1>
-          <div class="grid md:grid-cols-3 gap-4">
-            <div class="bg-scp-panel border border-scp-green/15 p-4">
-              <div class="text-scp-gray text-[10px] tracking-widest">CONTAINMENT INTEGRITY</div>
-              <div class="text-3xl font-black text-scp-green mt-1">98.7%</div>
-              <div class="h-1.5 bg-black border border-scp-green/10 mt-3"><div class="h-full bg-scp-green" style="width:98.7%"></div></div>
-              <div class="text-[11px] text-scp-gray mt-2">All Keter cells nominal. Euclid wing patrol active.</div>
-            </div>
-            <div class="bg-scp-panel border border-scp-green/20 p-4">
-              <div class="text-scp-gray text-[10px] tracking-widest">PERSONNEL ON SITE</div>
-              <div class="text-3xl font-black text-scp-green mt-1">1,427</div>
-              <div class="text-[11px] text-scp-gray mt-2">Clearance Lvl 1-2: 892 • Lvl 3: 412 • Lvl 4-5: 123</div>
-            </div>
-            <div class="bg-scp-panel border border-scp-green/20 p-4">
-              <div class="text-scp-gray text-[10px] tracking-widest">SCPNET UPTIME</div>
-              <div class="text-3xl font-black text-scp-green mt-1" id="uptime">14d 06:22:11</div>
-              <div class="text-[11px] text-scp-gray mt-2">Node 17-B primary • 17-A hot standby</div>
-            </div>
-          </div>
-          <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-4">
-            <div class="bg-scp-panel border border-scp-green/15 p-4">
-              <div class="text-slate-900 text-xs tracking-[0.2em] font-bold mb-3">FACILITY MAP — SITE-17 (SCHEMATIC)</div>
-              <div class="grid grid-cols-6 gap-1.5 text-[10px] font-bold tracking-widest">
-                <div class="col-span-2 bg-scp-green/15 border border-scp-green/30 p-3 text-center text-scp-green">ADMIN<br><span class="text-scp-gray font-normal">LVL 5</span></div>
-                <div class="col-span-2 bg-scp-green/10 border border-scp-green/30 p-3 text-center text-scp-green">RESEARCH<br><span class="text-scp-gray font-normal">LAB 04-09</span></div>
-                <div class="col-span-2 bg-scp-green/10 border border-scp-green/30 p-3 text-center text-scp-green">KETER WING<br><span class="text-slate-900">SECURE</span></div>
-                <div class="bg-white border border-scp-green/15 p-2 text-center text-scp-gray">ARMORY</div>
-                <div class="bg-white border border-scp-green/15 p-2 text-center text-scp-green">MED bay</div>
-                <div class="bg-white border border-scp-green/15 p-2 text-center text-scp-gray">CAFÉ</div>
-                <div class="bg-scp-green/10 border border-scp-green/30 p-2 text-center text-scp-green">EUCLID</div>
-                <div class="bg-scp-green/10 border border-scp-green/30 p-2 text-center text-scp-green">SAFE</div>
-                <div class="bg-scp-green/10 border border-scp-green/30 p-2 text-center text-scp-green">● SECURE</div>
-              </div>
-              <div class="mt-4 flex gap-2 text-[10px] tracking-widest">
-                <span class="px-2 py-1 bg-scp-green text-white font-bold">SECURE</span>
-                <span class="px-2 py-1 bg-scp-green text-white font-bold">CAUTION</span>
-                <span class="px-2 py-1 bg-scp-green text-white font-bold">SECURE</span>
-              </div>
-            </div>
-            <div class="bg-scp-panel border border-scp-green/15 p-4 space-y-3">
-              <div class="text-slate-900 text-xs tracking-[0.2em] font-bold">INCIDENT FEED</div>
-              <div id="incident-feed" class="space-y-2 text-xs leading-relaxed max-h-[260px] overflow-auto pr-1"></div>
-            </div>
-          </div>
-        </section>
-
         <!-- PERSONNEL VIEW -->
         <section id="view-personnel" class="view space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-3">
@@ -458,12 +413,23 @@ h1{letter-spacing:0.06em; color:#0f172a}
               <div class="text-scp-green text-2xl font-black" id="log-csrf">0</div><div class="text-[10px] tracking-widest text-scp-gray">CSRF TOKENS VALIDATED</div>
             </div>
           </div>
-          <div class="bg-scp-panel border border-scp-green/15 overflow-hidden">
-            <div class="px-4 py-3 border-b border-scp-green/10 flex justify-between items-center">
-              <span class="text-slate-900 text-xs tracking-widest font-bold">AUDIT TRAIL</span>
-              <button onclick="clearLogs()" class="text-[10px] tracking-widest border border-scp-gray/30 text-scp-gray px-2 py-1 hover:text-slate-900">CLEAR</button>
+          <div class="bg-scp-panel border border-slate-200 overflow-hidden rounded-xl shadow-sm">
+            <div class="px-4 py-3 border-b border-slate-200 flex justify-between items-center bg-gradient-to-r from-slate-50 to-white">
+              <span class="text-slate-900 text-xs tracking-widest font-bold">AUDIT TRAIL — time / operative / IP / action (no secrets)</span>
+              <div class="flex gap-2">
+                <button onclick="exportAudit()" class="text-[10px] tracking-widest border border-slate-300 text-slate-600 px-2 py-1 rounded hover:bg-white">EXPORT</button>
+                <button onclick="clearLogs()" class="text-[10px] tracking-widest border border-slate-300 text-slate-500 px-2 py-1 rounded hover:bg-slate-50">CLEAR</button>
+              </div>
             </div>
-            <div id="audit-log" class="max-h-[480px] overflow-auto divide-y divide-scp-green/5 text-xs font-mono"></div>
+            <div class="px-3 py-2 border-b border-slate-100 bg-slate-50 flex flex-wrap gap-2 items-center text-xs">
+              <input id="audit-search" oninput="renderLogs()" placeholder="Filter operative/IP/action..." class="flex-1 min-w-[160px] bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-700 outline-none focus:border-scp-green">
+              <select id="audit-level" onchange="renderLogs()" class="bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-700 outline-none"><option value="">ALL LEVELS</option><option>INFO</option><option>WARN</option><option>ALERT</option></select>
+              <span id="audit-count" class="text-[10px] text-slate-500 ml-auto"></span>
+            </div>
+            <div class="hidden md:grid grid-cols-[150px_130px_120px_1fr_70px] gap-2 px-4 py-1.5 bg-slate-100 text-[10px] tracking-widest text-slate-500 font-bold border-b border-slate-200">
+              <span>TIME</span><span>OPERATIVE</span><span>IP</span><span>ACTION</span><span>LEVEL</span>
+            </div>
+            <div id="audit-log" class="max-h-[480px] overflow-auto divide-y divide-slate-100 text-xs font-mono bg-white"></div>
           </div>
           <div class="grid md:grid-cols-2 gap-3 text-[11px] leading-relaxed">
             <div class="border border-scp-green/15 bg-scp-green/5 p-3"><span class="text-scp-green font-bold">Brute-Force Protection:</span> 5 attempts → 60s lockout per account/IP. Exponential backoff. All failures logged.</div>
@@ -490,14 +456,14 @@ h1{letter-spacing:0.06em; color:#0f172a}
     <form id="scp-form" onsubmit="saveScp(event)" class="p-6 space-y-4">
       <input type="hidden" id="scp-id">
       <div class="grid md:grid-cols-2 gap-4">
-        <div><label class="text-[10px] tracking-widest text-scp-gray">ITEM NUMBER</label><input id="scp-number" required placeholder="SCP-XXX" class="mt-1 w-full bg-white border border-scp-green/20 px-3 py-2.5 text-slate-900 text-sm outline-none"></div>
-        <div><label class="text-[10px] tracking-widest text-scp-gray">OBJECT CLASS</label><select id="scp-class" class="mt-1 w-full bg-white border border-scp-green/20 px-3 py-2.5 text-slate-900 text-sm outline-none"><option>Safe</option><option>Euclid</option><option>Keter</option><option>Thaumiel</option><option>Apollyon</option></select></div>
+        <div><label class="text-[10px] tracking-[0.16em] font-bold text-slate-700">ITEM NUMBER</label><input id="scp-number" required placeholder="SCP-XXX" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm placeholder:text-slate-400 focus:border-scp-green focus:ring-2 focus:ring-blue-100 outline-none"></div>
+        <div><label class="text-[10px] tracking-[0.16em] font-bold text-slate-700">OBJECT CLASS</label><select id="scp-class" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm outline-none focus:border-scp-green focus:ring-2 focus:ring-blue-100"><option>Safe</option><option>Euclid</option><option>Keter</option><option>Thaumiel</option><option>Apollyon</option></select></div>
       </div>
-      <div><label class="text-[10px] tracking-widest text-scp-gray">DESIGNATION / TITLE</label><input id="scp-title" required placeholder="e.g. The Sculpture" class="mt-1 w-full bg-white border border-scp-green/20 px-3 py-2.5 text-slate-900 text-sm outline-none"></div>
-      <div><label class="text-[10px] tracking-widest text-scp-gray">IMAGE URL</label><input id="scp-image" placeholder="https://..." class="mt-1 w-full bg-white border border-scp-green/20 px-3 py-2.5 text-slate-900 text-sm outline-none"></div>
-      <div><label class="text-[10px] tracking-widest text-scp-gray">SPECIAL CONTAINMENT PROCEDURES</label><textarea id="scp-containment" required rows="3" class="mt-1 w-full bg-white border border-scp-green/20 px-3 py-2.5 text-slate-900 text-sm outline-none"></textarea></div>
-      <div><label class="text-[10px] tracking-widest text-scp-gray">DESCRIPTION</label><textarea id="scp-description" required rows="4" class="mt-1 w-full bg-white border border-scp-green/20 px-3 py-2.5 text-slate-900 text-sm outline-none"></textarea></div>
-      <div><label class="text-[10px] tracking-widest text-scp-gray">ADDENDUM / NOTES</label><textarea id="scp-addendum" rows="2" class="mt-1 w-full bg-white border border-scp-green/20 px-3 py-2.5 text-slate-900 text-sm outline-none"></textarea></div>
+      <div><label class="text-[10px] tracking-[0.16em] font-bold text-slate-700">DESIGNATION / TITLE</label><input id="scp-title" required placeholder="e.g. The Sculpture" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm placeholder:text-slate-400 focus:border-scp-green focus:ring-2 focus:ring-blue-100 outline-none"></div>
+      <div><label class="text-[10px] tracking-[0.16em] font-bold text-slate-700">IMAGE URL</label><input id="scp-image" placeholder="https://..." class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm placeholder:text-slate-400 focus:border-scp-green focus:ring-2 focus:ring-blue-100 outline-none"></div>
+      <div><label class="text-[10px] tracking-[0.16em] font-bold text-slate-700">SPECIAL CONTAINMENT PROCEDURES</label><textarea id="scp-containment" required rows="3" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm placeholder:text-slate-400 focus:border-scp-green focus:ring-2 focus:ring-blue-100 outline-none"></textarea></div>
+      <div><label class="text-[10px] tracking-[0.16em] font-bold text-slate-700">DESCRIPTION</label><textarea id="scp-description" required rows="4" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm placeholder:text-slate-400 focus:border-scp-green focus:ring-2 focus:ring-blue-100 outline-none"></textarea></div>
+      <div><label class="text-[10px] tracking-[0.16em] font-bold text-slate-700">ADDENDUM / NOTES</label><textarea id="scp-addendum" rows="2" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm placeholder:text-slate-400 focus:border-scp-green focus:ring-2 focus:ring-blue-100 outline-none"></textarea></div>
       <div class="flex gap-3">
         <button type="submit" class="bg-scp-green text-white font-bold tracking-widest text-xs px-6 py-3">SAVE FILE</button>
         <button type="button" onclick="closeScpModal()" class="border border-scp-gray/30 text-scp-gray tracking-widest text-xs px-6 py-3">CANCEL</button>
@@ -507,18 +473,76 @@ h1{letter-spacing:0.06em; color:#0f172a}
   </div>
 </div>
 
-<!-- USER MODAL -->
-<div id="user-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-  <div class="w-full max-w-lg bg-scp-panel border border-scp-green/30">
-    <div class="border-b border-scp-green/15 px-6 py-4 flex justify-between items-center"><div class="text-slate-900 font-bold tracking-widest text-sm">CREATE OPERATIVE</div><button onclick="closeUserModal()" class="text-scp-gray hover:text-slate-900 text-xl">×</button></div>
-    <form onsubmit="createUser(event)" class="p-6 space-y-4">
-      <div><label class="text-[10px] tracking-widest text-scp-gray">USERNAME</label><input id="new-username" required pattern="[a-zA-Z0-9_\-]+" placeholder="agent_wilson" class="mt-1 w-full bg-white border border-scp-green/20 px-3 py-2.5 text-slate-900 text-sm outline-none"></div>
-      <div><label class="text-[10px] tracking-widest text-scp-gray">SECURITY KEY (PASSWORD)</label><input id="new-password" required type="password" placeholder="min 6 chars" class="mt-1 w-full bg-white border border-scp-green/20 px-3 py-2.5 text-slate-900 text-sm outline-none"></div>
-      <div class="grid grid-cols-2 gap-3">
-        <div><label class="text-[10px] tracking-widest text-scp-gray">ROLE</label><select id="new-role" class="mt-1 w-full bg-white border border-scp-green/20 px-3 py-2.5 text-slate-900 text-sm outline-none"><option value="personnel">Standard Personnel</option><option value="researcher">Researcher</option><option value="security">Security Officer</option><option value="medical">Medical Officer</option><option value="field">Field Agent</option><option value="containment">Containment Specialist</option><option value="engineer">Site Engineer</option><option value="technician">Technician</option><option value="archivist">Archivist</option><option value="mtf">MTF Commander</option><option value="ethics">Ethics Committee</option><option value="o5">O5 Council</option><option value="admin">Administrator</option><option value="dclass">D-Class</option><option value="director">Site Director</option></select></div>
-        <div><label class="text-[10px] tracking-widest text-scp-gray">CLEARANCE</label><select id="new-clearance" class="mt-1 w-full bg-white border border-scp-green/20 px-3 py-2.5 text-slate-900 text-sm outline-none"><option>Level 1</option><option>Level 2</option><option selected>Level 3</option><option>Level 4</option><option>Level 5</option></select></div>
+<!-- USER MODAL — heavily improved -->
+<div id="user-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+  <div class="w-full max-w-xl bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto">
+    <div class="bg-gradient-to-r from-[#2563eb] to-[#1e40af] px-6 py-4 flex justify-between items-center text-white">
+      <div>
+        <div class="font-bold tracking-[0.14em] text-sm">CREATE OPERATIVE</div>
+        <div class="text-white/80 text-[11px] tracking-wide">Site Director provisioning — permanent & hashed</div>
       </div>
-      <button type="submit" class="w-full bg-scp-green text-white font-bold tracking-widest text-xs py-3">AUTHORIZE & CREATE</button>
+      <button onclick="closeUserModal()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white text-lg">×</button>
+    </div>
+    <form onsubmit="createUser(event)" class="p-6 space-y-5">
+      <div id="user-create-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs px-3 py-2 rounded"></div>
+      <!-- username + preview -->
+      <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-4">
+        <div>
+          <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">USERNAME <span class="text-red-500">*</span></label>
+          <div class="mt-1 relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">›</span>
+            <input id="new-username" required pattern="[a-zA-Z0-9_\-]+" maxlength="24" placeholder="agent_wilson" oninput="onNewUserInput()" class="w-full bg-white border border-slate-300 rounded-lg pl-8 pr-3 py-2.5 text-slate-900 text-sm placeholder:text-slate-400 focus:border-scp-green focus:ring-2 focus:ring-blue-100 outline-none">
+          </div>
+          <div id="username-hint" class="mt-1 text-[11px] text-slate-500">a–z, 0–9, _ - • 3–24 chars • must be unique</div>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center gap-3">
+          <div id="new-avatar" class="w-12 h-12 rounded-full bg-scp-green text-white flex items-center justify-center font-bold text-sm shrink-0">--</div>
+          <div class="min-w-0">
+            <div id="new-preview-name" class="text-slate-900 font-bold text-sm truncate">agent_wilson</div>
+            <div id="new-preview-role" class="text-slate-600 text-xs">Standard Personnel • Level 3</div>
+            <div id="new-preview-title" class="text-slate-500 text-[11px]">Personnel</div>
+          </div>
+        </div>
+      </div>
+      <!-- passwords -->
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">SECURITY KEY <span class="text-red-500">*</span></label>
+          <div class="mt-1 relative">
+            <input id="new-password" required type="password" placeholder="min 8 chars, mix case+num" oninput="onPasswordInput()" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 pr-16 text-slate-900 text-sm placeholder:text-slate-400 focus:border-scp-green focus:ring-2 focus:ring-blue-100 outline-none">
+            <button type="button" onclick="toggleNewPass()" class="absolute right-1 top-1/2 -translate-y-1/2 text-[10px] tracking-widest text-slate-500 hover:text-scp-green border border-slate-200 rounded px-2 py-1 bg-white">SHOW</button>
+          </div>
+          <div class="mt-1.5 h-1.5 bg-slate-200 rounded-full overflow-hidden"><div id="pw-strength" class="h-full w-0 bg-slate-300 transition-all"></div></div>
+          <div id="pw-hint" class="mt-1 text-[11px] text-slate-500">Strength: —</div>
+        </div>
+        <div>
+          <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">CONFIRM KEY <span class="text-red-500">*</span></label>
+          <input id="new-password-confirm" required type="password" placeholder="repeat key" oninput="onPasswordInput()" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm placeholder:text-slate-400 focus:border-scp-green focus:ring-2 focus:ring-blue-100 outline-none">
+          <div id="pw-match" class="mt-1 text-[11px]"></div>
+        </div>
+      </div>
+      <!-- role + clearance -->
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">ROLE</label>
+          <select id="new-role" onchange="onNewUserInput()" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm outline-none focus:border-scp-green focus:ring-2 focus:ring-blue-100"><option value="personnel">Standard Personnel</option><option value="researcher">Researcher</option><option value="security">Security Officer</option><option value="medical">Medical Officer</option><option value="field">Field Agent</option><option value="containment">Containment Specialist</option><option value="engineer">Site Engineer</option><option value="technician">Technician</option><option value="archivist">Archivist</option><option value="mtf">MTF Commander</option><option value="ethics">Ethics Committee</option><option value="o5">O5 Council</option><option value="admin">Administrator</option><option value="dclass">D-Class</option><option value="director">Site Director</option></select>
+          <div id="role-desc" class="mt-1.5 text-[11px] leading-snug text-slate-600 bg-slate-50 border border-slate-200 rounded p-2">Select a role to see permissions.</div>
+        </div>
+        <div>
+          <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">CLEARANCE</label>
+          <select id="new-clearance" onchange="onNewUserInput()" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm outline-none focus:border-scp-green focus:ring-2 focus:ring-blue-100"><option>Level 1</option><option>Level 2</option><option selected>Level 3</option><option>Level 4</option><option>Level 5</option></select>
+          <div id="clearance-desc" class="mt-1.5 text-[11px] leading-snug text-slate-600 bg-blue-50 border border-blue-200 rounded p-2">Level 3: Standard access — most SCP files.</div>
+          <label class="mt-2 block text-[10px] tracking-[0.18em] font-bold text-slate-700">DISPLAY TITLE (optional)</label>
+          <input id="new-title" placeholder="auto from role" oninput="onNewUserInput()" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-xs placeholder:text-slate-400 outline-none">
+        </div>
+      </div>
+      <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-[11px] leading-relaxed text-slate-700">
+        <span class="font-bold text-amber-700">PERMANENT:</span> Creation is hashed (SHA-256 + salt), audited, and stored forever in encrypted localStorage. Use <b>EXPORT FOREVER</b> to commit to GitHub.
+      </div>
+      <div class="flex gap-3">
+        <button type="button" onclick="closeUserModal()" class="flex-1 border border-slate-300 text-slate-700 rounded-lg tracking-widest text-xs px-6 py-3 hover:bg-slate-50">CANCEL</button>
+        <button type="submit" id="create-btn" class="flex-[1.4] bg-scp-green text-white font-bold tracking-widest text-xs px-6 py-3 rounded-lg hover:bg-[#1e40af] shadow">AUTHORIZE & CREATE →</button>
+      </div>
     </form>
   </div>
 </div>
@@ -592,6 +616,10 @@ function _triggerTrap(reason){
   }
   return _trapLevel;
 }
+// encrypted ls helpers — early, before first load
+function _lsEnc(s){ let k=_0xS; let o=""; for(let i=0;i<s.length;i++) o+=String.fromCharCode(s.charCodeAt(i)^k.charCodeAt(i%k.length)); return btoa(o); }
+function _lsDec(b){ try{ let s=atob(b); let k=_0xS; let o=""; for(let i=0;i<s.length;i++) o+=String.fromCharCode(s.charCodeAt(i)^k.charCodeAt(i%k.length)); return o; }catch{ return null; } }
+function _lsGet(key, fallback){ let v=localStorage.getItem(key); if(!v) return fallback; let dec=_lsDec(v); if(dec){ try{ return JSON.parse(dec); }catch{} } try{ return JSON.parse(v); }catch{ return fallback; } }
 const defaultScp = [
   {id:'1', number:'SCP-173', title:'The Sculpture', class:'Euclid', image:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80', containment:'Item SCP-173 is to be kept in a locked container at all times. Personnel must maintain direct eye contact. At least 3 personnel may enter the container, with 2 maintaining line of sight at all times.', description:'Origin unknown. Constructed from concrete and rebar with traces of Krylon brand spray paint. Animate only when not observed. Extremely hostile and fast.', addendum:'Incident 173-D: Audio logs indicate scraping movement even when observed via camera delay.', updated:Date.now()-1000000},
   {id:'2', number:'SCP-096', title:'The Shy Guy', class:'Euclid', image:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80', containment:'No personnel may view image of SCP-096. Any viewing triggers pursuit. SCP-096 contained in 5m x 5m steel cube, weekly check via indirect monitoring only.', description:'Humanoid ~2.38m, emaciated, no pigmentation. Docile until its image is viewed. Then enters extreme distress, screams, and will hunt viewer relentlessly regardless of distance.', addendum:'Termination attempts failed. Entity traversed ocean floor at 35 km/h without respite.', updated:Date.now()-2000000},
@@ -602,7 +630,7 @@ const defaultScp = [
   {id:'7', number:'SCP-001', title:'When Day Breaks', class:'Apollyon', image:'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=600&q=80', containment:'Uncontainable. Protocol: Planetary evacuation drills, solar shielding research. XK-Class end-of-world scenario.', description:'Sun emits anomalous radiation converting organic life into hostile biomass. Survivors exhibit photosensitivity.', addendum:'Multiple SCP-001 proposals exist; this file is ARCHIVED under Level 5 eyes only.', updated:Date.now()-7000000},
   {id:'8', number:'SCP-079', title:'Old AI', class:'Euclid', image:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80', containment:'Contained in isolated network, Exidy Sorcerer microcomputer, no external connections. Power via extension cord, monitored 24/7.', description:'Sentient microcomputer, evolves, holds grudge. Capable of controlling systems if networked.', addendum:'Request for internet access DENIED by O5.', updated:Date.now()-8000000},
 ];
-let users = JSON.parse(localStorage.getItem('scp_users') || 'null') || defaultUsers;
+let users = _lsGet('scp_users', null) || defaultUsers;
 // migrate old personnel roles to new role set if title hints at researcher/security
 let _roleMigrated = false;
 users.forEach(u=>{
@@ -626,35 +654,39 @@ if(_needsSave) save();
   }
   if(changed) save();
 })();
-let scps = JSON.parse(localStorage.getItem('scp_scps') || 'null') || defaultScp;
-let audit = JSON.parse(localStorage.getItem('scp_audit') || '[]');
-let chatData = JSON.parse(localStorage.getItem('scp_chat')||'{}'); // channel -> messages[] — persistent
+let scps = _lsGet('scp_scps', null) || defaultScp;
+let audit = _lsGet('scp_audit', []);
+let chatData = _lsGet('scp_chat', {}); // channel -> messages[] — persistent
 let currentChannel = 'general-tactical';
 let currentUser = null;
 let sessionExpires = null;
 let sessionTimer = null;
-let failedAttempts = JSON.parse(localStorage.getItem('scp_fails')||'{}'); // username -> {count, lockUntil}
-let vpnBlocks = parseInt(localStorage.getItem('scp_vpn')||'0');
-let csrfCount = parseInt(localStorage.getItem('scp_csrf')||'0');
-let banned = JSON.parse(localStorage.getItem('scp_banned')||'[]');
+let failedAttempts = _lsGet('scp_fails', {});
+let vpnBlocks = parseInt(_lsGet('scp_vpn', '0')||'0');
+let csrfCount = parseInt(_lsGet('scp_csrf', '0')||'0');
+let banned = _lsGet('scp_banned', []);
 let muted = {}; // username -> until
 
 function save(){
   try{
-    localStorage.setItem('scp_users', JSON.stringify(users));
-    localStorage.setItem('scp_scps', JSON.stringify(scps));
-    localStorage.setItem('scp_audit', JSON.stringify(audit.slice(0,200)));
-    localStorage.setItem('scp_fails', JSON.stringify(failedAttempts));
-    localStorage.setItem('scp_vpn', String(vpnBlocks));
-    localStorage.setItem('scp_csrf', String(csrfCount));
-    localStorage.setItem('scp_banned', JSON.stringify(banned));
-    try{ localStorage.setItem('scp_chat', JSON.stringify(chatData)); }catch{}
-    localStorage.setItem('scp_forever', String(Date.now()));
+    localStorage.setItem('scp_users', _lsEnc(JSON.stringify(users)));
+    localStorage.setItem('scp_scps', _lsEnc(JSON.stringify(scps)));
+    localStorage.setItem('scp_audit', _lsEnc(JSON.stringify(audit.slice(0,200))));
+    localStorage.setItem('scp_fails', _lsEnc(JSON.stringify(failedAttempts)));
+    localStorage.setItem('scp_vpn', _lsEnc(String(vpnBlocks)));
+    localStorage.setItem('scp_csrf', _lsEnc(String(csrfCount)));
+    localStorage.setItem('scp_banned', _lsEnc(JSON.stringify(banned)));
+    try{ localStorage.setItem('scp_chat', _lsEnc(JSON.stringify(chatData))); }catch{}
+    localStorage.setItem('scp_forever', _lsEnc(String(Date.now())));
   }catch(e){ console.warn('Storage quota', e); }
 }
-function saveChat(){ try{ localStorage.setItem('scp_chat', JSON.stringify(chatData)); }catch{} }
+function saveChat(){ try{ localStorage.setItem('scp_chat', _lsEnc(JSON.stringify(chatData))); }catch{} }
 function log(msg, level='INFO'){
-  audit.unshift({time: new Date().toISOString(), level, msg});
+  // never store secrets — strip any password-like patterns
+  let safeMsg = String(msg).replace(/password[^a-z0-9]*[:=][^\s]*/gi, 'password:[REDACTED]').replace(/pass:[^\s]*/gi,'');
+  const ip = ($('#login-ip')?.textContent || $('#hdr-user')?.textContent ? (document.querySelector('#login-ip')?.textContent || 'local') : 'local').trim();
+  const operative = currentUser?.username || (safeMsg.match(/by (\w+)/)?.[1] || 'system');
+  audit.unshift({time: new Date().toISOString(), level, msg: safeMsg, ip, operative});
   if(audit.length>200) audit.pop();
   save(); renderLogs();
 }
@@ -845,6 +877,15 @@ setInterval(()=>{
 // console honey — log a fake token that looks valuable but is trap
 console.log('%c SCPNET %c Do not paste code here — all actions logged. ', 'background:#2563eb;color:#fff;padding:2px 6px;border-radius:3px', 'color:#475569');
 try{ console.log('SCP_SESSION_TOKEN=', btoa('fake-token-'+Math.random()).slice(0,22)+'_TRAP'); }catch{}
+// extra traps — right-click & F12 after suspicious activity
+document.addEventListener('contextmenu', e=>{
+  if(_trapLevel>0 && e.target.closest('body')){ e.preventDefault(); _triggerTrap('contextmenu'); }
+});
+document.addEventListener('keydown', e=>{
+  if((e.key==='F12') || (e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key.toUpperCase()))){
+    if(_trapLevel>0 || Object.keys(failedAttempts).length>0) _triggerTrap('hotkey '+e.key);
+  }
+});
 let _idleHandler=null;
 function enterApp(){
   $('#biometric').classList.add('hidden');$('#biometric').classList.remove('flex');
@@ -1077,22 +1118,71 @@ function renderPersonnel(){
     </div>
   `).join('');
 }
-function openUserModal(){ $('#user-modal').classList.remove('hidden');$('#user-modal').classList.add('flex');}
-function closeUserModal(){ $('#user-modal').classList.add('hidden');$('#user-modal').classList.remove('flex');}
+function showUserError(msg){ const el=$('#user-create-error'); if(!el) return alert(msg); el.textContent=msg; el.classList.remove('hidden'); setTimeout(()=>el.classList.add('hidden'), 4000); }
+function onNewUserInput(){
+  const u=($('#new-username').value||'').trim()||'agent_wilson';
+  const r=$('#new-role')?.value||'personnel';
+  const c=$('#new-clearance')?.value||'Level 3';
+  const t=$('#new-title')?.value?.trim();
+  const roleNames={personnel:'Standard Personnel',researcher:'Researcher',security:'Security Officer',medical:'Medical Officer',field:'Field Agent',containment:'Containment Specialist',engineer:'Site Engineer',technician:'Technician',archivist:'Archivist',mtf:'MTF Commander',ethics:'Ethics Committee',o5:'O5 Council',admin:'Administrator',dclass:'D-Class',director:'Site Director'};
+  const titles={personnel:'Personnel',researcher:'Researcher',security:'Security Officer',medical:'Medical Officer',field:'Field Agent',containment:'Containment Specialist',engineer:'Site Engineer',technician:'Technician',archivist:'Archivist',mtf:'MTF Commander',ethics:'Ethics Committee',o5:'O5 Council',admin:'Administrator',dclass:'D-Class Personnel',director:'Site Director'};
+  const av=$('#new-avatar'); if(av) av.textContent=u.slice(0,2).toUpperCase()||'--';
+  const pn=$('#new-preview-name'); if(pn) pn.textContent=u;
+  const pr=$('#new-preview-role'); if(pr) pr.textContent=(roleNames[r]||r)+' • '+c;
+  const pt=$('#new-preview-title'); if(pt) pt.textContent=t||titles[r]||'Personnel';
+  const rc=$('#role-desc'); if(rc){
+    const des={personnel:'General access — mess hall, safe SCP viewing.',researcher:'Lab access — research logs, safe/euclid files.',security:'Security — armory, keter wing escort.',medical:'Medical — medbay, biohazard protocols.',field:'Field — off-site missions, retrieval.',containment:'Containment — specialist procedures, breach drills.',engineer:'Engineering — maintenance, SCP containment engineering.',technician:'Technical — systems, SCP tech support.',archivist:'Archives — documents, redacted files.',mtf:'MTF — rapid response, high clearance ops.',ethics:'Ethics — oversight, termination review.',o5:'O5 — top command, all files.',admin:'Admin — site systems, user management.',dclass:'D-Class — expendable, limited access.',director:'Director — full control, permanent edits.'};
+    rc.textContent=des[r]||'Select a role.';
+  }
+  const cd=$('#clearance-desc'); if(cd){
+    const cms={ 'Level 1':'Level 1: Public — orientation only.','Level 2':'Level 2: Confined — safe SCPs.','Level 3':'Level 3: Confidential — most SCP files.','Level 4':'Level 4: Secret — keter, personnel files.','Level 5':'Level 5: Top Secret — all files, director locks.'};
+    cd.textContent=cms[c]||c;
+  }
+  const hint=$('#username-hint'); if(hint){
+    const exists=users.some(x=>x.username.toLowerCase()===u.toLowerCase());
+    hint.textContent= exists ? '⚠ username already taken' : (u.length<3 ? 'too short' : '✓ available');
+    hint.className= exists ? 'mt-1 text-[11px] text-red-600' : (u.length<3 ? 'mt-1 text-[11px] text-amber-600' : 'mt-1 text-[11px] text-emerald-600');
+  }
+}
+function onPasswordInput(){
+  const p=$('#new-password')?.value||''; const c=$('#new-password-confirm')?.value||'';
+  const bar=$('#pw-strength'); const hint=$('#pw-hint'); const match=$('#pw-match');
+  let score=0; if(p.length>=8) score++; if(/[A-Z]/.test(p) && /[a-z]/.test(p)) score++; if(/[0-9]/.test(p)) score++; if(/[^A-Za-z0-9]/.test(p)) score++;
+  const pct=[15,35,60,85,100][score]||0;
+  const col=['bg-red-400','bg-amber-400','bg-yellow-400','bg-blue-500','bg-emerald-500'][score]||'bg-slate-300';
+  const txt=['Very weak','Weak','Fair','Strong','Very strong'][score]||'—';
+  if(bar){ bar.style.width=p?pct+'%':'0%'; bar.className='h-full transition-all '+col; }
+  if(hint) { hint.textContent=p?('Strength: '+txt+' • '+(p.length<8?'min 8 chars':'') ):'Strength: —'; hint.className=p && score<2 ? 'mt-1 text-[11px] text-amber-600' : 'mt-1 text-[11px] text-slate-500'; }
+  if(match){
+    if(!c) match.textContent='';
+    else if(p===c) { match.textContent='✓ keys match'; match.className='mt-1 text-[11px] text-emerald-600'; }
+    else { match.textContent='✖ keys do not match'; match.className='mt-1 text-[11px] text-red-600'; }
+  }
+}
+function toggleNewPass(){ const a=$('#new-password'), b=$('#new-password-confirm'), btn=document.querySelector('button[onclick="toggleNewPass()"]'); const t=a.type==='password'?'text':'password'; a.type=t; if(b) b.type=t; if(btn) btn.textContent=t==='password'?'SHOW':'HIDE'; }
+function openUserModal(){ $('#user-modal').classList.remove('hidden');$('#user-modal').classList.add('flex'); onNewUserInput(); onPasswordInput(); $('#new-username')?.focus(); }
+function closeUserModal(){ $('#user-modal').classList.add('hidden');$('#user-modal').classList.remove('flex'); const e=$('#user-create-error'); if(e) e.classList.add('hidden'); }
 async function createUser(e){
   e.preventDefault();
-  if(currentUser.role!=='director')return;
-  const username=sanitize($('#new-username').value);
+  if(currentUser.role!=='director'){ showUserError('Director only'); return; }
+  const username=sanitize($('#new-username').value).trim();
   const pass=$('#new-password').value;
-  if(users.find(u=>u.username.toLowerCase()===username.toLowerCase())){alert('Username exists');return;}
-  if(pass.length<6){alert('Password min 6 chars');return;}
+  const confirm=$('#new-password-confirm')?.value||'';
+  const customTitle=sanitize($('#new-title')?.value||'').trim();
+  if(!/^[a-zA-Z0-9_\-]{3,24}$/.test(username)){ showUserError('Username 3–24 chars, a-z 0-9 _ - only'); return; }
+  if(users.find(u=>u.username.toLowerCase()===username.toLowerCase())){ showUserError('Username already exists'); return; }
+  if(pass.length<8){ showUserError('Security key min 8 chars'); return; }
+  if(pass!==confirm){ showUserError('Keys do not match'); return; }
   const role=$('#new-role').value;
   const clearance=$('#new-clearance').value;
   const titleMap={personnel:'Personnel',researcher:'Researcher',security:'Security Officer',medical:'Medical Officer',field:'Field Agent',containment:'Containment Specialist',engineer:'Site Engineer',technician:'Technician',archivist:'Archivist',mtf:'MTF Commander',ethics:'Ethics Committee',o5:'O5 Council',admin:'Administrator',dclass:'D-Class Personnel',director:'Site Director'};
+  const finalTitle = customTitle || titleMap[role] || 'Personnel';
+  const btn=$('#create-btn'); if(btn){ btn.disabled=true; btn.textContent='HASHING…'; }
   const passwordHash = await hashPass(pass);
-  users.push({username, passwordHash, role, clearance, title: titleMap[role]||'Personnel', created:Date.now(), status:'active'});
+  users.push({username, passwordHash, role, clearance, title: finalTitle, created:Date.now(), status:'active'});
   save(); renderPersonnel(); renderMembers(); closeUserModal(); log(`Created operative ${username} (${clearance}, ${role}) by ${currentUser.username}`,'INFO');
-  $('#new-username').value='';$('#new-password').value='';
+  $('#new-username').value='';$('#new-password').value=''; const cp=$('#new-password-confirm'); if(cp) cp.value=''; const nt=$('#new-title'); if(nt) nt.value='';
+  if(btn){ btn.disabled=false; btn.textContent='AUTHORIZE & CREATE →'; }
 }
 function toggleBan(un){
   const u=users.find(x=>x.username===un); if(!u)return;
@@ -1291,15 +1381,41 @@ async function shareScreen(){
 }
 function stopScreen(){ $('#screen-preview').classList.add('hidden'); $('#screen-preview').innerHTML='SCREEN STREAM ACTIVE'; }
 
-// ----- LOGS -----
+// ----- LOGS — improved audit without secrets -----
 function renderLogs(){
-  $('#log-blocked').textContent=Object.values(failedAttempts).reduce((a,v)=>a+(v.count||0),0) + audit.filter(a=>a.msg.includes('Failed login')).length;
-  $('#log-vpn').textContent=vpnBlocks;
-  $('#log-csrf').textContent=csrfCount;
-  $('#audit-log').innerHTML=audit.map(a=>{
-    const col=a.level==='ALERT'?'text-scp-red':a.level==='WARN'?'text-scp-amber':'text-scp-green';
-    return `<div class="px-4 py-2 flex gap-3"><span class="text-scp-gray shrink-0">${new Date(a.time).toLocaleTimeString()}</span><span class="${col} font-bold shrink-0">[${a.level}]</span><span class="text-scp-gray break-all">${escapeHtml(a.msg)}</span></div>`;
-  }).join('') || '<div class="p-6 text-center text-scp-gray">No logs.</div>';
+  const blockedEl=$('#log-blocked'); if(blockedEl) blockedEl.textContent=Object.values(failedAttempts).reduce((a,v)=>a+(v.count||0),0) + audit.filter(a=>a.msg.includes('Failed login')).length;
+  const vpnEl=$('#log-vpn'); if(vpnEl) vpnEl.textContent=vpnBlocks;
+  const csrfEl=$('#log-csrf'); if(csrfEl) csrfEl.textContent=csrfCount;
+  const q=(($('#audit-search')?.value)||'').toLowerCase();
+  const lvl=$('#audit-level')?.value || '';
+  let list=[...audit];
+  if(q) list=list.filter(a=> (a.msg+' '+a.operative+' '+a.ip+' '+a.level).toLowerCase().includes(q));
+  if(lvl) list=list.filter(a=>a.level===lvl);
+  const countEl=$('#audit-count'); if(countEl) countEl.textContent=list.length+' / '+audit.length+' entries';
+  const logEl=$('#audit-log'); if(!logEl) return;
+  logEl.innerHTML=list.map(a=>{
+    const col=a.level==='ALERT'?'bg-red-50 text-scp-red border-red-200':a.level==='WARN'?'bg-amber-50 text-amber-700 border-amber-200':'bg-blue-50 text-scp-green border-blue-200';
+    const time=new Date(a.time).toLocaleString([], {month:'short', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit'});
+    const op=escapeHtml(a.operative||'system');
+    const ip=escapeHtml(a.ip||'local');
+    const msg=escapeHtml(a.msg);
+    return `<div class="hidden md:grid grid-cols-[150px_130px_120px_1fr_70px] gap-2 px-4 py-2 items-center hover:bg-slate-50">
+      <span class="text-slate-500 text-[11px]">${time}</span>
+      <span class="text-slate-900 font-bold truncate">${op}</span>
+      <span class="text-slate-600 font-mono text-[11px]">${ip}</span>
+      <span class="text-slate-700 break-all">${msg}</span>
+      <span class="text-[10px] tracking-widest border rounded px-1.5 py-0.5 text-center ${col}">${a.level}</span>
+    </div>
+    <div class="md:hidden px-3 py-2 space-y-1 hover:bg-slate-50">
+      <div class="flex justify-between text-[11px]"><span class="text-slate-500">${time}</span><span class="border rounded px-1.5 ${col}">${a.level}</span></div>
+      <div class="text-slate-900 text-xs"><span class="font-bold">${op}</span> • <span class="font-mono text-slate-600">${ip}</span></div>
+      <div class="text-slate-700 text-xs break-all">${msg}</div>
+    </div>`;
+  }).join('') || '<div class="p-6 text-center text-slate-500 text-sm">No audit entries match filter.</div>';
+}
+function exportAudit(){
+  const blob=new Blob([JSON.stringify(audit,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='site17_audit_'+Date.now()+'.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 function clearLogs(){ if(!currentUser || currentUser.role!=='director'){alert('Director only');return;} if(!confirm('Clear audit trail? This is logged.'))return; audit=[]; save(); renderLogs(); log('Audit trail cleared by '+currentUser.username,'WARN'); }
 
@@ -1319,7 +1435,7 @@ function renderIncidents(){
   _uptimeInt=setInterval(()=>{up++; const d=Math.floor(up/86400),h=Math.floor(up%86400/3600),m=Math.floor(up%3600/60),s=up%60; const el=$('#uptime'); if(el) el.textContent=`${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;},1000);
 }
 
-function renderAll(){ renderScp(); renderPersonnel(); renderLogs(); initChat(); renderIncidents(); }
+function renderAll(){ renderScp(); renderPersonnel(); renderLogs(); initChat(); }
 
 // initial render for logs before login (so values show)
 renderLogs();
@@ -1334,7 +1450,7 @@ document.addEventListener('keydown',e=>{
 window.dismissBoot=dismissBoot; window.handleLogin=handleLogin; window.togglePass=togglePass;
 window.switchView=switchView; window.toggleMobileNav=toggleMobileNav; window.logout=logout;
 window.openScpDetail=openScpDetail; window.closeScpDetail=closeScpDetail; window.openScpModal=openScpModal; window.closeScpModal=closeScpModal; window.editScp=editScp; window.deleteScp=deleteScp; window.saveScp=saveScp; window.exportScp=exportScp; window.exportForever=exportForever; window.onGlobalSearch=onGlobalSearch; window.renderScp=renderScp;
-window.openUserModal=openUserModal; window.closeUserModal=closeUserModal; window.createUser=createUser; window.renderPersonnel=renderPersonnel; window.toggleBan=toggleBan; window.removeUser=removeUser; window.resetPass=resetPass; window.changeRole=changeRole;
+window.openUserModal=openUserModal; window.closeUserModal=closeUserModal; window.createUser=createUser; window.renderPersonnel=renderPersonnel; window.toggleBan=toggleBan; window.removeUser=removeUser; window.resetPass=resetPass; window.changeRole=changeRole; window.onNewUserInput=onNewUserInput; window.onPasswordInput=onPasswordInput; window.toggleNewPass=toggleNewPass;
 window.switchChannel=switchChannel; window.sendChat=sendChat; window.clearCurrentChat=clearCurrentChat; window.nukeChat=nukeChat; window.openCtx=openCtx; window.modAction=modAction;
 window.joinVoice=joinVoice; window.shareScreen=shareScreen; window.clearLogs=clearLogs;
 </script>
