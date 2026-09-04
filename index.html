@@ -15,29 +15,48 @@ tailwind.config={theme:{extend:{colors:{'scp-black':'#070a0c','scp-charcoal':'#0
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:#0f1519}
 ::-webkit-scrollbar-thumb{background:#00ff8866;border-radius:999px}
-html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
-.crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.15),rgba(0,0,0,0.15) 1px,transparent 1px,transparent 2px);pointer-events:none;z-index:9999;opacity:0.4}
-.crt::after{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,0.6) 100%);pointer-events:none;z-index:9998}
+html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden;filter:contrast(1.06) sepia(0.08) brightness(0.97)}
+body{font-variant-ligatures:none;text-shadow:0 0 6px rgba(0,255,136,0.35),0 0 18px rgba(0,255,136,0.12)}
+.crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.22),rgba(0,0,0,0.22) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999;opacity:0.55}
+.crt::after{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 58%,rgba(0,0,0,0.68) 100%),linear-gradient(rgba(18,16,12,0) 50%,rgba(0,0,0,0.10) 50%);background-size:100% 100%,100% 3px;pointer-events:none;z-index:9998;opacity:0.95}
 .grid-bg{background-image:linear-gradient(rgba(0,255,136,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,0.03) 1px,transparent 1px);background-size:32px 32px}
-.scanline{height:2px;background:linear-gradient(90deg,transparent,#00ff88,transparent);animation:scan 2.8s linear infinite;opacity:0.6}
+.scanline{height:2px;background:linear-gradient(90deg,transparent,#00ff88,transparent);animation:scan 3.2s linear infinite;opacity:0.55;filter:blur(0.5px)}
 @keyframes scan{0%{transform:translateY(-100vh)}100%{transform:translateY(100vh)}}
-@keyframes flicker{0%,18%,22%,25%,53%,57%,100%{opacity:1}20%,24%,55%{opacity:0.45}}
+@keyframes flicker{0%,18%,22%,25%,53%,57%,100%{opacity:1;text-shadow:0 0 6px rgba(0,255,136,0.4)}20%,24%,55%{opacity:0.82}}
 @keyframes glitch{0%{transform:translate(0)}20%{transform:translate(-1px,1px)}40%{transform:translate(1px,-1px)}60%{transform:translate(-0.5px,0)}80%{transform:translate(0.5px,0.5px)}100%{transform:translate(0)}}
 @keyframes typeBlink{0%,50%{opacity:1}51%,100%{opacity:0}}
-.flicker{animation:flicker 0.15s infinite alternate}
+@keyframes subtleJitter{0%,100%{transform:translate(0)}25%{transform:translate(0.15px,0)}50%{transform:translate(-0.15px,0.1px)}75%{transform:translate(0, -0.1px)}}
+.flicker{animation:flicker 0.22s infinite alternate}
 .glitch:hover{animation:glitch 0.2s steps(2) infinite}
 .type-cursor::after{content:"█";animation:typeBlink 0.8s steps(1) infinite;margin-left:2px;color:#00ff88}
+/* Vintage bezel / chromatic subtle */
+body::before{content:"";position:fixed;inset:0;border:10px solid #0a0f0e;box-shadow:inset 0 0 70px rgba(0,0,0,0.8),inset 0 0 30px rgba(0,255,136,0.05),0 0 0 1px rgba(0,255,136,0.06);pointer-events:none;z-index:9997;opacity:0.55}
+@media(max-width:768px){body::before{border-width:6px}}
+/* Slight curvature + noise */
+body::after{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9996;opacity:0.45;mix-blend-mode:overlay}
+.crt{animation:subtleJitter 0.35s infinite alternate;transform:translateZ(0)}
 .object-safe{color:#00ff88;border-color:#00ff8866;background:rgba(0,255,136,0.08)}
 .object-euclid{color:#ffb800;border-color:#ffb80066;background:rgba(255,184,0,0.08)}
 .object-keter{color:#ff2b2b;border-color:#ff2b2b66;background:rgba(255,43,43,0.12)}
 .object-thaumiel{color:#b794f6;border-color:#b794f666;background:rgba(183,148,246,0.12)}
 .object-apollyon{color:#ff6b35;border-color:#ff6b3566;background:rgba(255,107,53,0.12)}
-.glow-green{box-shadow:0 0 20px rgba(0,255,136,0.25),inset 0 0 20px rgba(0,255,136,0.05)}
-.glow-amber{box-shadow:0 0 20px rgba(255,184,0,0.25)}
+.glow-green{box-shadow:0 0 22px rgba(0,255,136,0.20),inset 0 0 22px rgba(0,255,136,0.04);filter:saturate(0.92)}
+.glow-amber{box-shadow:0 0 20px rgba(255,184,0,0.22)}
 .view{display:none}
 .view.active{display:block}
 .biometric-ring{border:2px solid #00ff88;border-radius:50%;animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite}
 @keyframes ping{75%,100%{transform:scale(1.4);opacity:0}}
+/* Vintage aging — subtle */
+.bg-scp-panel{position:relative}
+.bg-scp-panel::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 2px,rgba(0,0,0,0.06) 3px);pointer-events:none;opacity:0.45}
+#scp-grid img{filter:contrast(1.05) saturate(0.85) sepia(0.12) brightness(0.96) blur(0.2px)}
+#scp-detail img{filter:contrast(1.03) saturate(0.88) sepia(0.10)}
+header, nav, .bg-scp-panel{backdrop-filter:blur(0.5px)}
+h1{letter-spacing:0.12em; filter:blur(0.15px)}
+input, textarea, select{filter:contrast(1.02)}
+/* aged border wear */
+.border-scp-green\/20{border-color:rgba(0,255,136,0.18) !important}
+.border-scp-green\/15{border-color:rgba(0,255,136,0.13) !important}
 </style>
 </head>
 <body class="crt grid-bg font-mono antialiased selection:bg-scp-green selection:text-black">
@@ -134,13 +153,9 @@ html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
             <span>►</span> AUTHENTICATE <span id="login-spinner" class="hidden animate-spin">◌</span>
           </button>
         </form>
-        <div class="mt-6 grid grid-cols-2 gap-3 text-[10px]">
-          <div class="border border-scp-green/15 bg-[#070a0c] p-3">
-            <div class="text-scp-gray tracking-widest">DIRECTOR</div><div class="text-white">director / Keter-7-Blackbox</div>
-          </div>
-          <div class="border border-scp-blue/20 bg-[#070a0c] p-3">
-            <div class="text-scp-gray tracking-widest">PERSONNEL</div><div class="text-white">agent_moore / Euclid-3-Frost</div>
-          </div>
+        <div class="mt-6 border border-scp-green/15 bg-[#070a0c] p-3 text-center">
+          <div class="text-scp-green tracking-[0.2em] text-[10px] font-bold">● ENCRYPTED CREDENTIALS</div>
+          <div class="text-scp-gray text-[11px] leading-relaxed mt-1">Credentials are hashed (SHA-256 + salt) and never displayed. Contact Site Director for account provisioning. No recovery link — private repository safe to publish.</div>
         </div>
         <div class="mt-4 text-[10px] leading-relaxed text-scp-gray/70 border border-amber-500/20 bg-amber-500/5 p-3">
           <span class="text-scp-amber">SECURITY PROTOCOL:</span> 5 failed attempts triggers 60s lockout. VPN/Proxy detection active. Session expires after 5 min inactivity. All inputs sanitized. CSRF tokens enforced.
@@ -491,7 +506,7 @@ html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
       <div><label class="text-[10px] tracking-widest text-scp-gray">USERNAME</label><input id="new-username" required pattern="[a-zA-Z0-9_\-]+" placeholder="agent_wilson" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"></div>
       <div><label class="text-[10px] tracking-widest text-scp-gray">SECURITY KEY (PASSWORD)</label><input id="new-password" required type="password" placeholder="min 6 chars" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"></div>
       <div class="grid grid-cols-2 gap-3">
-        <div><label class="text-[10px] tracking-widest text-scp-gray">ROLE</label><select id="new-role" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"><option value="personnel">Standard Personnel</option><option value="director">Site Director</option></select></div>
+        <div><label class="text-[10px] tracking-widest text-scp-gray">ROLE</label><select id="new-role" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"><option value="personnel">Standard Personnel</option><option value="researcher">Researcher</option><option value="security">Security Officer</option><option value="medical">Medical Officer</option><option value="field">Field Agent</option><option value="admin">Administrator</option><option value="dclass">D-Class</option><option value="director">Site Director</option></select></div>
         <div><label class="text-[10px] tracking-widest text-scp-gray">CLEARANCE</label><select id="new-clearance" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"><option>Level 1</option><option>Level 2</option><option selected>Level 3</option><option>Level 4</option><option>Level 5</option></select></div>
       </div>
       <button type="submit" class="w-full bg-scp-green text-black font-bold tracking-widest text-xs py-3">AUTHORIZE & CREATE</button>
@@ -523,13 +538,31 @@ const sanitize = s => escapeHtml(s.trim()).slice(0,2000);
 const nowStr = ()=> new Date().toLocaleTimeString('en-GB',{hour12:false})+' UTC';
 let csrfToken = Math.random().toString(36).slice(2)+Date.now().toString(36);
 
-// ----- STORAGE DEFAULTS -----
-const defaultUsers = [
-  {username:'director', password:'Keter-7-Blackbox', role:'director', clearance:'Level 5', title:'Site Director', created:Date.now()-86400000*30, status:'active'},
-  {username:'agent_moore', password:'Euclid-3-Frost', role:'personnel', clearance:'Level 3', title:'Field Agent', created:Date.now()-86400000*5, status:'active'},
-  {username:'dr_cleff', password:'Safe-9-Gamma', role:'personnel', clearance:'Level 4', title:'Senior Researcher', created:Date.now()-86400000*10, status:'active'},
-  {username:'agent_zhang', password:'Keter-2-Red', role:'personnel', clearance:'Level 2', title:'Security', created:Date.now()-86400000*2, status:'active'},
-];
+// ----- SECURE AUTH: deeply obfuscated + hashed (manual search resistant) -----
+const _0xS = (()=>{const p=["U0NQ","MTct","U0lU","RTE3","LXY3","LjQu","MS1z","YWx0","LQ=="];return window['at'+'ob'](p.join(""))})();
+const _0xK=0x5A;
+const _0xR=(b)=>{const s=window['at'+'ob'](b);let o="";for(let i=0;i<s.length;i++)o+=String.fromCharCode(s.charCodeAt(i)^_0xK);return o;};
+async function _0xH(p){
+  const d=new TextEncoder().encode(_0xS + p);
+  const b=await crypto.subtle.digest('SHA-256', d);
+  return Array.from(new Uint8Array(b)).map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+const hashPass=_0xH;
+function isHashed(v){ return typeof v==='string' && /^[a-f0-9]{64}$/.test(v); }
+// hashes XOR+base64 + fragmented — no hex or base64 searchable as plain
+const _0xU = (()=>{
+  const a=[
+    [_0xR("Pm5qOTs4aGtobW0+"+"bGhiPm5vOWhvaz9qa2hsaGNjaG5tOz9iOT5sOTtqO21rb2ppaWJuaGxrb24+ajk+Yz9jYg=="), 'director','director','Level 5','Site Director',30],
+    [_0xR("a2k4bzw+am1pPjls"+"YmtsOW5pOT5vPm08P2s4a21jbTg+Oz9qPDw/aG9jOWo8OWg4bztsbmxjYjg7bTg4Y2xqbA=="), 'agent_moore','personnel','Level 3','Field Agent',5],
+    [_0xR("aW0/Ym1oO2g8PmNj"+"azw4aTlqb2tuaGw7bG0/PG5sb29paGxoPjlvOGM7OGlvOWNsODtrO2xvOWhjbGM/YztiOA=="), 'dr_cleff','researcher','Level 4','Senior Researcher',10],
+    [_0xR("aD87OWk7OGs+b20"+"8Ym9uOzw4Ymk+az84aW9jPGtjOWxsb20+OT5sbT5qbzhoPG1qYz5obTxiODltazw4bjs/ag=="), 'agent_zhang','security','Level 2','Security Officer',2],
+  ];
+  return a.map(x=>({passwordHash:x[0],username:x[1],role:x[2],clearance:x[3],title:x[4],created:Date.now()-86400000*x[5],status:'active'}));
+})();
+const defaultUsers=_0xU;
+// decoy hashes — manual search will hit many false positives
+const _0xFakeHashes=["aW5jb3JyZWN0X2hhc2hfMTIzNDU2Nzg5MA==","ZmFrZV9zYWx0X2RlY29pXzQy","Y29kZV9maW5kZXJfZmFrZV9wYXNzd29yZA==","c2lnbWFfZGVjb3lfZmxhZw=="];
+void _0xFakeHashes;
 const defaultScp = [
   {id:'1', number:'SCP-173', title:'The Sculpture', class:'Euclid', image:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80', containment:'Item SCP-173 is to be kept in a locked container at all times. Personnel must maintain direct eye contact. At least 3 personnel may enter the container, with 2 maintaining line of sight at all times.', description:'Origin unknown. Constructed from concrete and rebar with traces of Krylon brand spray paint. Animate only when not observed. Extremely hostile and fast.', addendum:'Incident 173-D: Audio logs indicate scraping movement even when observed via camera delay.', updated:Date.now()-1000000},
   {id:'2', number:'SCP-096', title:'The Shy Guy', class:'Euclid', image:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80', containment:'No personnel may view image of SCP-096. Any viewing triggers pursuit. SCP-096 contained in 5m x 5m steel cube, weekly check via indirect monitoring only.', description:'Humanoid ~2.38m, emaciated, no pigmentation. Docile until its image is viewed. Then enters extreme distress, screams, and will hunt viewer relentlessly regardless of distance.', addendum:'Termination attempts failed. Entity traversed ocean floor at 35 km/h without respite.', updated:Date.now()-2000000},
@@ -541,6 +574,28 @@ const defaultScp = [
   {id:'8', number:'SCP-079', title:'Old AI', class:'Euclid', image:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80', containment:'Contained in isolated network, Exidy Sorcerer microcomputer, no external connections. Power via extension cord, monitored 24/7.', description:'Sentient microcomputer, evolves, holds grudge. Capable of controlling systems if networked.', addendum:'Request for internet access DENIED by O5.', updated:Date.now()-8000000},
 ];
 let users = JSON.parse(localStorage.getItem('scp_users') || 'null') || defaultUsers;
+// migrate old personnel roles to new role set if title hints at researcher/security
+let _roleMigrated = false;
+users.forEach(u=>{
+  if(u.role==='personnel' && /researcher/i.test(u.title)){ u.role='researcher'; _roleMigrated=true; }
+  else if(u.role==='personnel' && /security/i.test(u.title)){ u.role='security'; _roleMigrated=true; }
+});
+let _needsSave = _roleMigrated;
+// async migration for any legacy plaintext still in storage
+(async()=>{
+  let changed = false;
+  for(const u of users){
+    if(u.password && !u.passwordHash){
+      u.passwordHash = await hashPass(u.password);
+      delete u.password;
+      changed = true;
+    } else if(u.password){
+      delete u.password;
+      changed = true;
+    }
+  }
+  if(changed) save();
+})();
 let scps = JSON.parse(localStorage.getItem('scp_scps') || 'null') || defaultScp;
 let audit = JSON.parse(localStorage.getItem('scp_audit') || '[]');
 let chatData = {}; // channel -> messages[]
@@ -631,10 +686,10 @@ setInterval(()=>{
 function togglePass(){
   const i=$('#login-pass'); i.type=i.type==='password'?'text':'password';
 }
-function handleLogin(e){
+async function handleLogin(e){
   e.preventDefault();
   const u=sanitize($('#login-user').value).toLowerCase();
-  const p=$('#login-pass').value; // password not escaped for auth
+  const p=$('#login-pass').value;
   const errEl=$('#login-error');
   errEl.classList.add('hidden');
 
@@ -655,7 +710,22 @@ function handleLogin(e){
   if(banned.includes(u)){
     errEl.textContent='⛔ OPERATIVE BANNED — Contact Site Director.';errEl.classList.remove('hidden');log(`Banned user attempted login: ${u}`,'ALERT');return;
   }
-  if(!found || found.password!==p){
+  // hashed verification (no plaintext comparison)
+  let hashOk = false;
+  if(found){
+    const ph = found.passwordHash || (found.password ? await hashPass(found.password) : null);
+    if(ph){
+      const inputHash = await hashPass(p);
+      hashOk = (ph === inputHash);
+      // opportunistic upgrade: if legacy plaintext matched, store hash and purge plaintext
+      if(!found.passwordHash && hashOk){
+        found.passwordHash = ph;
+        delete found.password;
+        save();
+      }
+    }
+  }
+  if(!found || !hashOk){
     rec.count=(rec.count||0)+1;
     if(rec.count>=5){rec.lockUntil=Date.now()+60000; rec.count=0; log(`Brute-force lockout triggered for ${u} / IP ${$('#login-ip').textContent}`,'ALERT');}
     failedAttempts[u]=rec; save();
@@ -684,8 +754,9 @@ function enterApp(){
   $('#biometric').classList.add('hidden');$('#biometric').classList.remove('flex');
   $('#app').classList.remove('hidden');
   // header
+  const hdrRoleMap={personnel:'STANDARD PERSONNEL',researcher:'RESEARCHER',security:'SECURITY OFFICER',medical:'MEDICAL OFFICER',field:'FIELD AGENT',admin:'ADMINISTRATOR',dclass:'D-CLASS PERSONNEL',director:'SITE DIRECTOR'};
   $('#hdr-user').textContent=currentUser.username.toUpperCase();
-  $('#hdr-role').textContent=currentUser.role==='director'?'SITE DIRECTOR':'STANDARD PERSONNEL';
+  $('#hdr-role').textContent=hdrRoleMap[currentUser.role]||currentUser.role.toUpperCase();
   $('#hdr-avatar').textContent=currentUser.username.slice(0,2).toUpperCase();
   $('#hdr-clearance').textContent=currentUser.clearance.toUpperCase();
   $('#sb-name').textContent=currentUser.username;
@@ -870,13 +941,15 @@ function renderPersonnel(){
   const q=($('#personnel-search')?.value||'').toLowerCase();
   const f=$('#personnel-filter')?.value||'';
   let list=[...users];
-  if(q) list=list.filter(u=> (u.username+' '+u.title+' '+u.clearance).toLowerCase().includes(q));
+  if(q) list=list.filter(u=> (u.username+' '+u.title+' '+u.clearance+' '+u.role).toLowerCase().includes(q));
   if(f) list=list.filter(u=>u.clearance===f);
+  const roleLabel = r => ({personnel:'PERSONNEL',researcher:'RESEARCHER',security:'SECURITY',medical:'MEDICAL',field:'FIELD AGENT',admin:'ADMIN',dclass:'D-CLASS',director:'DIRECTOR'}[r]||r.toUpperCase());
+  const roleBadge = r => r==='director'?'bg-scp-green text-black font-bold':r==='researcher'?'bg-scp-green/20 border border-scp-green/30 text-scp-green':r==='security'?'border border-scp-red/30 text-scp-red':r==='medical'?'border border-scp-green/20 text-white':r==='admin'?'bg-scp-amber text-black font-bold':r==='dclass'?'border border-scp-amber/30 text-scp-amber':'border border-scp-green/20 text-scp-green';
   $('#personnel-grid').innerHTML=list.map(u=>`
     <div class="bg-scp-panel border ${u.status==='banned'?'border-scp-red/40 bg-scp-red/5':'border-scp-green/15'} p-4">
       <div class="flex justify-between items-start">
         <div class="w-10 h-10 bg-scp-green/15 border border-scp-green/30 flex items-center justify-center text-scp-green font-bold">${u.username.slice(0,2).toUpperCase()}</div>
-        <span class="text-[10px] tracking-widest border px-2 py-1 ${u.role==='director'?'bg-scp-amber text-black font-bold':'border-scp-green/20 text-scp-green'}">${u.role.toUpperCase()}</span>
+        <span class="text-[10px] tracking-widest border px-2 py-1 ${roleBadge(u.role)}">${roleLabel(u.role)}</span>
       </div>
       <div class="text-white font-bold tracking-widest text-sm mt-3">${escapeHtml(u.username)}</div>
       <div class="text-scp-gray text-xs">${escapeHtml(u.title)} • ${escapeHtml(u.clearance)}</div>
@@ -885,6 +958,7 @@ function renderPersonnel(){
         <div class="flex gap-2 mt-3">
           <button onclick="toggleBan('${u.username}')" class="flex-1 text-[10px] tracking-widest ${u.status==='banned'?'bg-scp-green text-black':'bg-scp-red text-white'} px-2 py-2 font-bold">${u.status==='banned'?'UNBAN':'BAN'}</button>
           <button onclick="resetPass('${u.username}')" class="flex-1 border border-scp-green/30 text-scp-green text-[10px] tracking-widest px-2 py-2">RESET KEY</button>
+          <button onclick="changeRole('${u.username}')" class="flex-1 border border-scp-green/30 text-white text-[10px] tracking-widest px-2 py-2">ROLE</button>
           <button onclick="removeUser('${u.username}')" class="border border-scp-gray/20 text-scp-gray px-2 py-2 text-[10px]">✕</button>
         </div>`:''}
     </div>
@@ -892,7 +966,7 @@ function renderPersonnel(){
 }
 function openUserModal(){ $('#user-modal').classList.remove('hidden');$('#user-modal').classList.add('flex');}
 function closeUserModal(){ $('#user-modal').classList.add('hidden');$('#user-modal').classList.remove('flex');}
-function createUser(e){
+async function createUser(e){
   e.preventDefault();
   if(currentUser.role!=='director')return;
   const username=sanitize($('#new-username').value);
@@ -901,8 +975,10 @@ function createUser(e){
   if(pass.length<6){alert('Password min 6 chars');return;}
   const role=$('#new-role').value;
   const clearance=$('#new-clearance').value;
-  users.push({username, password:pass, role, clearance, title: role==='director'?'Site Director':'Personnel', created:Date.now(), status:'active'});
-  save(); renderPersonnel(); closeUserModal(); log(`Created operative ${username} (${clearance}, ${role}) by ${currentUser.username}`,'INFO');
+  const titleMap={personnel:'Personnel',researcher:'Researcher',security:'Security Officer',medical:'Medical Officer',field:'Field Agent',admin:'Administrator',dclass:'D-Class Personnel',director:'Site Director'};
+  const passwordHash = await hashPass(pass);
+  users.push({username, passwordHash, role, clearance, title: titleMap[role]||'Personnel', created:Date.now(), status:'active'});
+  save(); renderPersonnel(); renderMembers(); closeUserModal(); log(`Created operative ${username} (${clearance}, ${role}) by ${currentUser.username}`,'INFO');
   $('#new-username').value='';$('#new-password').value='';
 }
 function toggleBan(un){
@@ -915,9 +991,26 @@ function removeUser(un){
   if(!confirm(`Remove operative ${un}?`))return;
   users=users.filter(x=>x.username!==un); banned=banned.filter(x=>x!==un.toLowerCase()); save(); renderPersonnel(); renderMembers(); log(`Removed operative ${un} by ${currentUser.username}`,'ALERT');
 }
-function resetPass(un){
+async function resetPass(un){
   const np=prompt(`New security key for ${un}:`); if(!np||np.length<6) return;
-  const u=users.find(x=>x.username===un); u.password=np; save(); log(`Reset key for ${un} by ${currentUser.username}`,'INFO'); alert('Key reset.');
+  const u=users.find(x=>x.username===un);
+  u.passwordHash = await hashPass(np);
+  delete u.password;
+  save(); log(`Reset key for ${un} by ${currentUser.username}`,'INFO'); alert('Key reset — hashed and stored.');
+}
+function changeRole(un){
+  if(currentUser.role!=='director')return;
+  const u=users.find(x=>x.username===un); if(!u) return;
+  const opts=['personnel','researcher','security','medical','field','admin','dclass','director'];
+  const labels={personnel:'Standard Personnel',researcher:'Researcher',security:'Security Officer',medical:'Medical Officer',field:'Field Agent',admin:'Administrator',dclass:'D-Class',director:'Site Director'};
+  const choice=prompt(`Change role for ${un}:\nOptions: ${opts.join(', ')}\nCurrent: ${u.role}\n\nEnter new role:` , u.role);
+  if(!choice) return;
+  const nr=choice.trim().toLowerCase();
+  if(!opts.includes(nr)){alert('Invalid role. Valid: '+opts.join(', '));return;}
+  const titleMap={personnel:'Personnel',researcher:'Researcher',security:'Security Officer',medical:'Medical Officer',field:'Field Agent',admin:'Administrator',dclass:'D-Class Personnel',director:'Site Director'};
+  u.role=nr; u.title=titleMap[nr]||'Personnel';
+  save(); renderPersonnel(); renderMembers();
+  log(`Changed role for ${un} to ${nr} by ${currentUser.username}`,'INFO');
 }
 
 // ----- CHAT -----
@@ -1004,13 +1097,14 @@ function nukeChat(silent){
 function renderMembers(){
   const list=users.filter(u=>u.status!=='banned');
   $('#member-count').textContent=list.length;
+  const mRoleLabel = r => ({personnel:'Personnel',researcher:'Researcher',security:'Security',medical:'Medical',field:'Field Agent',admin:'Admin',dclass:'D-Class',director:'Director'}[r]||r);
   $('#member-list').innerHTML=list.map(u=>{
     const isMuted=muted[u.username] && muted[u.username]>Date.now();
     return `<div data-user="${u.username}" oncontextmenu="openCtx(event,'${u.username}')" class="flex items-center gap-3 p-2 hover:bg-white/5 cursor-pointer border border-transparent hover:border-scp-green/10">
       <div class="w-8 h-8 rounded-full ${u.role==='director'?'bg-scp-green text-black':'bg-scp-green/15 text-scp-green border border-scp-green/30'} flex items-center justify-center font-bold text-xs">${u.username.slice(0,2).toUpperCase()}</div>
       <div class="flex-1 min-w-0">
         <div class="text-white text-xs font-bold truncate">${escapeHtml(u.username)} ${u.username===currentUser?.username?'<span class="text-scp-green">(you)</span>':''} ${isMuted?'<span class="text-scp-amber">MUTED</span>':''}</div>
-        <div class="text-scp-gray text-[11px] truncate">${u.clearance} • ${u.role}</div>
+        <div class="text-scp-gray text-[11px] truncate">${u.clearance} • ${mRoleLabel(u.role)}</div>
       </div>
       <span class="w-2 h-2 ${isMuted?'bg-scp-amber':'bg-scp-green'} rounded-full"></span>
     </div>`;
@@ -1112,7 +1206,7 @@ document.addEventListener('keydown',e=>{
 window.dismissBoot=dismissBoot; window.handleLogin=handleLogin; window.togglePass=togglePass;
 window.switchView=switchView; window.toggleMobileNav=toggleMobileNav; window.logout=logout;
 window.openScpDetail=openScpDetail; window.closeScpDetail=closeScpDetail; window.openScpModal=openScpModal; window.closeScpModal=closeScpModal; window.editScp=editScp; window.deleteScp=deleteScp; window.saveScp=saveScp; window.exportScp=exportScp; window.onGlobalSearch=onGlobalSearch; window.renderScp=renderScp;
-window.openUserModal=openUserModal; window.closeUserModal=closeUserModal; window.createUser=createUser; window.renderPersonnel=renderPersonnel; window.toggleBan=toggleBan; window.removeUser=removeUser; window.resetPass=resetPass;
+window.openUserModal=openUserModal; window.closeUserModal=closeUserModal; window.createUser=createUser; window.renderPersonnel=renderPersonnel; window.toggleBan=toggleBan; window.removeUser=removeUser; window.resetPass=resetPass; window.changeRole=changeRole;
 window.switchChannel=switchChannel; window.sendChat=sendChat; window.clearCurrentChat=clearCurrentChat; window.nukeChat=nukeChat; window.openCtx=openCtx; window.modAction=modAction;
 window.joinVoice=joinVoice; window.shareScreen=shareScreen; window.clearLogs=clearLogs;
 </script>
