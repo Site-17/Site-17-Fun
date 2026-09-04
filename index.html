@@ -167,7 +167,7 @@ html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
       </div>
       <div class="hidden lg:flex items-center gap-2 ml-4 text-[10px]">
         <span class="w-2 h-2 bg-scp-green rounded-full animate-pulse"></span><span class="tracking-widest text-scp-gray">CONTAINMENT STABLE</span>
-        <span class="text-scp-gray/40">|</span><span id="site-alert" class="text-scp-amber tracking-widest">ALERT: GREEN</span>
+        <span class="text-scp-gray/40">|</span><span id="site-alert" class="text-scp-green tracking-widest">ALERT: GREEN</span>
       </div>
     </div>
     <div class="flex-1 flex justify-center">
@@ -280,7 +280,7 @@ html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
         <!-- COMMS VIEW -->
         <section id="view-comms" class="view space-y-3">
           <div class="flex items-center justify-between">
-            <h1 class="text-white font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-blue"></span> TACTICAL COMMUNICATION NODE <span class="text-[10px] tracking-widest bg-scp-red text-white px-2 py-1 animate-pulse">LIVE</span></h1>
+            <h1 class="text-white font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> TACTICAL COMMUNICATION NODE <span class="text-[10px] tracking-widest bg-scp-green text-black px-2 py-1 animate-pulse">LIVE</span></h1>
             <div class="flex gap-2 text-[10px]">
               <span class="border border-scp-red/30 bg-scp-red/10 text-scp-red px-2 py-1 tracking-widest">VOLATILE • SELF-DESTRUCT ON CLOSE</span>
               <button onclick="nukeChat()" class="bg-scp-red text-white px-3 py-1 tracking-widest font-bold hover:bg-red-600">PURGE ALL</button>
@@ -288,10 +288,10 @@ html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
           </div>
           <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr_260px] gap-3 min-h-[620px]">
             <!-- Channels -->
-            <div class="bg-scp-panel border border-scp-blue/15 flex flex-col overflow-hidden">
-              <div class="p-3 border-b border-scp-blue/15 bg-scp-blue/5 flex items-center justify-between">
+            <div class="bg-scp-panel border border-scp-green/15 flex flex-col overflow-hidden">
+              <div class="p-3 border-b border-scp-green/15 bg-scp-green/5 flex items-center justify-between">
                 <span class="text-white text-xs tracking-[0.2em] font-bold">CHANNELS</span>
-                <span class="text-[10px] text-scp-blue border border-scp-blue/30 px-2 py-0.5" id="voice-indicator">VOICE: IDLE</span>
+                <span class="text-[10px] text-scp-green border border-scp-green/30 px-2 py-0.5" id="voice-indicator">VOICE: IDLE</span>
               </div>
               <div class="p-3 space-y-4 overflow-auto">
                 <div>
@@ -302,45 +302,45 @@ html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
                   <div class="text-[10px] tracking-[0.2em] text-scp-gray mb-2">VOICE NODES • WebRTC</div>
                   <div id="voice-channels" class="space-y-1"></div>
                   <div class="mt-3 grid grid-cols-2 gap-2">
-                    <button onclick="joinVoice()" class="bg-scp-blue text-black text-xs font-bold tracking-widest py-2 hover:bg-[#00b8e6]">JOIN VOICE</button>
-                    <button onclick="shareScreen()" class="border border-scp-blue/30 text-scp-blue text-xs tracking-widest py-2 hover:bg-scp-blue/10">SHARE SCREEN</button>
+                    <button onclick="joinVoice()" class="bg-scp-green text-black text-xs font-bold tracking-widest py-2 hover:bg-[#00e67a]">JOIN VOICE</button>
+                    <button onclick="shareScreen()" class="border border-scp-green/30 text-scp-green text-xs tracking-widest py-2 hover:bg-scp-green/10">SHARE SCREEN</button>
                   </div>
                   <div id="voice-peers" class="mt-3 space-y-2"></div>
                   <video id="local-video" autoplay muted playsinline class="hidden w-full aspect-video bg-black border border-scp-green/20 mt-2"></video>
-                  <div id="screen-preview" class="hidden mt-2 border border-scp-blue/30 bg-black aspect-video flex items-center justify-center text-scp-blue text-xs">SCREEN STREAM ACTIVE</div>
+                  <div id="screen-preview" class="hidden mt-2 border border-scp-green/30 bg-black aspect-video flex items-center justify-center text-scp-green text-xs">SCREEN STREAM ACTIVE</div>
                 </div>
                 <div class="border border-amber-500/20 bg-amber-500/5 p-2 text-[11px] leading-snug text-scp-gray">
-                  <span class="text-scp-amber font-bold">OPSEC:</span> Closing channel or ending session permanently wipes history. Director may mute/kick/ban via right-click.
+                  <span class="text-scp-green font-bold">OPSEC:</span> Closing channel or ending session permanently wipes history. Director may mute/kick/ban via right-click.
                 </div>
               </div>
             </div>
             <!-- Messages -->
-            <div class="bg-[#070a0c] border border-scp-blue/15 flex flex-col overflow-hidden">
-              <div class="h-12 border-b border-scp-blue/15 bg-scp-panel flex items-center justify-between px-4">
+            <div class="bg-[#070a0c] border border-scp-green/15 flex flex-col overflow-hidden">
+              <div class="h-12 border-b border-scp-green/15 bg-scp-panel flex items-center justify-between px-4">
                 <div>
                   <div id="chat-title" class="text-white text-sm font-bold tracking-widest"># general-tactical</div>
                   <div id="chat-topic" class="text-scp-gray text-[11px]">Volatile tactical coordination • 12 operators</div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span id="chat-volatile" class="text-[10px] tracking-widest bg-scp-red/15 text-scp-red border border-scp-red/30 px-2 py-1">SELF-DESTRUCT</span>
+                  <span id="chat-volatile" class="text-[10px] tracking-widest bg-scp-green/15 text-scp-green border border-scp-green/30 px-2 py-1">SECURE • ENCRYPTED</span>
                   <button onclick="clearCurrentChat()" class="text-[10px] tracking-widest border border-scp-gray/30 text-scp-gray px-2 py-1 hover:text-white">WIPE</button>
                 </div>
               </div>
               <div id="chat-messages" class="flex-1 overflow-auto p-4 space-y-3 bg-[#070a0c]"></div>
-              <div class="p-3 border-t border-scp-blue/15 bg-scp-panel">
+              <div class="p-3 border-t border-scp-green/15 bg-scp-panel">
                 <div class="flex gap-2">
-                  <input id="chat-input" onkeydown="if(event.key==='Enter')sendChat()" placeholder="Transmit message — will self-destruct on channel close..." class="flex-1 bg-[#070a0c] border border-scp-blue/20 px-3 py-2.5 text-sm text-white placeholder:text-scp-gray/50 outline-none focus:border-scp-blue">
-                  <button onclick="sendChat()" class="bg-scp-blue text-black font-bold px-5 tracking-widest text-xs hover:bg-[#00b8e6]">SEND</button>
+                  <input id="chat-input" onkeydown="if(event.key==='Enter')sendChat()" placeholder="Transmit message — will self-destruct on channel close..." class="flex-1 bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-sm text-white placeholder:text-scp-gray/50 outline-none focus:border-scp-green">
+                  <button onclick="sendChat()" class="bg-scp-green text-black font-bold px-5 tracking-widest text-xs hover:bg-[#00e67a]">SEND</button>
                 </div>
                 <div class="flex justify-between text-[10px] tracking-widest text-scp-gray mt-2">
                   <span><span class="text-scp-green">●</span> ENCRYPTED • CSRF PROTECTED • INPUT SANITIZED</span>
-                  <span id="typing-indicator" class="text-scp-blue"></span>
+                  <span id="typing-indicator" class="text-scp-green"></span>
                 </div>
               </div>
             </div>
             <!-- Members / Moderation -->
-            <div class="bg-scp-panel border border-scp-blue/15 flex flex-col overflow-hidden">
-              <div class="p-3 border-b border-scp-blue/15 bg-scp-blue/5">
+            <div class="bg-scp-panel border border-scp-green/15 flex flex-col overflow-hidden">
+              <div class="p-3 border-b border-scp-green/15 bg-scp-green/5">
                 <div class="text-white text-xs tracking-[0.2em] font-bold">OPERATORS</div>
                 <div class="text-scp-gray text-[11px]"><span id="member-count">0</span> online • Director moderation enabled</div>
               </div>
@@ -356,7 +356,7 @@ html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
 
         <!-- STATUS VIEW -->
         <section id="view-status" class="view space-y-4">
-          <h1 class="text-white font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-amber"></span> SITE-17 STATUS <span class="text-xs tracking-widest border border-scp-amber/30 text-scp-amber px-2 py-1">CONTAINMENT GRID</span></h1>
+          <h1 class="text-white font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> SITE-17 STATUS <span class="text-xs tracking-widest border border-scp-green/30 text-scp-green px-2 py-1">CONTAINMENT GRID</span></h1>
           <div class="grid md:grid-cols-3 gap-4">
             <div class="bg-scp-panel border border-scp-green/15 p-4">
               <div class="text-scp-gray text-[10px] tracking-widest">CONTAINMENT INTEGRITY</div>
@@ -364,14 +364,14 @@ html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
               <div class="h-1.5 bg-black border border-scp-green/10 mt-3"><div class="h-full bg-scp-green" style="width:98.7%"></div></div>
               <div class="text-[11px] text-scp-gray mt-2">All Keter cells nominal. Euclid wing patrol active.</div>
             </div>
-            <div class="bg-scp-panel border border-scp-amber/20 p-4">
+            <div class="bg-scp-panel border border-scp-green/20 p-4">
               <div class="text-scp-gray text-[10px] tracking-widest">PERSONNEL ON SITE</div>
-              <div class="text-3xl font-black text-scp-amber mt-1">1,427</div>
+              <div class="text-3xl font-black text-scp-green mt-1">1,427</div>
               <div class="text-[11px] text-scp-gray mt-2">Clearance Lvl 1-2: 892 • Lvl 3: 412 • Lvl 4-5: 123</div>
             </div>
-            <div class="bg-scp-panel border border-scp-blue/20 p-4">
+            <div class="bg-scp-panel border border-scp-green/20 p-4">
               <div class="text-scp-gray text-[10px] tracking-widest">SCPNET UPTIME</div>
-              <div class="text-3xl font-black text-scp-blue mt-1" id="uptime">14d 06:22:11</div>
+              <div class="text-3xl font-black text-scp-green mt-1" id="uptime">14d 06:22:11</div>
               <div class="text-[11px] text-scp-gray mt-2">Node 17-B primary • 17-A hot standby</div>
             </div>
           </div>
@@ -380,19 +380,19 @@ html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
               <div class="text-white text-xs tracking-[0.2em] font-bold mb-3">FACILITY MAP — SITE-17 (SCHEMATIC)</div>
               <div class="grid grid-cols-6 gap-1.5 text-[10px] font-bold tracking-widest">
                 <div class="col-span-2 bg-scp-green/15 border border-scp-green/30 p-3 text-center text-scp-green">ADMIN<br><span class="text-scp-gray font-normal">LVL 5</span></div>
-                <div class="col-span-2 bg-scp-blue/10 border border-scp-blue/30 p-3 text-center text-scp-blue">RESEARCH<br><span class="text-scp-gray font-normal">LAB 04-09</span></div>
-                <div class="col-span-2 bg-scp-red/10 border border-scp-red/30 p-3 text-center text-scp-red">KETER WING<br><span class="text-white">LOCKED</span></div>
+                <div class="col-span-2 bg-scp-green/10 border border-scp-green/30 p-3 text-center text-scp-green">RESEARCH<br><span class="text-scp-gray font-normal">LAB 04-09</span></div>
+                <div class="col-span-2 bg-scp-green/10 border border-scp-green/30 p-3 text-center text-scp-green">KETER WING<br><span class="text-white">SECURE</span></div>
                 <div class="bg-[#070a0c] border border-scp-green/15 p-2 text-center text-scp-gray">ARMORY</div>
                 <div class="bg-[#070a0c] border border-scp-green/15 p-2 text-center text-scp-green">MED bay</div>
                 <div class="bg-[#070a0c] border border-scp-green/15 p-2 text-center text-scp-gray">CAFÉ</div>
-                <div class="bg-scp-amber/10 border border-scp-amber/30 p-2 text-center text-scp-amber">EUCLID</div>
-                <div class="bg-[#070a0c] border border-scp-green/15 p-2 text-center text-scp-gray">SAFE</div>
-                <div class="bg-scp-red/10 border border-scp-red/30 p-2 text-center text-scp-red">● BREACH</div>
+                <div class="bg-scp-green/10 border border-scp-green/30 p-2 text-center text-scp-green">EUCLID</div>
+                <div class="bg-scp-green/10 border border-scp-green/30 p-2 text-center text-scp-green">SAFE</div>
+                <div class="bg-scp-green/10 border border-scp-green/30 p-2 text-center text-scp-green">● SECURE</div>
               </div>
               <div class="mt-4 flex gap-2 text-[10px] tracking-widest">
                 <span class="px-2 py-1 bg-scp-green text-black font-bold">SECURE</span>
-                <span class="px-2 py-1 bg-scp-amber text-black font-bold">CAUTION</span>
-                <span class="px-2 py-1 bg-scp-red text-white font-bold">ALERT</span>
+                <span class="px-2 py-1 bg-scp-green text-black font-bold">CAUTION</span>
+                <span class="px-2 py-1 bg-scp-green text-black font-bold">SECURE</span>
               </div>
             </div>
             <div class="bg-scp-panel border border-scp-green/15 p-4 space-y-3">
@@ -423,13 +423,13 @@ html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
 
         <!-- LOGS VIEW -->
         <section id="view-logs" class="view space-y-4">
-          <h1 class="text-white font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-red"></span> SECURITY LOGS & HARDENING</h1>
+          <h1 class="text-white font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> SECURITY LOGS & HARDENING</h1>
           <div class="grid md:grid-cols-3 gap-3">
-            <div class="bg-scp-panel border border-scp-red/20 p-4 text-center">
-              <div class="text-scp-red text-2xl font-black" id="log-blocked">0</div><div class="text-[10px] tracking-widest text-scp-gray">BLOCKED ATTEMPTS</div>
+            <div class="bg-scp-panel border border-scp-green/20 p-4 text-center">
+              <div class="text-scp-green text-2xl font-black" id="log-blocked">0</div><div class="text-[10px] tracking-widest text-scp-gray">BLOCKED ATTEMPTS</div>
             </div>
-            <div class="bg-scp-panel border border-scp-amber/20 p-4 text-center">
-              <div class="text-scp-amber text-2xl font-black" id="log-vpn">0</div><div class="text-[10px] tracking-widest text-scp-gray">VPN/PROXY BLOCKS</div>
+            <div class="bg-scp-panel border border-scp-green/20 p-4 text-center">
+              <div class="text-scp-green text-2xl font-black" id="log-vpn">0</div><div class="text-[10px] tracking-widest text-scp-gray">VPN/PROXY BLOCKS</div>
             </div>
             <div class="bg-scp-panel border border-scp-green/20 p-4 text-center">
               <div class="text-scp-green text-2xl font-black" id="log-csrf">0</div><div class="text-[10px] tracking-widest text-scp-gray">CSRF TOKENS VALIDATED</div>
@@ -444,8 +444,8 @@ html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
           </div>
           <div class="grid md:grid-cols-2 gap-3 text-[11px] leading-relaxed">
             <div class="border border-scp-green/15 bg-scp-green/5 p-3"><span class="text-scp-green font-bold">Brute-Force Protection:</span> 5 attempts → 60s lockout per account/IP. Exponential backoff. All failures logged.</div>
-            <div class="border border-scp-blue/15 bg-scp-blue/5 p-3"><span class="text-scp-blue font-bold">VPN/IP Whitelisting:</span> Secure Terminal Network required. Proxy/VPN signatures blocked. Simulated whitelist: 198.51.100.0/24.</div>
-            <div class="border border-scp-amber/15 bg-scp-amber/5 p-3"><span class="text-scp-amber font-bold">Input Sanitization & CSRF:</span> All SCP inputs escaped, HTML stripped. CSRF token per session, validated on state changes.</div>
+            <div class="border border-scp-green/15 bg-scp-green/5 p-3"><span class="text-scp-green font-bold">VPN/IP Whitelisting:</span> Secure Terminal Network required. Proxy/VPN signatures blocked. Simulated whitelist: 198.51.100.0/24.</div>
+            <div class="border border-scp-green/15 bg-scp-green/5 p-3"><span class="text-scp-green font-bold">Input Sanitization & CSRF:</span> All SCP inputs escaped, HTML stripped. CSRF token per session, validated on state changes.</div>
             <div class="border border-scp-green/15 bg-[#070a0c] p-3"><span class="text-scp-green font-bold">Session Management:</span> Encrypted JWT-like token in memory, 5-min inactivity expiry, idle detection, secure logout wipe.</div>
           </div>
         </section>
@@ -510,8 +510,8 @@ html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
 <!-- Context menu for moderation -->
 <div id="ctx-menu" class="fixed hidden bg-scp-panel border border-scp-red/30 shadow-2xl z-50 min-w-[180px] text-xs">
   <div id="ctx-target" class="px-3 py-2 border-b border-scp-green/10 text-scp-gray tracking-widest"></div>
-  <button onclick="modAction('mute')" class="w-full text-left px-3 py-2 hover:bg-white/5 text-scp-amber">🔇 Mute 10m</button>
-  <button onclick="modAction('kick')" class="w-full text-left px-3 py-2 hover:bg-white/5 text-scp-blue">↗ Kick from channel</button>
+  <button onclick="modAction('mute')" class="w-full text-left px-3 py-2 hover:bg-white/5 text-scp-green">🔇 Mute 10m</button>
+  <button onclick="modAction('kick')" class="w-full text-left px-3 py-2 hover:bg-white/5 text-scp-green">↗ Kick from channel</button>
   <button onclick="modAction('ban')" class="w-full text-left px-3 py-2 hover:bg-scp-red/10 text-scp-red">⛔ Ban permanently</button>
 </div>
 
@@ -781,7 +781,7 @@ function renderScp(){
         <div class="text-scp-gray text-xs leading-relaxed line-clamp-2">${escapeHtml(s.description).slice(0,140)}...</div>
         <div class="mt-auto flex gap-2">
           <span class="text-[10px] tracking-widest border border-scp-green/20 text-scp-green px-2 py-1">VIEW FILE →</span>
-          ${isDir?`<button onclick="event.stopPropagation();editScp('${s.id}')" class="ml-auto text-[10px] tracking-widest border border-scp-amber/30 text-scp-amber px-2 py-1 hover:bg-scp-amber/10">EDIT</button><button onclick="event.stopPropagation();deleteScp('${s.id}')" class="text-[10px] tracking-widest border border-scp-red/30 text-scp-red px-2 py-1 hover:bg-scp-red/10">DEL</button>`:''}
+          ${isDir?`<button onclick="event.stopPropagation();editScp('${s.id}')" class="ml-auto text-[10px] tracking-widest border border-scp-green/30 text-scp-green px-2 py-1 hover:bg-scp-green/10">EDIT</button><button onclick="event.stopPropagation();deleteScp('${s.id}')" class="text-[10px] tracking-widest border border-scp-red/30 text-scp-red px-2 py-1 hover:bg-scp-red/10">DEL</button>`:''}
         </div>
       </div>
     </div>`;
@@ -811,18 +811,18 @@ function openScpDetail(id){
         <div class="bg-scp-panel border border-scp-green/15 p-3"><div class="text-scp-gray tracking-widest">RISK</div><div class="text-white font-bold">${s.class==='Keter'?'Critical':'Notice'}</div></div>
       </div>
       <div class="space-y-4 leading-relaxed text-sm">
-        <div class="border-l-2 border-scp-amber pl-4">
-          <div class="text-scp-amber font-bold tracking-widest text-xs mb-1">SPECIAL CONTAINMENT PROCEDURES:</div>
+        <div class="border-l-2 border-scp-green pl-4">
+          <div class="text-scp-green font-bold tracking-widest text-xs mb-1">SPECIAL CONTAINMENT PROCEDURES:</div>
           <div class="text-scp-gray">${escapeHtml(s.containment)}</div>
         </div>
         <div>
           <div class="text-white font-bold tracking-widest text-xs mb-1">DESCRIPTION:</div>
           <div class="text-scp-gray">${escapeHtml(s.description)}</div>
         </div>
-        ${s.addendum?`<div class="border border-scp-blue/20 bg-scp-blue/5 p-3"><div class="text-scp-blue font-bold tracking-widest text-xs">ADDENDUM:</div><div class="text-scp-gray text-sm mt-1">${escapeHtml(s.addendum)}</div></div>`:''}
+        ${s.addendum?`<div class="border border-scp-green/20 bg-scp-green/5 p-3"><div class="text-scp-green font-bold tracking-widest text-xs">ADDENDUM:</div><div class="text-scp-gray text-sm mt-1">${escapeHtml(s.addendum)}</div></div>`:''}
       </div>
       <div class="flex gap-2 pt-4 border-t border-scp-green/10">
-        ${currentUser.role==='director'?`<button onclick="editScp('${s.id}')" class="bg-scp-amber text-black font-bold tracking-widest text-xs px-4 py-2">EDIT FILE</button><button onclick="deleteScp('${s.id}')" class="border border-scp-red/30 text-scp-red tracking-widest text-xs px-4 py-2">DELETE</button>`: `<span class="text-[11px] tracking-widest text-scp-gray border border-scp-gray/20 px-3 py-2">READ-ONLY • Director edit only</span>`}
+        ${currentUser.role==='director'?`<button onclick="editScp('${s.id}')" class="bg-scp-green text-black font-bold tracking-widest text-xs px-4 py-2">EDIT FILE</button><button onclick="deleteScp('${s.id}')" class="border border-scp-red/30 text-scp-red tracking-widest text-xs px-4 py-2">DELETE</button>`: `<span class="text-[11px] tracking-widest text-scp-gray border border-scp-gray/20 px-3 py-2">READ-ONLY • Director edit only</span>`}
         <button onclick="closeScpDetail()" class="ml-auto border border-scp-green/20 text-scp-green tracking-widest text-xs px-4 py-2">CLOSE FILE</button>
       </div>
       <div class="text-[10px] tracking-widest text-scp-gray/50">FILE ID ${s.id} • LAST UPDATED ${new Date(s.updated).toLocaleString()} • CSRF ${csrfToken.slice(0,8)}</div>
@@ -884,7 +884,7 @@ function renderPersonnel(){
       ${currentUser.role==='director' && u.username!==currentUser.username?`
         <div class="flex gap-2 mt-3">
           <button onclick="toggleBan('${u.username}')" class="flex-1 text-[10px] tracking-widest ${u.status==='banned'?'bg-scp-green text-black':'bg-scp-red text-white'} px-2 py-2 font-bold">${u.status==='banned'?'UNBAN':'BAN'}</button>
-          <button onclick="resetPass('${u.username}')" class="flex-1 border border-scp-blue/30 text-scp-blue text-[10px] tracking-widest px-2 py-2">RESET KEY</button>
+          <button onclick="resetPass('${u.username}')" class="flex-1 border border-scp-green/30 text-scp-green text-[10px] tracking-widest px-2 py-2">RESET KEY</button>
           <button onclick="removeUser('${u.username}')" class="border border-scp-gray/20 text-scp-gray px-2 py-2 text-[10px]">✕</button>
         </div>`:''}
     </div>
@@ -935,7 +935,7 @@ function initChat(){
 }
 function renderChannels(){
   $('#text-channels').innerHTML=channels.map(c=>`
-    <button onclick="switchChannel('${c}')" class="w-full text-left px-3 py-2 flex items-center gap-2 text-xs tracking-widest ${currentChannel===c?'bg-scp-blue text-black font-bold':'bg-[#070a0c] border border-scp-blue/15 text-scp-gray hover:text-white'}">
+    <button onclick="switchChannel('${c}')" class="w-full text-left px-3 py-2 flex items-center gap-2 text-xs tracking-widest ${currentChannel===c?'bg-scp-green text-black font-bold':'bg-[#070a0c] border border-scp-green/15 text-scp-gray hover:text-white'}">
       <span>#</span> ${c} ${chatData[c]?.length?`<span class="ml-auto text-[10px] bg-black/20 px-1">${chatData[c].length}</span>`:''}
     </button>
   `).join('');
@@ -954,12 +954,12 @@ function switchChannel(c){
 function renderMessages(){
   const msgs=chatData[currentChannel]||[];
   $('#chat-messages').innerHTML=msgs.map(m=>{
-    if(m.sys) return `<div class="text-center text-[11px] tracking-widest text-scp-amber border border-scp-amber/20 bg-scp-amber/5 py-1">${escapeHtml(m.text)}</div>`;
+    if(m.sys) return `<div class="text-center text-[11px] tracking-widest text-scp-green border border-scp-green/20 bg-scp-green/5 py-1">${escapeHtml(m.text)}</div>`;
     const isMe=m.user===currentUser?.username;
     return `<div class="flex gap-3 ${isMe?'justify-end':''}">
-      ${!isMe?`<div class="w-7 h-7 bg-scp-blue/15 border border-scp-blue/30 flex items-center justify-center text-scp-blue text-[10px] font-bold shrink-0">${escapeHtml(m.user).slice(0,2).toUpperCase()}</div>`:''}
-      <div class="max-w-[75%] ${isMe?'bg-scp-green text-black':'bg-scp-panel border border-scp-blue/15 text-white'} px-3 py-2 text-sm leading-snug">
-        <div class="flex gap-2 text-[10px] tracking-widest ${isMe?'text-black/60':'text-scp-gray'}"><span class="font-bold ${isMe?'text-black':'text-scp-blue'}">${escapeHtml(m.user)}</span><span>${new Date(m.time).toLocaleTimeString()}</span></div>
+      ${!isMe?`<div class="w-7 h-7 bg-scp-green/15 border border-scp-green/30 flex items-center justify-center text-scp-green text-[10px] font-bold shrink-0">${escapeHtml(m.user).slice(0,2).toUpperCase()}</div>`:''}
+      <div class="max-w-[75%] ${isMe?'bg-scp-green text-black':'bg-scp-panel border border-scp-green/15 text-white'} px-3 py-2 text-sm leading-snug">
+        <div class="flex gap-2 text-[10px] tracking-widest ${isMe?'text-black/60':'text-scp-gray'}"><span class="font-bold ${isMe?'text-black':'text-scp-green'}">${escapeHtml(m.user)}</span><span>${new Date(m.time).toLocaleTimeString()}</span></div>
         <div class="mt-1 break-words">${escapeHtml(m.text)}</div>
       </div>
     </div>`;
@@ -1007,7 +1007,7 @@ function renderMembers(){
   $('#member-list').innerHTML=list.map(u=>{
     const isMuted=muted[u.username] && muted[u.username]>Date.now();
     return `<div data-user="${u.username}" oncontextmenu="openCtx(event,'${u.username}')" class="flex items-center gap-3 p-2 hover:bg-white/5 cursor-pointer border border-transparent hover:border-scp-green/10">
-      <div class="w-8 h-8 rounded-full ${u.role==='director'?'bg-scp-amber text-black':'bg-scp-green/15 text-scp-green border border-scp-green/30'} flex items-center justify-center font-bold text-xs">${u.username.slice(0,2).toUpperCase()}</div>
+      <div class="w-8 h-8 rounded-full ${u.role==='director'?'bg-scp-green text-black':'bg-scp-green/15 text-scp-green border border-scp-green/30'} flex items-center justify-center font-bold text-xs">${u.username.slice(0,2).toUpperCase()}</div>
       <div class="flex-1 min-w-0">
         <div class="text-white text-xs font-bold truncate">${escapeHtml(u.username)} ${u.username===currentUser?.username?'<span class="text-scp-green">(you)</span>':''} ${isMuted?'<span class="text-scp-amber">MUTED</span>':''}</div>
         <div class="text-scp-gray text-[11px] truncate">${u.clearance} • ${u.role}</div>
@@ -1025,8 +1025,8 @@ function openCtx(e, username){
 document.addEventListener('click',()=>$('#ctx-menu').classList.add('hidden'));
 function modAction(act){
   if(!ctxUser) return;
-  if(act==='mute'){ muted[ctxUser]=Date.now()+10*60*1000; log(`Muted ${ctxUser} for 10m by ${currentUser.username}`,'WARN'); $('#mod-log').innerHTML+=`<div class="text-scp-amber">[${nowStr()}] Muted ${escapeHtml(ctxUser)}</div>`; }
-  if(act==='kick'){ log(`Kicked ${ctxUser} from channel by ${currentUser.username}`,'WARN'); $('#mod-log').innerHTML+=`<div class="text-scp-blue">[${nowStr()}] Kicked ${escapeHtml(ctxUser)}</div>`; alert(ctxUser+' kicked from voice.'); }
+  if(act==='mute'){ muted[ctxUser]=Date.now()+10*60*1000; log(`Muted ${ctxUser} for 10m by ${currentUser.username}`,'WARN'); $('#mod-log').innerHTML+=`<div class="text-scp-green">[${nowStr()}] Muted ${escapeHtml(ctxUser)}</div>`; }
+  if(act==='kick'){ log(`Kicked ${ctxUser} from channel by ${currentUser.username}`,'WARN'); $('#mod-log').innerHTML+=`<div class="text-scp-green">[${nowStr()}] Kicked ${escapeHtml(ctxUser)}</div>`; alert(ctxUser+' kicked from voice.'); }
   if(act==='ban'){ toggleBan(ctxUser); }
   renderMembers(); $('#ctx-menu').classList.add('hidden');
 }
@@ -1043,7 +1043,7 @@ async function joinVoice(ch){
     $('#voice-indicator').textContent='VOICE: '+voiceJoined.toUpperCase()+' • LIVE';
     log(`Joined voice ${voiceJoined} — WebRTC connected by ${currentUser.username}`,'INFO');
   }catch(err){
-    $('#voice-peers').innerHTML=`<div class="border border-scp-amber/30 bg-scp-amber/10 p-2 text-xs text-scp-amber">Microphone permission denied — voice simulated. WebRTC mesh would connect here.</div>`;
+    $('#voice-peers').innerHTML=`<div class="border border-scp-green/30 bg-scp-green/10 p-2 text-xs text-scp-green">Microphone permission denied — voice simulated. WebRTC mesh would connect here.</div>`;
     $('#voice-indicator').textContent='VOICE: '+voiceJoined.toUpperCase()+' • SIMULATED';
   }
   renderChannels();
