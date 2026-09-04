@@ -6,17 +6,19 @@
 <title>SCPNET // SITE-17 // SECURE TERMINAL v7.4.1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
 <script>
-tailwind.config={theme:{extend:{colors:{'scp-black':'#070a0c','scp-charcoal':'#0f1519','scp-panel':'#131c21','scp-green':'#00ff88','scp-amber':'#ffb800','scp-blue':'#00d4ff','scp-red':'#ff2b2b','scp-gray':'#7a8a99'},fontFamily:{mono:['JetBrains Mono','Share Tech Mono','monospace'],tech:['Share Tech Mono','monospace']}}}}
+window.tailwind = window.tailwind || {};
+window.tailwind.config = {theme:{extend:{colors:{'scp-black':'#070a0c','scp-charcoal':'#0f1519','scp-panel':'#131c21','scp-green':'#00ff88','scp-amber':'#ffb800','scp-blue':'#00d4ff','scp-red':'#ff2b2b','scp-gray':'#7a8a99'},fontFamily:{mono:['JetBrains Mono','Share Tech Mono','monospace'],tech:['Share Tech Mono','monospace']}}}};
 </script>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
 *{scrollbar-width:thin;scrollbar-color:#00ff88 #0f1519}
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:#0f1519}
 ::-webkit-scrollbar-thumb{background:#00ff8866;border-radius:999px}
-html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden;filter:contrast(1.02) brightness(1)}
-body{font-variant-ligatures:none;text-shadow:0 0 4px rgba(0,255,136,0.25)}
+html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
+body{font-variant-ligatures:none;text-shadow:0 0 4px rgba(0,255,136,0.22)}
+#app, #login-wall, #boot, #biometric{filter:contrast(1.02) brightness(0.99)}
 .crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.14),rgba(0,0,0,0.14) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999;opacity:0.32}
 .crt::after{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 65%,rgba(0,0,0,0.45) 100%),linear-gradient(rgba(18,16,12,0) 50%,rgba(0,0,0,0.06) 50%);background-size:100% 100%,100% 3px;pointer-events:none;z-index:9998;opacity:0.6}
 .grid-bg{background-image:linear-gradient(rgba(0,255,136,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,0.03) 1px,transparent 1px);background-size:32px 32px}
@@ -579,12 +581,13 @@ users.forEach(u=>{
   else if(u.role==='personnel' && /security/i.test(u.title)){ u.role='security'; _roleMigrated=true; }
 });
 let _needsSave = _roleMigrated;
+if(_needsSave) save();
 // async migration for any legacy plaintext still in storage
 (async()=>{
   let changed = false;
   for(const u of users){
     if(u.password && !u.passwordHash){
-      u.passwordHash = await hashPass(u.password);
+      try{ u.passwordHash = await hashPass(u.password); }catch{}
       delete u.password;
       changed = true;
     } else if(u.password){
@@ -608,13 +611,15 @@ let banned = JSON.parse(localStorage.getItem('scp_banned')||'[]');
 let muted = {}; // username -> until
 
 function save(){
-  localStorage.setItem('scp_users', JSON.stringify(users));
-  localStorage.setItem('scp_scps', JSON.stringify(scps));
-  localStorage.setItem('scp_audit', JSON.stringify(audit.slice(0,200)));
-  localStorage.setItem('scp_fails', JSON.stringify(failedAttempts));
-  localStorage.setItem('scp_vpn', String(vpnBlocks));
-  localStorage.setItem('scp_csrf', String(csrfCount));
-  localStorage.setItem('scp_banned', JSON.stringify(banned));
+  try{
+    localStorage.setItem('scp_users', JSON.stringify(users));
+    localStorage.setItem('scp_scps', JSON.stringify(scps));
+    localStorage.setItem('scp_audit', JSON.stringify(audit.slice(0,200)));
+    localStorage.setItem('scp_fails', JSON.stringify(failedAttempts));
+    localStorage.setItem('scp_vpn', String(vpnBlocks));
+    localStorage.setItem('scp_csrf', String(csrfCount));
+    localStorage.setItem('scp_banned', JSON.stringify(banned));
+  }catch(e){ console.warn('Storage quota', e); }
 }
 function log(msg, level='INFO'){
   audit.unshift({time: new Date().toISOString(), level, msg});
@@ -640,60 +645,72 @@ const bootLines = [
 let bootIdx=0;
 function bootTick(){
   const el=$('#boot-log');
+  if(!el) return;
   if(bootIdx<bootLines.length){
     const d=document.createElement('div');
     d.className='flex gap-3';
     d.innerHTML=`<span class="text-scp-gray">[${String(bootIdx+1).padStart(2,'0')}]</span><span class="type-cursor">${escapeHtml(bootLines[bootIdx])}</span>`;
     el.appendChild(d);
     bootIdx++;
-    $('#boot-pct').textContent=Math.round(bootIdx/bootLines.length*100)+'%';
-    $('#boot-bar').style.width=Math.round(bootIdx/bootLines.length*100)+'%';
+    const pct=$('#boot-pct'); const bar=$('#boot-bar');
+    if(pct) pct.textContent=Math.round(bootIdx/bootLines.length*100)+'%';
+    if(bar) bar.style.width=Math.round(bootIdx/bootLines.length*100)+'%';
     setTimeout(bootTick, 120+Math.random()*260);
   } else {
-    $('#boot-prompt').classList.remove('hidden');
+    const pr=$('#boot-prompt'); if(pr) pr.classList.remove('hidden');
   }
 }
-setInterval(()=>{$('#boot-time').textContent=new Date().toLocaleString('en-GB',{hour12:false});},1000);
-setInterval(()=>{$('#login-clock')&&($('#login-clock').textContent=new Date().toLocaleTimeString('en-GB',{hour12:false}));},1000);
+setInterval(()=>{const e=$('#boot-time'); if(e) e.textContent=new Date().toLocaleString('en-GB',{hour12:false});},1000);
+setInterval(()=>{const e=$('#login-clock'); if(e) e.textContent=new Date().toLocaleTimeString('en-GB',{hour12:false});},1000);
 bootTick();
 
 function dismissBoot(){
-  $('#boot').style.transition='opacity 0.6s';
-  $('#boot').style.opacity='0';
-  setTimeout(()=>{$('#boot').classList.add('hidden');$('#login-wall').classList.remove('hidden');},600);
+  const b=$('#boot'); if(b){b.style.transition='opacity 0.6s'; b.style.opacity='0';}
+  setTimeout(()=>{
+    const b2=$('#boot'); const lw=$('#login-wall');
+    if(b2) b2.classList.add('hidden');
+    if(lw) lw.classList.remove('hidden');
+  },600);
   // simulate IP
-  $('#login-ip').textContent='198.51.100.'+Math.floor(17+Math.random()*80);
+  const ip=$('#login-ip'); if(ip) ip.textContent='198.51.100.'+Math.floor(17+Math.random()*80);
 }
 
-// ----- VPN SIMULATION -----
+// ----- VPN SIMULATION (throttled, disabled after login) -----
 let useVPN = false;
 setInterval(()=>{
-  if(!useVPN && Math.random()<0.04){
-    // randomly simulate VPN detection toggle
-    if(Math.random()<0.5){
+  if(currentUser) return; // don’t annoy logged-in operators
+  if(!useVPN && Math.random()<0.015){
+    if(Math.random()<0.4){
       vpnBlocks++; save(); log('VPN/Proxy signature detected and blocked: 203.0.113.'+Math.floor(Math.random()*255),'WARN');
-      $('#vpn-status').textContent='PROXY DETECTED — BLOCKED';
-      $('#vpn-status').className='text-scp-red';
-      $('#sec-notices').innerHTML='<div class="border border-scp-red/40 bg-scp-red/10 text-scp-red px-3 py-2">⚠ Secure Terminal Network required. Proxy/VPN detected — access denied. Disable VPN to continue.</div>';
-      setTimeout(()=>{$('#vpn-status').textContent='SECURE TERMINAL ✓';$('#vpn-status').className='text-scp-green';$('#sec-notices').innerHTML='';},4000);
+      const vs=$('#vpn-status'); if(!vs) return;
+      vs.textContent='PROXY DETECTED — BLOCKED';
+      vs.className='text-scp-red';
+      const sn=$('#sec-notices'); if(sn) sn.innerHTML='<div class="border border-scp-red/40 bg-scp-red/10 text-scp-red px-3 py-2">⚠ Secure Terminal Network required. Proxy/VPN detected — access denied. Disable VPN to continue.</div>';
+      setTimeout(()=>{const v2=$('#vpn-status'); if(v2){v2.textContent='SECURE TERMINAL ✓';v2.className='text-scp-green';} const s2=$('#sec-notices'); if(s2) s2.innerHTML='';},3500);
     }
   }
-},3000);
+},5000);
 
 // ----- LOGIN -----
 function togglePass(){
-  const i=$('#login-pass'); i.type=i.type==='password'?'text':'password';
+  const i=$('#login-pass'); const b=document.querySelector('button[onclick="togglePass()"]');
+  i.type=i.type==='password'?'text':'password';
+  if(b) b.textContent=i.type==='password'?'SHOW':'HIDE';
 }
 async function handleLogin(e){
   e.preventDefault();
+  const btn=$('#login-btn'); const sp=$('#login-spinner');
+  if(btn){btn.disabled=true; btn.classList.add('opacity-60');}
+  if(sp) sp.classList.remove('hidden');
   const u=sanitize($('#login-user').value).toLowerCase();
   const p=$('#login-pass').value;
   const errEl=$('#login-error');
   errEl.classList.add('hidden');
 
+  const _resetLogin=()=>{if(btn){btn.disabled=false;btn.classList.remove('opacity-60');} if(sp) sp.classList.add('hidden');};
   // VPN gate
   if($('#vpn-status').textContent.includes('BLOCKED')){
-    errEl.textContent='⛔ Access denied: Secure Terminal Network connection required. Disable VPN/Proxy.';errEl.classList.remove('hidden');return;
+    errEl.textContent='⛔ Access denied: Secure Terminal Network connection required. Disable VPN/Proxy.';errEl.classList.remove('hidden');_resetLogin();return;
   }
 
   // brute force check
@@ -701,12 +718,12 @@ async function handleLogin(e){
   if(rec.lockUntil>Date.now()){
     const sec=Math.ceil((rec.lockUntil-Date.now())/1000);
     errEl.textContent=`🔒 Account locked — too many failed attempts. Try again in ${sec}s. [Rate-limit active]`;errEl.classList.remove('hidden');
-    log(`Login blocked (lockout) for ${u} — ${sec}s remaining`,'WARN');return;
+    log(`Login blocked (lockout) for ${u} — ${sec}s remaining`,'WARN');_resetLogin();return;
   }
   // find user
   const found=users.find(x=>x.username.toLowerCase()===u);
   if(banned.includes(u)){
-    errEl.textContent='⛔ OPERATIVE BANNED — Contact Site Director.';errEl.classList.remove('hidden');log(`Banned user attempted login: ${u}`,'ALERT');return;
+    errEl.textContent='⛔ OPERATIVE BANNED — Contact Site Director.';errEl.classList.remove('hidden');log(`Banned user attempted login: ${u}`,'ALERT');_resetLogin();return;
   }
   // hashed verification (no plaintext comparison)
   let hashOk = false;
@@ -731,11 +748,12 @@ async function handleLogin(e){
     log(`Failed login for "${u}" — invalid ${!found?'user':'password'}`,'WARN');
     $('#login-btn').classList.add('animate-pulse');
     setTimeout(()=>$('#login-btn').classList.remove('animate-pulse'),800);
-    return;
+    _resetLogin();return;
   }
   // success
   failedAttempts[u]={count:0,lockUntil:0}; save();
   csrfCount++; save();
+  _resetLogin();
   log(`Successful authentication: ${found.username} (${found.clearance}) from ${$('#login-ip').textContent}`,'INFO');
   // biometric
   currentUser=found;
@@ -748,6 +766,7 @@ async function handleLogin(e){
   // voice
   try{ speechSynthesis.speak(new SpeechSynthesisUtterance(`Welcome to Site 17, ${found.username}. Monitoring is active.`)); }catch{}
 }
+let _idleHandler=null;
 function enterApp(){
   $('#biometric').classList.add('hidden');$('#biometric').classList.remove('flex');
   $('#app').classList.remove('hidden');
@@ -775,8 +794,10 @@ function enterApp(){
   sessionExpires=Date.now()+5*60*1000;
   startSessionTimer();
   renderAll();
-  // reset idle listeners
-  ['mousemove','keydown','click'].forEach(ev=>document.addEventListener(ev,()=>{sessionExpires=Date.now()+5*60*1000;}));
+  // reset idle listeners — avoid duplicate handlers
+  if(_idleHandler){ ['mousemove','keydown','click'].forEach(ev=>document.removeEventListener(ev,_idleHandler)); }
+  _idleHandler=()=>{sessionExpires=Date.now()+5*60*1000;};
+  ['mousemove','keydown','click'].forEach(ev=>document.addEventListener(ev,_idleHandler));
 }
 function startSessionTimer(){
   clearInterval(sessionTimer);
@@ -794,10 +815,15 @@ function logout(expired){
   if(expired) log(`Session expired for ${currentUser?.username} — auto-logout (inactivity)`,'WARN');
   else if(currentUser) log(`Logout: ${currentUser.username}`,'INFO');
   // wipe volatile chats
-  nukeChat(true);
-  currentUser=null; clearInterval(sessionTimer);
-  $('#app').classList.add('hidden');$('#login-wall').classList.remove('hidden');
-  $('#login-pass').value=''; $('#login-error').classList.add('hidden');
+  try{ nukeChat(true); }catch{}
+  currentUser=null; clearInterval(sessionTimer); if(_uptimeInt){clearInterval(_uptimeInt); _uptimeInt=null;}
+  if(_idleHandler){ ['mousemove','keydown','click'].forEach(ev=>document.removeEventListener(ev,_idleHandler)); _idleHandler=null; }
+  const app=$('#app'); if(app) app.classList.add('hidden');
+  const lw=$('#login-wall'); if(lw) lw.classList.remove('hidden');
+  const lp=$('#login-pass'); if(lp) lp.value='';
+  const le=$('#login-error'); if(le) le.classList.add('hidden');
+  const sp=$('#login-spinner'); if(sp) sp.classList.add('hidden');
+  const btn=$('#login-btn'); if(btn){btn.disabled=false; btn.classList.remove('opacity-60');}
   // clear voice
   stopVoice(); stopScreen();
 }
@@ -805,21 +831,21 @@ function logout(expired){
 // ----- NAV -----
 function switchView(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
-  $('#view-'+v).classList.add('active');
+  const vEl=$('#view-'+v); if(vEl) vEl.classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b=>{
     if(b.dataset.view===v){b.className='nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 bg-scp-green text-black font-bold text-xs tracking-widest';}
     else{ b.className='nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-white text-xs tracking-widest';}
   });
   if(window.innerWidth<768) $('#sidebar').classList.add('translate-x-[-100%]');
 }
-function toggleMobileNav(){ $('#sidebar').classList.toggle('translate-x-[-100%]'); }
+function toggleMobileNav(){ const s=$('#sidebar'); if(s) s.classList.toggle('translate-x-[-100%]'); }
 
 // ----- SCP RENDER -----
 function renderScp(){
-  const q=($('#scp-search').value||'').toLowerCase();
-  const cls=$('#scp-class-filter').value;
-  const sort=$('#scp-sort').value;
-  const globalQ=($('#global-search').value||'').toLowerCase();
+  const q=(($('#scp-search')?.value)||'').toLowerCase();
+  const cls=$('#scp-class-filter')?.value || '';
+  const sort=$('#scp-sort')?.value || 'number';
+  const globalQ=(($('#global-search')?.value)||'').toLowerCase();
   const query=(q||globalQ).trim();
   let list=[...scps];
   if(query) list=list.filter(s=> (s.number+' '+s.title+' '+s.class+' '+s.description).toLowerCase().includes(query));
@@ -931,11 +957,12 @@ function deleteScp(id){
 }
 function exportScp(){
   const blob=new Blob([JSON.stringify(scps,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;a.download='site17_scps.json';a.click();URL.revokeObjectURL(url);
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;a.download='site17_scps.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
 // ----- PERSONNEL -----
 function renderPersonnel(){
+  if(!currentUser) return;
   const q=($('#personnel-search')?.value||'').toLowerCase();
   const f=$('#personnel-filter')?.value||'';
   let list=[...users];
@@ -1173,9 +1200,10 @@ function renderLogs(){
     return `<div class="px-4 py-2 flex gap-3"><span class="text-scp-gray shrink-0">${new Date(a.time).toLocaleTimeString()}</span><span class="${col} font-bold shrink-0">[${a.level}]</span><span class="text-scp-gray break-all">${escapeHtml(a.msg)}</span></div>`;
   }).join('') || '<div class="p-6 text-center text-scp-gray">No logs.</div>';
 }
-function clearLogs(){ if(currentUser.role!=='director' && !confirm('Clear logs?'))return; if(currentUser.role!=='director'){alert('Director only');return;} audit=[]; save(); renderLogs(); }
+function clearLogs(){ if(!currentUser || currentUser.role!=='director'){alert('Director only');return;} if(!confirm('Clear audit trail? This is logged.'))return; audit=[]; save(); renderLogs(); log('Audit trail cleared by '+currentUser.username,'WARN'); }
 
 // ----- SITE STATUS INCIDENTS -----
+let _uptimeInt=null;
 function renderIncidents(){
   const items=[
     `[${nowStr()}] Keter wing pressure nominal — 101.3 kPa`,
@@ -1186,7 +1214,8 @@ function renderIncidents(){
   ];
   $('#incident-feed').innerHTML=items.map(t=>`<div class="border-l-2 border-scp-green/30 pl-3 py-1 text-scp-gray">${escapeHtml(t)}</div>`).join('');
   let up=14*86400+6*3600+22*60+11;
-  setInterval(()=>{up++; const d=Math.floor(up/86400),h=Math.floor(up%86400/3600),m=Math.floor(up%3600/60),s=up%60; $('#uptime').textContent=`${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;},1000);
+  if(_uptimeInt) clearInterval(_uptimeInt);
+  _uptimeInt=setInterval(()=>{up++; const d=Math.floor(up/86400),h=Math.floor(up%86400/3600),m=Math.floor(up%3600/60),s=up%60; const el=$('#uptime'); if(el) el.textContent=`${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;},1000);
 }
 
 function renderAll(){ renderScp(); renderPersonnel(); renderLogs(); initChat(); renderIncidents(); }
