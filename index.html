@@ -36,7 +36,8 @@ body::before{content:"";position:fixed;inset:0;border:6px solid #0a0f0e;box-shad
 @media(max-width:768px){body::before{border-width:4px}}
 /* Slight noise — very subtle */
 body::after{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9996;opacity:0.22;mix-blend-mode:overlay}
-.crt{animation:subtleJitter 0.45s infinite alternate;transform:translateZ(0)}
+/* jitter moved to dedicated non-ancestor element #jitter-wrap (not body) to avoid breaking position:fixed */
+#jitter-wrap{animation:subtleJitter 0.45s infinite alternate; will-change:transform; transform:translateZ(0)}
 .object-safe{color:#00ff88;border-color:#00ff8866;background:rgba(0,255,136,0.08)}
 .object-euclid{color:#ffb800;border-color:#ffb80066;background:rgba(255,184,0,0.08)}
 .object-keter{color:#ff2b2b;border-color:#ff2b2b66;background:rgba(255,43,43,0.12)}
@@ -101,6 +102,7 @@ h1{letter-spacing:0.10em}
   <div class="mt-8 w-64 h-1 bg-scp-panel border border-scp-green/20 overflow-hidden"><div id="bio-bar" class="h-full bg-scp-green" style="width:0%"></div></div>
 </div>
 
+<div id="jitter-wrap">
 <!-- LOGIN WALL -->
 <div id="login-wall" class="min-h-screen flex items-center justify-center p-4 relative hidden">
   <div class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none"><div class="text-[18vw] font-black tracking-tighter leading-none select-none">SCP</div></div>
@@ -470,6 +472,7 @@ h1{letter-spacing:0.10em}
     </main>
   </div>
 </div>
+</div><!-- /#jitter-wrap — dedicated non-ancestor jitter layer -->
 
 <!-- SCP MODAL -->
 <div id="scp-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
@@ -655,7 +658,7 @@ function bootTick(){
     const pct=$('#boot-pct'); const bar=$('#boot-bar');
     if(pct) pct.textContent=Math.round(bootIdx/bootLines.length*100)+'%';
     if(bar) bar.style.width=Math.round(bootIdx/bootLines.length*100)+'%';
-    setTimeout(bootTick, 120+Math.random()*260);
+    setTimeout(bootTick, 28+Math.random()*42);
   } else {
     const pr=$('#boot-prompt'); if(pr) pr.classList.remove('hidden');
   }
@@ -665,12 +668,12 @@ setInterval(()=>{const e=$('#login-clock'); if(e) e.textContent=new Date().toLoc
 bootTick();
 
 function dismissBoot(){
-  const b=$('#boot'); if(b){b.style.transition='opacity 0.6s'; b.style.opacity='0';}
+  const b=$('#boot'); if(b){b.style.transition='opacity 0.22s'; b.style.opacity='0';}
   setTimeout(()=>{
     const b2=$('#boot'); const lw=$('#login-wall');
     if(b2) b2.classList.add('hidden');
     if(lw) lw.classList.remove('hidden');
-  },600);
+  },220);
   // simulate IP
   const ip=$('#login-ip'); if(ip) ip.textContent='198.51.100.'+Math.floor(17+Math.random()*80);
 }
@@ -762,7 +765,7 @@ async function handleLogin(e){
   $('#biometric').classList.remove('hidden');$('#biometric').classList.add('flex');
   $('#bio-name').textContent=found.username;
   $('#bio-clearance').textContent=found.clearance;
-  let w=0; const bi=setInterval(()=>{w+=4;$('#bio-bar').style.width=w+'%';if(w>=100){clearInterval(bi);setTimeout(enterApp,600);}},24);
+  let w=0; const bi=setInterval(()=>{w+=16;const bar=$('#bio-bar'); if(bar) bar.style.width=Math.min(w,100)+'%';if(w>=100){clearInterval(bi);setTimeout(enterApp,140);}},14);
   // voice
   try{ speechSynthesis.speak(new SpeechSynthesisUtterance(`Welcome to Site 17, ${found.username}. Monitoring is active.`)); }catch{}
 }
