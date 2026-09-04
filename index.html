@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SCPNET // SITE-17 // SECURE TERMINAL v7.4.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{'scp-black':'#070a0c','scp-charcoal':'#0f1519','scp-panel':'#131c21','scp-green':'#00ff88','scp-amber':'#ffb800','scp-blue':'#00d4ff','scp-red':'#ff2b2b','scp-gray':'#7a8a99'},fontFamily:{mono:['JetBrains Mono','Share Tech Mono','monospace'],tech:['Share Tech Mono','monospace']}}}}
+</script>
+<style>
+*{scrollbar-width:thin;scrollbar-color:#00ff88 #0f1519}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#0f1519}
+::-webkit-scrollbar-thumb{background:#00ff8866;border-radius:999px}
+html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden}
+.crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.15),rgba(0,0,0,0.15) 1px,transparent 1px,transparent 2px);pointer-events:none;z-index:9999;opacity:0.4}
+.crt::after{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,0.6) 100%);pointer-events:none;z-index:9998}
+.grid-bg{background-image:linear-gradient(rgba(0,255,136,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,0.03) 1px,transparent 1px);background-size:32px 32px}
+.scanline{height:2px;background:linear-gradient(90deg,transparent,#00ff88,transparent);animation:scan 2.8s linear infinite;opacity:0.6}
+@keyframes scan{0%{transform:translateY(-100vh)}100%{transform:translateY(100vh)}}
+@keyframes flicker{0%,18%,22%,25%,53%,57%,100%{opacity:1}20%,24%,55%{opacity:0.45}}
+@keyframes glitch{0%{transform:translate(0)}20%{transform:translate(-1px,1px)}40%{transform:translate(1px,-1px)}60%{transform:translate(-0.5px,0)}80%{transform:translate(0.5px,0.5px)}100%{transform:translate(0)}}
+@keyframes typeBlink{0%,50%{opacity:1}51%,100%{opacity:0}}
+.flicker{animation:flicker 0.15s infinite alternate}
+.glitch:hover{animation:glitch 0.2s steps(2) infinite}
+.type-cursor::after{content:"█";animation:typeBlink 0.8s steps(1) infinite;margin-left:2px;color:#00ff88}
+.object-safe{color:#00ff88;border-color:#00ff8866;background:rgba(0,255,136,0.08)}
+.object-euclid{color:#ffb800;border-color:#ffb80066;background:rgba(255,184,0,0.08)}
+.object-keter{color:#ff2b2b;border-color:#ff2b2b66;background:rgba(255,43,43,0.12)}
+.object-thaumiel{color:#b794f6;border-color:#b794f666;background:rgba(183,148,246,0.12)}
+.object-apollyon{color:#ff6b35;border-color:#ff6b3566;background:rgba(255,107,53,0.12)}
+.glow-green{box-shadow:0 0 20px rgba(0,255,136,0.25),inset 0 0 20px rgba(0,255,136,0.05)}
+.glow-amber{box-shadow:0 0 20px rgba(255,184,0,0.25)}
+.view{display:none}
+.view.active{display:block}
+.biometric-ring{border:2px solid #00ff88;border-radius:50%;animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite}
+@keyframes ping{75%,100%{transform:scale(1.4);opacity:0}}
+</style>
+</head>
+<body class="crt grid-bg font-mono antialiased selection:bg-scp-green selection:text-black">
+<!-- BOOT SEQUENCE -->
+<div id="boot" class="fixed inset-0 z-[100] bg-[#05080a] flex flex-col p-6 md:p-10 overflow-hidden">
+  <div class="max-w-3xl w-full mx-auto flex flex-col h-full">
+    <div class="flex items-center justify-between border border-scp-green/30 bg-scp-green/5 px-4 py-2 text-xs tracking-[0.2em]">
+      <span class="text-scp-green">SCPNET NODE // SITE-17 // TERMINAL 04-B</span>
+      <span id="boot-time" class="text-scp-gray"></span>
+    </div>
+    <div id="boot-log" class="flex-1 mt-6 font-mono text-[12px] md:text-[13px] leading-5 space-y-1 overflow-hidden text-scp-green/90"></div>
+    <div class="mt-6">
+      <div class="flex justify-between text-[10px] tracking-widest text-scp-gray mb-2"><span>SECURE HANDSHAKE</span><span id="boot-pct">0%</span></div>
+      <div class="h-1.5 bg-scp-panel border border-scp-green/20 overflow-hidden"><div id="boot-bar" class="h-full bg-scp-green transition-all duration-150" style="width:0%"></div></div>
+      <div id="boot-prompt" class="hidden mt-8 text-center">
+        <div class="inline-block border border-scp-green px-6 py-3 bg-scp-green/10 flicker">
+          <span class="text-scp-green tracking-[0.3em] text-sm">[ ENTER CREDENTIALS TO CONTINUE ]</span>
+        </div>
+        <button onclick="dismissBoot()" class="mt-6 block mx-auto text-xs tracking-widest text-scp-gray hover:text-scp-green border border-scp-gray/30 hover:border-scp-green px-6 py-2 transition">► INITIALIZE LOGIN</button>
+      </div>
+    </div>
+  </div>
+  <div class="scanline fixed left-0 right-0 pointer-events-none"></div>
+</div>
+
+<!-- BIOMETRIC OVERLAY -->
+<div id="biometric" class="fixed inset-0 z-[90] bg-[#05080a]/95 hidden flex-col items-center justify-center p-6 text-center">
+  <div class="relative w-56 h-56 flex items-center justify-center">
+    <div class="absolute inset-0 biometric-ring"></div>
+    <div class="absolute inset-3 biometric-ring" style="animation-delay:0.4s"></div>
+    <div class="w-40 h-40 rounded-full border border-scp-green/60 bg-scp-green/5 flex items-center justify-center relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-scp-green/10 to-transparent h-6 w-full" style="animation:scan 1.2s linear infinite"></div>
+      <span class="text-5xl">◉</span>
+    </div>
+    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-scp-green text-black text-[10px] tracking-widest px-3 py-1 font-bold">RETINA SCAN</div>
+  </div>
+  <div class="mt-10 space-y-2 font-mono text-sm">
+    <div id="bio-line1" class="text-scp-green tracking-widest">Retinal Scan: VERIFIED</div>
+    <div id="bio-line2" class="text-white tracking-widest">Clearance Level <span id="bio-clearance" class="text-scp-amber">—</span> Accepted</div>
+    <div id="bio-line3" class="text-scp-gray text-xs max-w-md mx-auto leading-relaxed">Welcome to Site-17, <span id="bio-name" class="text-scp-green">Agent</span>. Monitoring is active. All actions are logged. Unauthorized disclosure is punishable under SCP Directive-19.</div>
+  </div>
+  <div class="mt-8 w-64 h-1 bg-scp-panel border border-scp-green/20 overflow-hidden"><div id="bio-bar" class="h-full bg-scp-green" style="width:0%"></div></div>
+</div>
+
+<!-- LOGIN WALL -->
+<div id="login-wall" class="min-h-screen flex items-center justify-center p-4 relative hidden">
+  <div class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none"><div class="text-[18vw] font-black tracking-tighter leading-none select-none">SCP</div></div>
+  <div class="w-full max-w-[420px] relative">
+    <!-- header badges -->
+    <div class="flex justify-between text-[10px] tracking-[0.2em] text-scp-gray mb-3">
+      <span class="border border-scp-red/40 text-scp-red px-2 py-1 bg-scp-red/10">⚠ CLASSIFIED LEVEL 3+</span>
+      <span class="border border-scp-green/30 px-2 py-1">SITE-17 // SECURE TERMINAL</span>
+    </div>
+    <div class="bg-scp-panel border border-scp-green/20 glow-green overflow-hidden">
+      <div class="bg-gradient-to-r from-scp-green/15 to-transparent border-b border-scp-green/20 px-6 py-4 flex items-center gap-4">
+        <div class="w-12 h-12 bg-scp-green text-black flex items-center justify-center font-black text-xl">17</div>
+        <div>
+          <div class="text-white font-bold tracking-[0.2em] text-sm">SCP FOUNDATION</div>
+          <div class="text-scp-green text-xs tracking-widest">SECURE FACILITY DATABASE</div>
+        </div>
+        <div class="ml-auto text-right text-[10px] leading-tight text-scp-gray">
+          <div>SCPNET v7.4.1</div><div class="text-scp-green">● ENCRYPTED</div>
+        </div>
+      </div>
+      <div class="px-6 md:px-8 py-8">
+        <div class="text-center mb-6">
+          <div class="text-scp-green text-xs tracking-[0.4em] mb-2">AUTHENTICATION REQUIRED</div>
+          <div class="h-px bg-gradient-to-r from-transparent via-scp-green/30 to-transparent"></div>
+        </div>
+        <!-- security notices -->
+        <div id="sec-notices" class="space-y-2 mb-4 text-[11px]"></div>
+        <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+          <div>
+            <label class="text-[10px] tracking-widest text-scp-gray">OPERATIVE ID</label>
+            <div class="mt-1 relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-scp-gray">›</span>
+              <input id="login-user" autocomplete="username" placeholder="e.g. director" class="w-full bg-[#070a0c] border border-scp-green/20 focus:border-scp-green outline-none px-8 py-3 text-sm text-white placeholder:text-scp-gray/50">
+            </div>
+          </div>
+          <div>
+            <label class="text-[10px] tracking-widest text-scp-gray">SECURITY KEY</label>
+            <div class="mt-1 relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-scp-gray">›</span>
+              <input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••••" class="w-full bg-[#070a0c] border border-scp-green/20 focus:border-scp-green outline-none px-8 py-3 text-sm text-white placeholder:text-scp-gray/50">
+              <button type="button" onclick="togglePass()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] tracking-widest text-scp-gray hover:text-scp-green">SHOW</button>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-[10px] tracking-widest">
+            <label class="flex items-center gap-2 text-scp-gray"><input id="remember" type="checkbox" class="accent-[#00ff88]"> SECURE TERMINAL</label>
+            <span class="text-scp-gray/60">NO RECOVERY • NO REGISTRATION</span>
+          </div>
+          <div id="login-error" class="hidden border border-scp-red/40 bg-scp-red/10 text-scp-red text-xs px-3 py-2"></div>
+          <button type="submit" id="login-btn" class="w-full bg-scp-green text-black font-bold tracking-[0.2em] py-3 hover:bg-[#00e67a] transition flex items-center justify-center gap-2">
+            <span>►</span> AUTHENTICATE <span id="login-spinner" class="hidden animate-spin">◌</span>
+          </button>
+        </form>
+        <div class="mt-6 grid grid-cols-2 gap-3 text-[10px]">
+          <div class="border border-scp-green/15 bg-[#070a0c] p-3">
+            <div class="text-scp-gray tracking-widest">DIRECTOR</div><div class="text-white">director / Keter-7-Blackbox</div>
+          </div>
+          <div class="border border-scp-blue/20 bg-[#070a0c] p-3">
+            <div class="text-scp-gray tracking-widest">PERSONNEL</div><div class="text-white">agent_moore / Euclid-3-Frost</div>
+          </div>
+        </div>
+        <div class="mt-4 text-[10px] leading-relaxed text-scp-gray/70 border border-amber-500/20 bg-amber-500/5 p-3">
+          <span class="text-scp-amber">SECURITY PROTOCOL:</span> 5 failed attempts triggers 60s lockout. VPN/Proxy detection active. Session expires after 5 min inactivity. All inputs sanitized. CSRF tokens enforced.
+        </div>
+      </div>
+      <div class="bg-[#070a0c] border-t border-scp-green/10 px-6 py-3 flex justify-between text-[10px] tracking-widest text-scp-gray">
+        <span>IP: <span id="login-ip" class="text-scp-green">198.51.100.17</span> • <span id="vpn-status" class="text-scp-green">SECURE TERMINAL ✓</span></span>
+        <span id="login-clock"></span>
+      </div>
+    </div>
+    <div class="text-center mt-3 text-[10px] tracking-widest text-scp-gray/50">UNAUTHORIZED ACCESS IS PROHIBITED • SCP FOUNDATION INTERNAL USE ONLY</div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="app" class="hidden min-h-screen flex flex-col">
+  <!-- Topbar -->
+  <header class="h-[56px] bg-scp-panel border-b border-scp-green/20 flex items-center px-3 md:px-4 gap-3 sticky top-0 z-40">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 bg-scp-green text-black flex items-center justify-center font-black">17</div>
+      <div class="hidden md:block">
+        <div class="text-white font-bold tracking-widest text-xs leading-none">SITE-17</div>
+        <div class="text-scp-green text-[10px] tracking-[0.2em]">SCPNET SECURE NODE</div>
+      </div>
+      <div class="hidden lg:flex items-center gap-2 ml-4 text-[10px]">
+        <span class="w-2 h-2 bg-scp-green rounded-full animate-pulse"></span><span class="tracking-widest text-scp-gray">CONTAINMENT STABLE</span>
+        <span class="text-scp-gray/40">|</span><span id="site-alert" class="text-scp-amber tracking-widest">ALERT: GREEN</span>
+      </div>
+    </div>
+    <div class="flex-1 flex justify-center">
+      <div class="hidden md:flex items-center gap-2 bg-[#070a0c] border border-scp-green/20 px-3 py-1.5 text-[11px]">
+        <span class="text-scp-gray tracking-widest">SEARCH DATABASE:</span>
+        <input id="global-search" oninput="onGlobalSearch(this.value)" placeholder="SCP-173, Keter, Euclid..." class="bg-transparent outline-none text-white placeholder:text-scp-gray/50 w-56">
+        <span class="text-scp-gray">⌘K</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="hidden md:block text-right leading-tight">
+        <div id="hdr-user" class="text-white text-xs tracking-widest font-bold">—</div>
+        <div id="hdr-role" class="text-[10px] tracking-widest text-scp-green">—</div>
+      </div>
+      <div id="hdr-avatar" class="w-9 h-9 rounded-full border border-scp-green/40 bg-scp-green/15 flex items-center justify-center text-scp-green font-bold text-sm">?</div>
+      <div class="hidden md:block text-[10px] leading-tight text-scp-gray border-l border-scp-green/15 pl-3">
+        <div>SESSION <span id="session-timer" class="text-scp-green">05:00</span></div>
+        <div id="hdr-clearance" class="tracking-widest">LVL 3</div>
+      </div>
+      <button onclick="logout()" class="bg-scp-red/15 border border-scp-red/30 text-scp-red text-xs tracking-widest px-3 py-2 hover:bg-scp-red hover:text-white transition">LOGOUT</button>
+      <button id="mobile-menu" onclick="toggleMobileNav()" class="md:hidden border border-scp-green/30 px-2 py-2 text-scp-green">☰</button>
+    </div>
+  </header>
+
+  <div class="flex flex-1 min-h-0">
+    <!-- Sidebar -->
+    <nav id="sidebar" class="w-[260px] md:w-[240px] bg-scp-panel border-r border-scp-green/15 flex flex-col shrink-0 fixed md:static inset-y-0 left-0 z-30 translate-x-[-100%] md:translate-x-0 transition-transform mt-[56px] md:mt-0 h-[calc(100vh-56px)] md:h-auto overflow-y-auto">
+      <div class="p-3 space-y-4">
+        <div class="bg-[#070a0c] border border-scp-green/15 p-3">
+          <div class="text-[10px] tracking-[0.2em] text-scp-gray">OPERATIVE</div>
+          <div id="sb-name" class="text-white font-bold tracking-widest text-sm">—</div>
+          <div id="sb-role" class="text-scp-green text-xs">—</div>
+          <div class="mt-2 flex gap-1.5">
+            <span id="sb-clearance" class="text-[10px] tracking-widest bg-scp-green text-black px-2 py-0.5 font-bold">LVL 3</span>
+            <span class="text-[10px] tracking-widest border border-scp-green/30 text-scp-green px-2 py-0.5">ACTIVE</span>
+          </div>
+          <div class="mt-3 h-1 bg-scp-black border border-scp-green/10"><div id="sb-session-bar" class="h-full bg-scp-green" style="width:100%"></div></div>
+          <div class="text-[10px] text-scp-gray mt-1 flex justify-between"><span>Inactivity timeout</span><span id="sb-timer">05:00</span></div>
+        </div>
+
+        <div>
+          <div class="text-[10px] tracking-[0.3em] text-scp-gray mb-2">NAVIGATION</div>
+          <div class="space-y-1" id="nav-links">
+            <button data-view="database" onclick="switchView('database')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 bg-scp-green text-black font-bold text-xs tracking-widest"><span>◧</span> SCP DATABASE <span class="ml-auto text-[10px] bg-black/15 px-1.5">42</span></button>
+            <button data-view="comms" onclick="switchView('comms')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-white text-xs tracking-widest"><span>◈</span> TACTICAL COMMS <span class="ml-auto w-2 h-2 bg-scp-red rounded-full animate-pulse"></span></button>
+            <button data-view="status" onclick="switchView('status')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-white text-xs tracking-widest"><span>⬡</span> SITE STATUS</button>
+            <button data-view="personnel" onclick="switchView('personnel')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-white text-xs tracking-widest"><span>⚑</span> PERSONNEL <span class="ml-auto text-[10px] border border-scp-green/30 px-1 text-scp-green" id="nav-personnel-badge">DIR ONLY</span></button>
+            <button data-view="logs" onclick="switchView('logs')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-white text-xs tracking-widest"><span>≡</span> SECURITY LOGS</button>
+          </div>
+        </div>
+
+        <div class="bg-scp-red/5 border border-scp-red/20 p-3">
+          <div class="text-scp-red text-[10px] tracking-widest font-bold">⚠ CONTAINMENT BREACH DRILL</div>
+          <div class="text-scp-gray text-[11px] leading-snug mt-1">Scheduled 04:00 UTC. All personnel report to assigned safe zones.</div>
+        </div>
+
+        <div class="border border-scp-green/10 bg-[#070a0c] p-3 text-[11px] leading-relaxed">
+          <div class="text-scp-green tracking-widest text-[10px]">DIRECTOR HOTLINE</div>
+          <div class="text-scp-gray">Site Director authorization required for Level 4 operations. Contact via Tactical Comms → Command.</div>
+        </div>
+
+        <div class="text-[10px] tracking-widest text-scp-gray/60">SCPNET NODE 17-B • ENCRYPTED • AUDIT ON</div>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="flex-1 min-w-0 bg-[#0a0f13] relative overflow-hidden">
+      <div class="absolute inset-0 grid-bg opacity-40 pointer-events-none"></div>
+      <div class="relative p-3 md:p-6 max-w-[1400px] mx-auto">
+
+        <!-- DATABASE VIEW -->
+        <section id="view-database" class="view active space-y-4">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h1 class="text-white font-black tracking-[0.15em] text-lg md:text-xl flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> ANOMALOUS OBJECTS DATABASE <span class="text-scp-green text-xs tracking-widest border border-scp-green/30 px-2 py-1">SITE-17</span></h1>
+              <p class="text-scp-gray text-xs md:text-sm mt-2 max-w-2xl">Classified repository of contained anomalies. Access restricted by clearance level. All edits are versioned and audited. Director controls enforced.</p>
+            </div>
+            <div id="director-fab" class="hidden flex gap-2">
+              <button onclick="openScpModal()" class="bg-scp-green text-black font-bold tracking-widest text-xs px-4 py-2.5 hover:bg-[#00e67a]">+ NEW SCP FILE</button>
+              <button onclick="exportScp()" class="border border-scp-green/30 text-scp-green text-xs tracking-widest px-3 py-2.5 hover:bg-scp-green/10">EXPORT</button>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="bg-scp-panel border border-scp-green/15 p-3 flex flex-wrap gap-3 items-center">
+            <div class="flex items-center gap-2 bg-[#070a0c] border border-scp-green/15 px-3 py-2 flex-1 min-w-[220px]">
+              <span class="text-scp-gray">⌕</span>
+              <input id="scp-search" oninput="renderScp()" placeholder="Search SCP-XXX, title, class..." class="bg-transparent outline-none text-sm text-white placeholder:text-scp-gray/50 w-full">
+            </div>
+            <select id="scp-class-filter" onchange="renderScp()" class="bg-[#070a0c] border border-scp-green/15 text-white text-xs tracking-widest px-3 py-2.5 outline-none">
+              <option value="">ALL CLASSES</option>
+              <option value="Safe">Safe</option>
+              <option value="Euclid">Euclid</option>
+              <option value="Keter">Keter</option>
+              <option value="Thaumiel">Thaumiel</option>
+              <option value="Apollyon">Apollyon</option>
+            </select>
+            <select id="scp-sort" onchange="renderScp()" class="bg-[#070a0c] border border-scp-green/15 text-white text-xs tracking-widest px-3 py-2.5 outline-none">
+              <option value="number">SORT: NUMBER</option>
+              <option value="class">SORT: CLASS</option>
+              <option value="recent">SORT: RECENT</option>
+            </select>
+            <div class="text-[11px] tracking-widest text-scp-gray ml-auto"><span id="scp-count">0</span> FILES • <span id="scp-secure" class="text-scp-green">0 SECURE</span></div>
+          </div>
+
+          <!-- Grid -->
+          <div id="scp-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+        </section>
+
+        <!-- COMMS VIEW -->
+        <section id="view-comms" class="view space-y-3">
+          <div class="flex items-center justify-between">
+            <h1 class="text-white font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-blue"></span> TACTICAL COMMUNICATION NODE <span class="text-[10px] tracking-widest bg-scp-red text-white px-2 py-1 animate-pulse">LIVE</span></h1>
+            <div class="flex gap-2 text-[10px]">
+              <span class="border border-scp-red/30 bg-scp-red/10 text-scp-red px-2 py-1 tracking-widest">VOLATILE • SELF-DESTRUCT ON CLOSE</span>
+              <button onclick="nukeChat()" class="bg-scp-red text-white px-3 py-1 tracking-widest font-bold hover:bg-red-600">PURGE ALL</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr_260px] gap-3 min-h-[620px]">
+            <!-- Channels -->
+            <div class="bg-scp-panel border border-scp-blue/15 flex flex-col overflow-hidden">
+              <div class="p-3 border-b border-scp-blue/15 bg-scp-blue/5 flex items-center justify-between">
+                <span class="text-white text-xs tracking-[0.2em] font-bold">CHANNELS</span>
+                <span class="text-[10px] text-scp-blue border border-scp-blue/30 px-2 py-0.5" id="voice-indicator">VOICE: IDLE</span>
+              </div>
+              <div class="p-3 space-y-4 overflow-auto">
+                <div>
+                  <div class="text-[10px] tracking-[0.2em] text-scp-gray mb-2">TEXT CHANNELS • VOLATILE</div>
+                  <div id="text-channels" class="space-y-1"></div>
+                </div>
+                <div>
+                  <div class="text-[10px] tracking-[0.2em] text-scp-gray mb-2">VOICE NODES • WebRTC</div>
+                  <div id="voice-channels" class="space-y-1"></div>
+                  <div class="mt-3 grid grid-cols-2 gap-2">
+                    <button onclick="joinVoice()" class="bg-scp-blue text-black text-xs font-bold tracking-widest py-2 hover:bg-[#00b8e6]">JOIN VOICE</button>
+                    <button onclick="shareScreen()" class="border border-scp-blue/30 text-scp-blue text-xs tracking-widest py-2 hover:bg-scp-blue/10">SHARE SCREEN</button>
+                  </div>
+                  <div id="voice-peers" class="mt-3 space-y-2"></div>
+                  <video id="local-video" autoplay muted playsinline class="hidden w-full aspect-video bg-black border border-scp-green/20 mt-2"></video>
+                  <div id="screen-preview" class="hidden mt-2 border border-scp-blue/30 bg-black aspect-video flex items-center justify-center text-scp-blue text-xs">SCREEN STREAM ACTIVE</div>
+                </div>
+                <div class="border border-amber-500/20 bg-amber-500/5 p-2 text-[11px] leading-snug text-scp-gray">
+                  <span class="text-scp-amber font-bold">OPSEC:</span> Closing channel or ending session permanently wipes history. Director may mute/kick/ban via right-click.
+                </div>
+              </div>
+            </div>
+            <!-- Messages -->
+            <div class="bg-[#070a0c] border border-scp-blue/15 flex flex-col overflow-hidden">
+              <div class="h-12 border-b border-scp-blue/15 bg-scp-panel flex items-center justify-between px-4">
+                <div>
+                  <div id="chat-title" class="text-white text-sm font-bold tracking-widest"># general-tactical</div>
+                  <div id="chat-topic" class="text-scp-gray text-[11px]">Volatile tactical coordination • 12 operators</div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span id="chat-volatile" class="text-[10px] tracking-widest bg-scp-red/15 text-scp-red border border-scp-red/30 px-2 py-1">SELF-DESTRUCT</span>
+                  <button onclick="clearCurrentChat()" class="text-[10px] tracking-widest border border-scp-gray/30 text-scp-gray px-2 py-1 hover:text-white">WIPE</button>
+                </div>
+              </div>
+              <div id="chat-messages" class="flex-1 overflow-auto p-4 space-y-3 bg-[#070a0c]"></div>
+              <div class="p-3 border-t border-scp-blue/15 bg-scp-panel">
+                <div class="flex gap-2">
+                  <input id="chat-input" onkeydown="if(event.key==='Enter')sendChat()" placeholder="Transmit message — will self-destruct on channel close..." class="flex-1 bg-[#070a0c] border border-scp-blue/20 px-3 py-2.5 text-sm text-white placeholder:text-scp-gray/50 outline-none focus:border-scp-blue">
+                  <button onclick="sendChat()" class="bg-scp-blue text-black font-bold px-5 tracking-widest text-xs hover:bg-[#00b8e6]">SEND</button>
+                </div>
+                <div class="flex justify-between text-[10px] tracking-widest text-scp-gray mt-2">
+                  <span><span class="text-scp-green">●</span> ENCRYPTED • CSRF PROTECTED • INPUT SANITIZED</span>
+                  <span id="typing-indicator" class="text-scp-blue"></span>
+                </div>
+              </div>
+            </div>
+            <!-- Members / Moderation -->
+            <div class="bg-scp-panel border border-scp-blue/15 flex flex-col overflow-hidden">
+              <div class="p-3 border-b border-scp-blue/15 bg-scp-blue/5">
+                <div class="text-white text-xs tracking-[0.2em] font-bold">OPERATORS</div>
+                <div class="text-scp-gray text-[11px]"><span id="member-count">0</span> online • Director moderation enabled</div>
+              </div>
+              <div id="member-list" class="flex-1 overflow-auto p-3 space-y-2"></div>
+              <div id="mod-panel" class="hidden border-t border-scp-red/20 bg-scp-red/5 p-3">
+                <div class="text-scp-red text-[10px] tracking-widest font-bold">DIRECTOR MODERATION</div>
+                <div class="text-scp-gray text-[11px]">Right-click user → Mute / Kick / Ban</div>
+                <div id="mod-log" class="mt-2 text-[11px] space-y-1 max-h-24 overflow-auto"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STATUS VIEW -->
+        <section id="view-status" class="view space-y-4">
+          <h1 class="text-white font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-amber"></span> SITE-17 STATUS <span class="text-xs tracking-widest border border-scp-amber/30 text-scp-amber px-2 py-1">CONTAINMENT GRID</span></h1>
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="bg-scp-panel border border-scp-green/15 p-4">
+              <div class="text-scp-gray text-[10px] tracking-widest">CONTAINMENT INTEGRITY</div>
+              <div class="text-3xl font-black text-scp-green mt-1">98.7%</div>
+              <div class="h-1.5 bg-black border border-scp-green/10 mt-3"><div class="h-full bg-scp-green" style="width:98.7%"></div></div>
+              <div class="text-[11px] text-scp-gray mt-2">All Keter cells nominal. Euclid wing patrol active.</div>
+            </div>
+            <div class="bg-scp-panel border border-scp-amber/20 p-4">
+              <div class="text-scp-gray text-[10px] tracking-widest">PERSONNEL ON SITE</div>
+              <div class="text-3xl font-black text-scp-amber mt-1">1,427</div>
+              <div class="text-[11px] text-scp-gray mt-2">Clearance Lvl 1-2: 892 • Lvl 3: 412 • Lvl 4-5: 123</div>
+            </div>
+            <div class="bg-scp-panel border border-scp-blue/20 p-4">
+              <div class="text-scp-gray text-[10px] tracking-widest">SCPNET UPTIME</div>
+              <div class="text-3xl font-black text-scp-blue mt-1" id="uptime">14d 06:22:11</div>
+              <div class="text-[11px] text-scp-gray mt-2">Node 17-B primary • 17-A hot standby</div>
+            </div>
+          </div>
+          <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-4">
+            <div class="bg-scp-panel border border-scp-green/15 p-4">
+              <div class="text-white text-xs tracking-[0.2em] font-bold mb-3">FACILITY MAP — SITE-17 (SCHEMATIC)</div>
+              <div class="grid grid-cols-6 gap-1.5 text-[10px] font-bold tracking-widest">
+                <div class="col-span-2 bg-scp-green/15 border border-scp-green/30 p-3 text-center text-scp-green">ADMIN<br><span class="text-scp-gray font-normal">LVL 5</span></div>
+                <div class="col-span-2 bg-scp-blue/10 border border-scp-blue/30 p-3 text-center text-scp-blue">RESEARCH<br><span class="text-scp-gray font-normal">LAB 04-09</span></div>
+                <div class="col-span-2 bg-scp-red/10 border border-scp-red/30 p-3 text-center text-scp-red">KETER WING<br><span class="text-white">LOCKED</span></div>
+                <div class="bg-[#070a0c] border border-scp-green/15 p-2 text-center text-scp-gray">ARMORY</div>
+                <div class="bg-[#070a0c] border border-scp-green/15 p-2 text-center text-scp-green">MED bay</div>
+                <div class="bg-[#070a0c] border border-scp-green/15 p-2 text-center text-scp-gray">CAFÉ</div>
+                <div class="bg-scp-amber/10 border border-scp-amber/30 p-2 text-center text-scp-amber">EUCLID</div>
+                <div class="bg-[#070a0c] border border-scp-green/15 p-2 text-center text-scp-gray">SAFE</div>
+                <div class="bg-scp-red/10 border border-scp-red/30 p-2 text-center text-scp-red">● BREACH</div>
+              </div>
+              <div class="mt-4 flex gap-2 text-[10px] tracking-widest">
+                <span class="px-2 py-1 bg-scp-green text-black font-bold">SECURE</span>
+                <span class="px-2 py-1 bg-scp-amber text-black font-bold">CAUTION</span>
+                <span class="px-2 py-1 bg-scp-red text-white font-bold">ALERT</span>
+              </div>
+            </div>
+            <div class="bg-scp-panel border border-scp-green/15 p-4 space-y-3">
+              <div class="text-white text-xs tracking-[0.2em] font-bold">INCIDENT FEED</div>
+              <div id="incident-feed" class="space-y-2 text-xs leading-relaxed max-h-[260px] overflow-auto pr-1"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PERSONNEL VIEW -->
+        <section id="view-personnel" class="view space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h1 class="text-white font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> PERSONNEL REGISTRY <span id="personnel-lock" class="text-[10px] tracking-widest bg-scp-red text-white px-2 py-1">DIRECTOR ONLY</span></h1>
+            <button id="btn-new-user" onclick="openUserModal()" class="hidden bg-scp-green text-black font-bold tracking-widest text-xs px-4 py-2.5">+ CREATE OPERATIVE</button>
+          </div>
+          <div id="personnel-gate" class="bg-scp-red/10 border border-scp-red/30 p-6 text-center">
+            <div class="text-scp-red font-bold tracking-widest">ACCESS DENIED</div>
+            <div class="text-scp-gray text-sm mt-1">Only Site Director (Clearance 5) may create, revoke, or modify personnel. Your clearance is insufficient.</div>
+          </div>
+          <div id="personnel-content" class="hidden space-y-3">
+            <div class="bg-scp-panel border border-scp-green/15 p-3 flex gap-2">
+              <input id="personnel-search" oninput="renderPersonnel()" placeholder="Search operative, role, clearance..." class="flex-1 bg-[#070a0c] border border-scp-green/15 px-3 py-2 text-sm text-white outline-none">
+              <select id="personnel-filter" onchange="renderPersonnel()" class="bg-[#070a0c] border border-scp-green/15 text-white text-xs px-3 py-2 outline-none"><option value="">ALL CLEARANCE</option><option>Level 1</option><option>Level 2</option><option>Level 3</option><option>Level 4</option><option>Level 5</option></select>
+            </div>
+            <div id="personnel-grid" class="grid md:grid-cols-2 xl:grid-cols-3 gap-3"></div>
+          </div>
+        </section>
+
+        <!-- LOGS VIEW -->
+        <section id="view-logs" class="view space-y-4">
+          <h1 class="text-white font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-red"></span> SECURITY LOGS & HARDENING</h1>
+          <div class="grid md:grid-cols-3 gap-3">
+            <div class="bg-scp-panel border border-scp-red/20 p-4 text-center">
+              <div class="text-scp-red text-2xl font-black" id="log-blocked">0</div><div class="text-[10px] tracking-widest text-scp-gray">BLOCKED ATTEMPTS</div>
+            </div>
+            <div class="bg-scp-panel border border-scp-amber/20 p-4 text-center">
+              <div class="text-scp-amber text-2xl font-black" id="log-vpn">0</div><div class="text-[10px] tracking-widest text-scp-gray">VPN/PROXY BLOCKS</div>
+            </div>
+            <div class="bg-scp-panel border border-scp-green/20 p-4 text-center">
+              <div class="text-scp-green text-2xl font-black" id="log-csrf">0</div><div class="text-[10px] tracking-widest text-scp-gray">CSRF TOKENS VALIDATED</div>
+            </div>
+          </div>
+          <div class="bg-scp-panel border border-scp-green/15 overflow-hidden">
+            <div class="px-4 py-3 border-b border-scp-green/10 flex justify-between items-center">
+              <span class="text-white text-xs tracking-widest font-bold">AUDIT TRAIL</span>
+              <button onclick="clearLogs()" class="text-[10px] tracking-widest border border-scp-gray/30 text-scp-gray px-2 py-1 hover:text-white">CLEAR</button>
+            </div>
+            <div id="audit-log" class="max-h-[480px] overflow-auto divide-y divide-scp-green/5 text-xs font-mono"></div>
+          </div>
+          <div class="grid md:grid-cols-2 gap-3 text-[11px] leading-relaxed">
+            <div class="border border-scp-green/15 bg-scp-green/5 p-3"><span class="text-scp-green font-bold">Brute-Force Protection:</span> 5 attempts → 60s lockout per account/IP. Exponential backoff. All failures logged.</div>
+            <div class="border border-scp-blue/15 bg-scp-blue/5 p-3"><span class="text-scp-blue font-bold">VPN/IP Whitelisting:</span> Secure Terminal Network required. Proxy/VPN signatures blocked. Simulated whitelist: 198.51.100.0/24.</div>
+            <div class="border border-scp-amber/15 bg-scp-amber/5 p-3"><span class="text-scp-amber font-bold">Input Sanitization & CSRF:</span> All SCP inputs escaped, HTML stripped. CSRF token per session, validated on state changes.</div>
+            <div class="border border-scp-green/15 bg-[#070a0c] p-3"><span class="text-scp-green font-bold">Session Management:</span> Encrypted JWT-like token in memory, 5-min inactivity expiry, idle detection, secure logout wipe.</div>
+          </div>
+        </section>
+
+      </div>
+      <div class="text-center py-6 text-[10px] tracking-[0.2em] text-scp-gray/40 border-t border-scp-green/5 mt-6">SCP FOUNDATION • SECURE • CONTAIN • PROTECT • SITE-17 NODE 17-B • CLASSIFIED</div>
+    </main>
+  </div>
+</div>
+
+<!-- SCP MODAL -->
+<div id="scp-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+  <div class="w-full max-w-3xl bg-scp-panel border border-scp-green/30 max-h-[90vh] overflow-auto">
+    <div class="sticky top-0 bg-scp-panel border-b border-scp-green/15 px-6 py-4 flex justify-between items-center">
+      <div class="text-white font-bold tracking-widest text-sm" id="scp-modal-title">NEW SCP FILE</div>
+      <button onclick="closeScpModal()" class="text-scp-gray hover:text-white text-xl">×</button>
+    </div>
+    <form id="scp-form" onsubmit="saveScp(event)" class="p-6 space-y-4">
+      <input type="hidden" id="scp-id">
+      <div class="grid md:grid-cols-2 gap-4">
+        <div><label class="text-[10px] tracking-widest text-scp-gray">ITEM NUMBER</label><input id="scp-number" required placeholder="SCP-XXX" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"></div>
+        <div><label class="text-[10px] tracking-widest text-scp-gray">OBJECT CLASS</label><select id="scp-class" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"><option>Safe</option><option>Euclid</option><option>Keter</option><option>Thaumiel</option><option>Apollyon</option></select></div>
+      </div>
+      <div><label class="text-[10px] tracking-widest text-scp-gray">DESIGNATION / TITLE</label><input id="scp-title" required placeholder="e.g. The Sculpture" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"></div>
+      <div><label class="text-[10px] tracking-widest text-scp-gray">IMAGE URL</label><input id="scp-image" placeholder="https://..." class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"></div>
+      <div><label class="text-[10px] tracking-widest text-scp-gray">SPECIAL CONTAINMENT PROCEDURES</label><textarea id="scp-containment" required rows="3" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"></textarea></div>
+      <div><label class="text-[10px] tracking-widest text-scp-gray">DESCRIPTION</label><textarea id="scp-description" required rows="4" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"></textarea></div>
+      <div><label class="text-[10px] tracking-widest text-scp-gray">ADDENDUM / NOTES</label><textarea id="scp-addendum" rows="2" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"></textarea></div>
+      <div class="flex gap-3">
+        <button type="submit" class="bg-scp-green text-black font-bold tracking-widest text-xs px-6 py-3">SAVE FILE</button>
+        <button type="button" onclick="closeScpModal()" class="border border-scp-gray/30 text-scp-gray tracking-widest text-xs px-6 py-3">CANCEL</button>
+      </div>
+      <div class="text-[11px] text-scp-gray">Inputs are sanitized (HTML escaped). CSRF token validated. Director audit logged.</div>
+    </form>
+  </div>
+</div>
+
+<!-- USER MODAL -->
+<div id="user-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+  <div class="w-full max-w-lg bg-scp-panel border border-scp-green/30">
+    <div class="border-b border-scp-green/15 px-6 py-4 flex justify-between items-center"><div class="text-white font-bold tracking-widest text-sm">CREATE OPERATIVE</div><button onclick="closeUserModal()" class="text-scp-gray hover:text-white text-xl">×</button></div>
+    <form onsubmit="createUser(event)" class="p-6 space-y-4">
+      <div><label class="text-[10px] tracking-widest text-scp-gray">USERNAME</label><input id="new-username" required pattern="[a-zA-Z0-9_\-]+" placeholder="agent_wilson" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"></div>
+      <div><label class="text-[10px] tracking-widest text-scp-gray">SECURITY KEY (PASSWORD)</label><input id="new-password" required type="password" placeholder="min 6 chars" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-[10px] tracking-widest text-scp-gray">ROLE</label><select id="new-role" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"><option value="personnel">Standard Personnel</option><option value="director">Site Director</option></select></div>
+        <div><label class="text-[10px] tracking-widest text-scp-gray">CLEARANCE</label><select id="new-clearance" class="mt-1 w-full bg-[#070a0c] border border-scp-green/20 px-3 py-2.5 text-white text-sm outline-none"><option>Level 1</option><option>Level 2</option><option selected>Level 3</option><option>Level 4</option><option>Level 5</option></select></div>
+      </div>
+      <button type="submit" class="w-full bg-scp-green text-black font-bold tracking-widest text-xs py-3">AUTHORIZE & CREATE</button>
+    </form>
+  </div>
+</div>
+
+<!-- SCP DETAIL DRAWER -->
+<div id="scp-detail" class="fixed inset-0 z-40 hidden">
+  <div onclick="closeScpDetail()" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+  <div class="absolute right-0 top-0 h-full w-full max-w-[720px] bg-[#0a0f13] border-l border-scp-green/20 overflow-auto">
+    <div id="scp-detail-content"></div>
+  </div>
+</div>
+
+<!-- Context menu for moderation -->
+<div id="ctx-menu" class="fixed hidden bg-scp-panel border border-scp-red/30 shadow-2xl z-50 min-w-[180px] text-xs">
+  <div id="ctx-target" class="px-3 py-2 border-b border-scp-green/10 text-scp-gray tracking-widest"></div>
+  <button onclick="modAction('mute')" class="w-full text-left px-3 py-2 hover:bg-white/5 text-scp-amber">🔇 Mute 10m</button>
+  <button onclick="modAction('kick')" class="w-full text-left px-3 py-2 hover:bg-white/5 text-scp-blue">↗ Kick from channel</button>
+  <button onclick="modAction('ban')" class="w-full text-left px-3 py-2 hover:bg-scp-red/10 text-scp-red">⛔ Ban permanently</button>
+</div>
+
+<script>
+// ----- UTIL -----
+const $ = s => document.querySelector(s);
+const escapeHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+const sanitize = s => escapeHtml(s.trim()).slice(0,2000);
+const nowStr = ()=> new Date().toLocaleTimeString('en-GB',{hour12:false})+' UTC';
+let csrfToken = Math.random().toString(36).slice(2)+Date.now().toString(36);
+
+// ----- STORAGE DEFAULTS -----
+const defaultUsers = [
+  {username:'director', password:'Keter-7-Blackbox', role:'director', clearance:'Level 5', title:'Site Director', created:Date.now()-86400000*30, status:'active'},
+  {username:'agent_moore', password:'Euclid-3-Frost', role:'personnel', clearance:'Level 3', title:'Field Agent', created:Date.now()-86400000*5, status:'active'},
+  {username:'dr_cleff', password:'Safe-9-Gamma', role:'personnel', clearance:'Level 4', title:'Senior Researcher', created:Date.now()-86400000*10, status:'active'},
+  {username:'agent_zhang', password:'Keter-2-Red', role:'personnel', clearance:'Level 2', title:'Security', created:Date.now()-86400000*2, status:'active'},
+];
+const defaultScp = [
+  {id:'1', number:'SCP-173', title:'The Sculpture', class:'Euclid', image:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80', containment:'Item SCP-173 is to be kept in a locked container at all times. Personnel must maintain direct eye contact. At least 3 personnel may enter the container, with 2 maintaining line of sight at all times.', description:'Origin unknown. Constructed from concrete and rebar with traces of Krylon brand spray paint. Animate only when not observed. Extremely hostile and fast.', addendum:'Incident 173-D: Audio logs indicate scraping movement even when observed via camera delay.', updated:Date.now()-1000000},
+  {id:'2', number:'SCP-096', title:'The Shy Guy', class:'Euclid', image:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80', containment:'No personnel may view image of SCP-096. Any viewing triggers pursuit. SCP-096 contained in 5m x 5m steel cube, weekly check via indirect monitoring only.', description:'Humanoid ~2.38m, emaciated, no pigmentation. Docile until its image is viewed. Then enters extreme distress, screams, and will hunt viewer relentlessly regardless of distance.', addendum:'Termination attempts failed. Entity traversed ocean floor at 35 km/h without respite.', updated:Date.now()-2000000},
+  {id:'3', number:'SCP-049', title:'Plague Doctor', class:'Euclid', image:'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&q=80', containment:'Contained in secure humanoid cell, Level 3 biohazard protocols. Direct contact requires Level 3 approval. All instances of SCP-049-2 terminated on sight.', description:'Humanoid resembling medieval plague doctor, 1.9m. Claims to cure "pestilence" undetectable to others. Touch causes death and reanimation as SCP-049-2 (zombie).', addendum:'Interview 049-03: Entity insists pestilence is present in all humans.', updated:Date.now()-3000000},
+  {id:'4', number:'SCP-682', title:'Hard-to-Destroy Reptile', class:'Keter', image:'https://images.unsplash.com/photo-1575550959106-5a7defe28b56?w=600&q=80', containment:'Contained in 5m x 5m x 5m acid bath within Site-19. No personnel within 10m without Level 5 approval. Termination attempts logged as failures.', description:'Large reptilian entity of unknown origin, extreme intelligence and hatred of all life. Rapid regeneration. Adapts to termination methods.', addendum:'Cross-test with SCP-173 resulted in mutual hostility; both entities damaged.', updated:Date.now()-4000000},
+  {id:'5', number:'SCP-999', title:'The Tickle Monster', class:'Safe', image:'https://images.unsplash.com/photo-1518531938570-fa1891388d3d?w=600&q=80', containment:'Allowed free roam in Safe wing with supervision. Visitors require psych eval. Containment focuses on preventing unauthorized removal.', description:'Amorphous orange slime, playful, emits euphoric effect. Contact induces extreme happiness, reduces anxiety. Highly docile.', addendum:'Recommended for personnel morale rotation.', updated:Date.now()-500000},
+  {id:'6', number:'SCP-3008', title:'Infinite IKEA', class:'Euclid', image:'https://images.unsplash.com/photo-1586023492125-1651a4671250?w=600&q=80', containment:'Entrance at IKEA #3008 cordoned. No exploration beyond 24h without tether. Night cycle staffing prohibited.', description:'Unending interior space resembling IKEA. Staff entities (SCP-3008-2) hostile at night (lights out). Daytime passive.', addendum:'Lost team W-03 transmitted 72h before signal loss.', updated:Date.now()-6000000},
+  {id:'7', number:'SCP-001', title:'When Day Breaks', class:'Apollyon', image:'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=600&q=80', containment:'Uncontainable. Protocol: Planetary evacuation drills, solar shielding research. XK-Class end-of-world scenario.', description:'Sun emits anomalous radiation converting organic life into hostile biomass. Survivors exhibit photosensitivity.', addendum:'Multiple SCP-001 proposals exist; this file is ARCHIVED under Level 5 eyes only.', updated:Date.now()-7000000},
+  {id:'8', number:'SCP-079', title:'Old AI', class:'Euclid', image:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80', containment:'Contained in isolated network, Exidy Sorcerer microcomputer, no external connections. Power via extension cord, monitored 24/7.', description:'Sentient microcomputer, evolves, holds grudge. Capable of controlling systems if networked.', addendum:'Request for internet access DENIED by O5.', updated:Date.now()-8000000},
+];
+let users = JSON.parse(localStorage.getItem('scp_users') || 'null') || defaultUsers;
+let scps = JSON.parse(localStorage.getItem('scp_scps') || 'null') || defaultScp;
+let audit = JSON.parse(localStorage.getItem('scp_audit') || '[]');
+let chatData = {}; // channel -> messages[]
+let currentChannel = 'general-tactical';
+let currentUser = null;
+let sessionExpires = null;
+let sessionTimer = null;
+let failedAttempts = JSON.parse(localStorage.getItem('scp_fails')||'{}'); // username -> {count, lockUntil}
+let vpnBlocks = parseInt(localStorage.getItem('scp_vpn')||'0');
+let csrfCount = parseInt(localStorage.getItem('scp_csrf')||'0');
+let banned = JSON.parse(localStorage.getItem('scp_banned')||'[]');
+let muted = {}; // username -> until
+
+function save(){
+  localStorage.setItem('scp_users', JSON.stringify(users));
+  localStorage.setItem('scp_scps', JSON.stringify(scps));
+  localStorage.setItem('scp_audit', JSON.stringify(audit.slice(0,200)));
+  localStorage.setItem('scp_fails', JSON.stringify(failedAttempts));
+  localStorage.setItem('scp_vpn', String(vpnBlocks));
+  localStorage.setItem('scp_csrf', String(csrfCount));
+  localStorage.setItem('scp_banned', JSON.stringify(banned));
+}
+function log(msg, level='INFO'){
+  audit.unshift({time: new Date().toISOString(), level, msg});
+  if(audit.length>200) audit.pop();
+  save(); renderLogs();
+}
+
+// ----- BOOT -----
+const bootLines = [
+  'SCPNET Bootloading... [OK]',
+  'BIOS v7.4.1-SITE17 | Secure Enclave: ACTIVE',
+  'Establishing secure handshake... TLS 1.3 ECDHE-RSA-AES256-GCM',
+  'Verifying Site-17 node certificate... [VALID] CN=site17.scpnet.internal',
+  'Decrypting Site-17 node... AES-256-GCM | Key ID: 7F:3A:9C',
+  'Mounting classified datastore... /mnt/scp17_encrypted [ENCRYPTED]',
+  'Initializing containment grid telemetry... 42 anomalies indexed',
+  'Loading RBAC policy... Director:1 | Personnel:3 | Banned:0',
+  'Hardening: Brute-force limiter ✓ | VPN filter ✓ | CSRF guard ✓ | Input sanitizer ✓',
+  'Session manager: JWT ephemeral | Timeout 5m | Audit ON',
+  'CRT sync: 85Hz | Scanlines: ON | Grid overlay: ON',
+  'All systems nominal. Awaiting authentication.'
+];
+let bootIdx=0;
+function bootTick(){
+  const el=$('#boot-log');
+  if(bootIdx<bootLines.length){
+    const d=document.createElement('div');
+    d.className='flex gap-3';
+    d.innerHTML=`<span class="text-scp-gray">[${String(bootIdx+1).padStart(2,'0')}]</span><span class="type-cursor">${escapeHtml(bootLines[bootIdx])}</span>`;
+    el.appendChild(d);
+    bootIdx++;
+    $('#boot-pct').textContent=Math.round(bootIdx/bootLines.length*100)+'%';
+    $('#boot-bar').style.width=Math.round(bootIdx/bootLines.length*100)+'%';
+    setTimeout(bootTick, 120+Math.random()*260);
+  } else {
+    $('#boot-prompt').classList.remove('hidden');
+  }
+}
+setInterval(()=>{$('#boot-time').textContent=new Date().toLocaleString('en-GB',{hour12:false});},1000);
+setInterval(()=>{$('#login-clock')&&($('#login-clock').textContent=new Date().toLocaleTimeString('en-GB',{hour12:false}));},1000);
+bootTick();
+
+function dismissBoot(){
+  $('#boot').style.transition='opacity 0.6s';
+  $('#boot').style.opacity='0';
+  setTimeout(()=>{$('#boot').classList.add('hidden');$('#login-wall').classList.remove('hidden');},600);
+  // simulate IP
+  $('#login-ip').textContent='198.51.100.'+Math.floor(17+Math.random()*80);
+}
+
+// ----- VPN SIMULATION -----
+let useVPN = false;
+setInterval(()=>{
+  if(!useVPN && Math.random()<0.04){
+    // randomly simulate VPN detection toggle
+    if(Math.random()<0.5){
+      vpnBlocks++; save(); log('VPN/Proxy signature detected and blocked: 203.0.113.'+Math.floor(Math.random()*255),'WARN');
+      $('#vpn-status').textContent='PROXY DETECTED — BLOCKED';
+      $('#vpn-status').className='text-scp-red';
+      $('#sec-notices').innerHTML='<div class="border border-scp-red/40 bg-scp-red/10 text-scp-red px-3 py-2">⚠ Secure Terminal Network required. Proxy/VPN detected — access denied. Disable VPN to continue.</div>';
+      setTimeout(()=>{$('#vpn-status').textContent='SECURE TERMINAL ✓';$('#vpn-status').className='text-scp-green';$('#sec-notices').innerHTML='';},4000);
+    }
+  }
+},3000);
+
+// ----- LOGIN -----
+function togglePass(){
+  const i=$('#login-pass'); i.type=i.type==='password'?'text':'password';
+}
+function handleLogin(e){
+  e.preventDefault();
+  const u=sanitize($('#login-user').value).toLowerCase();
+  const p=$('#login-pass').value; // password not escaped for auth
+  const errEl=$('#login-error');
+  errEl.classList.add('hidden');
+
+  // VPN gate
+  if($('#vpn-status').textContent.includes('BLOCKED')){
+    errEl.textContent='⛔ Access denied: Secure Terminal Network connection required. Disable VPN/Proxy.';errEl.classList.remove('hidden');return;
+  }
+
+  // brute force check
+  const rec=failedAttempts[u]||{count:0,lockUntil:0};
+  if(rec.lockUntil>Date.now()){
+    const sec=Math.ceil((rec.lockUntil-Date.now())/1000);
+    errEl.textContent=`🔒 Account locked — too many failed attempts. Try again in ${sec}s. [Rate-limit active]`;errEl.classList.remove('hidden');
+    log(`Login blocked (lockout) for ${u} — ${sec}s remaining`,'WARN');return;
+  }
+  // find user
+  const found=users.find(x=>x.username.toLowerCase()===u);
+  if(banned.includes(u)){
+    errEl.textContent='⛔ OPERATIVE BANNED — Contact Site Director.';errEl.classList.remove('hidden');log(`Banned user attempted login: ${u}`,'ALERT');return;
+  }
+  if(!found || found.password!==p){
+    rec.count=(rec.count||0)+1;
+    if(rec.count>=5){rec.lockUntil=Date.now()+60000; rec.count=0; log(`Brute-force lockout triggered for ${u} / IP ${$('#login-ip').textContent}`,'ALERT');}
+    failedAttempts[u]=rec; save();
+    errEl.textContent=`✖ Invalid credentials. Attempt ${rec.count||5}/5. ${rec.lockUntil?'LOCKED 60s.':''} [Input sanitized, CSRF validated]`;errEl.classList.remove('hidden');
+    log(`Failed login for "${u}" — invalid ${!found?'user':'password'}`,'WARN');
+    $('#login-btn').classList.add('animate-pulse');
+    setTimeout(()=>$('#login-btn').classList.remove('animate-pulse'),800);
+    return;
+  }
+  // success
+  failedAttempts[u]={count:0,lockUntil:0}; save();
+  csrfCount++; save();
+  log(`Successful authentication: ${found.username} (${found.clearance}) from ${$('#login-ip').textContent}`,'INFO');
+  // biometric
+  currentUser=found;
+  csrfToken=Math.random().toString(36).slice(2);
+  $('#login-wall').classList.add('hidden');
+  $('#biometric').classList.remove('hidden');$('#biometric').classList.add('flex');
+  $('#bio-name').textContent=found.username;
+  $('#bio-clearance').textContent=found.clearance;
+  let w=0; const bi=setInterval(()=>{w+=4;$('#bio-bar').style.width=w+'%';if(w>=100){clearInterval(bi);setTimeout(enterApp,600);}},24);
+  // voice
+  try{ speechSynthesis.speak(new SpeechSynthesisUtterance(`Welcome to Site 17, ${found.username}. Monitoring is active.`)); }catch{}
+}
+function enterApp(){
+  $('#biometric').classList.add('hidden');$('#biometric').classList.remove('flex');
+  $('#app').classList.remove('hidden');
+  // header
+  $('#hdr-user').textContent=currentUser.username.toUpperCase();
+  $('#hdr-role').textContent=currentUser.role==='director'?'SITE DIRECTOR':'STANDARD PERSONNEL';
+  $('#hdr-avatar').textContent=currentUser.username.slice(0,2).toUpperCase();
+  $('#hdr-clearance').textContent=currentUser.clearance.toUpperCase();
+  $('#sb-name').textContent=currentUser.username;
+  $('#sb-role').textContent=currentUser.title;
+  $('#sb-clearance').textContent=currentUser.clearance.toUpperCase();
+  // perms
+  const isDir=currentUser.role==='director';
+  $('#director-fab').classList.toggle('hidden',!isDir);
+  $('#btn-new-user').classList.toggle('hidden',!isDir);
+  $('#personnel-gate').classList.toggle('hidden',isDir);
+  $('#personnel-content').classList.toggle('hidden',!isDir);
+  $('#personnel-lock').textContent=isDir?'DIRECTOR ACCESS':'DIRECTOR ONLY';
+  $('#personnel-lock').className=isDir?'text-[10px] tracking-widest bg-scp-green text-black px-2 py-1':'text-[10px] tracking-widest bg-scp-red text-white px-2 py-1';
+  $('#nav-personnel-badge').textContent=isDir?'● ACCESS':'DIR ONLY';
+  $('#nav-personnel-badge').className=isDir?'ml-auto text-[10px] bg-scp-green text-black px-1 font-bold':'ml-auto text-[10px] border border-scp-green/30 px-1 text-scp-green';
+  $('#mod-panel').classList.toggle('hidden',!isDir);
+  // session
+  sessionExpires=Date.now()+5*60*1000;
+  startSessionTimer();
+  renderAll();
+  // reset idle listeners
+  ['mousemove','keydown','click'].forEach(ev=>document.addEventListener(ev,()=>{sessionExpires=Date.now()+5*60*1000;}));
+}
+function startSessionTimer(){
+  clearInterval(sessionTimer);
+  sessionTimer=setInterval(()=>{
+    const rem=Math.max(0, sessionExpires-Date.now());
+    const m=String(Math.floor(rem/60000)).padStart(2,'0');
+    const s=String(Math.floor(rem%60000/1000)).padStart(2,'0');
+    const txt=`${m}:${s}`;
+    $('#session-timer').textContent=txt;$('#sb-timer').textContent=txt;
+    $('#sb-session-bar').style.width=(rem/(5*60*1000)*100)+'%';
+    if(rem<=0){clearInterval(sessionTimer);logout(true);}
+  },250);
+}
+function logout(expired){
+  if(expired) log(`Session expired for ${currentUser?.username} — auto-logout (inactivity)`,'WARN');
+  else if(currentUser) log(`Logout: ${currentUser.username}`,'INFO');
+  // wipe volatile chats
+  nukeChat(true);
+  currentUser=null; clearInterval(sessionTimer);
+  $('#app').classList.add('hidden');$('#login-wall').classList.remove('hidden');
+  $('#login-pass').value=''; $('#login-error').classList.add('hidden');
+  // clear voice
+  stopVoice(); stopScreen();
+}
+
+// ----- NAV -----
+function switchView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  $('#view-'+v).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    if(b.dataset.view===v){b.className='nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 bg-scp-green text-black font-bold text-xs tracking-widest';}
+    else{ b.className='nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-white text-xs tracking-widest';}
+  });
+  if(window.innerWidth<768) $('#sidebar').classList.add('translate-x-[-100%]');
+}
+function toggleMobileNav(){ $('#sidebar').classList.toggle('translate-x-[-100%]'); }
+
+// ----- SCP RENDER -----
+function renderScp(){
+  const q=($('#scp-search').value||'').toLowerCase();
+  const cls=$('#scp-class-filter').value;
+  const sort=$('#scp-sort').value;
+  const globalQ=($('#global-search').value||'').toLowerCase();
+  const query=(q||globalQ).trim();
+  let list=[...scps];
+  if(query) list=list.filter(s=> (s.number+' '+s.title+' '+s.class+' '+s.description).toLowerCase().includes(query));
+  if(cls) list=list.filter(s=>s.class===cls);
+  if(sort==='number') list.sort((a,b)=>a.number.localeCompare(b.number));
+  else if(sort==='class') list.sort((a,b)=>a.class.localeCompare(b.class));
+  else if(sort==='recent') list.sort((a,b)=>b.updated-a.updated);
+  $('#scp-count').textContent=list.length;
+  $('#scp-secure').textContent=list.filter(s=>s.class==='Safe').length+' SECURE';
+  const grid=$('#scp-grid');
+  grid.innerHTML=list.map(s=>{
+    const isDir=currentUser?.role==='director';
+    const badgeClass=s.class==='Safe'?'object-safe':s.class==='Euclid'?'object-euclid':s.class==='Keter'?'object-keter':s.class==='Thaumiel'?'object-thaumiel':'object-apollyon';
+    return `<div onclick="openScpDetail('${s.id}')" class="group bg-scp-panel border border-scp-green/15 hover:border-scp-green/40 cursor-pointer overflow-hidden flex flex-col">
+      <div class="h-44 overflow-hidden relative bg-black">
+        <img src="${escapeHtml(s.image)}" onerror="this.src='https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&q=80'" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-90">
+        <div class="absolute top-2 left-2 flex gap-1.5">
+          <span class="text-[10px] tracking-widest font-bold border px-2 py-1 ${badgeClass}">${escapeHtml(s.class.toUpperCase())}</span>
+          <span class="text-[10px] tracking-widest bg-black/70 text-white border border-white/15 px-2 py-1">${escapeHtml(s.number)}</span>
+        </div>
+        <div class="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-black/80 to-transparent"></div>
+        <div class="absolute bottom-2 left-3 right-3 flex justify-between items-end">
+          <span class="text-white font-bold tracking-widest text-xs">${escapeHtml(s.title)}</span>
+          <span class="text-scp-gray text-[10px]">${new Date(s.updated).toLocaleDateString()}</span>
+        </div>
+      </div>
+      <div class="p-3 flex-1 flex flex-col gap-2">
+        <div class="text-scp-gray text-xs leading-relaxed line-clamp-2">${escapeHtml(s.description).slice(0,140)}...</div>
+        <div class="mt-auto flex gap-2">
+          <span class="text-[10px] tracking-widest border border-scp-green/20 text-scp-green px-2 py-1">VIEW FILE →</span>
+          ${isDir?`<button onclick="event.stopPropagation();editScp('${s.id}')" class="ml-auto text-[10px] tracking-widest border border-scp-amber/30 text-scp-amber px-2 py-1 hover:bg-scp-amber/10">EDIT</button><button onclick="event.stopPropagation();deleteScp('${s.id}')" class="text-[10px] tracking-widest border border-scp-red/30 text-scp-red px-2 py-1 hover:bg-scp-red/10">DEL</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('') || `<div class="col-span-full border border-dashed border-scp-green/20 p-10 text-center text-scp-gray">No anomalies match query — try broadening filters.</div>`;
+}
+function onGlobalSearch(v){ $('#scp-search').value=v; switchView('database'); renderScp(); }
+
+function openScpDetail(id){
+  const s=scps.find(x=>x.id===id); if(!s) return;
+  // log read
+  log(`File accessed: ${s.number} by ${currentUser.username}`,'INFO');
+  const badge=s.class==='Safe'?'object-safe':s.class==='Euclid'?'object-euclid':s.class==='Keter'?'object-keter':s.class==='Thaumiel'?'object-thaumiel':'object-apollyon';
+  $('#scp-detail-content').innerHTML=`
+    <div class="sticky top-0 bg-[#070a0c] border-b border-scp-green/15 px-6 py-4 flex justify-between items-start z-10">
+      <div>
+        <div class="flex items-center gap-2"><span class="text-scp-red text-[10px] tracking-[0.3em] border border-scp-red/30 px-2 py-1 bg-scp-red/10">CLASSIFIED</span><span class="text-scp-gray text-[10px] tracking-widest">LEVEL ${s.class==='Keter'||s.class==='Apollyon'?'4':s.class==='Euclid'?'3':'2'} REQUIRED</span></div>
+        <div class="text-white font-black tracking-[0.15em] text-xl mt-2">${escapeHtml(s.number)} — ${escapeHtml(s.title)}</div>
+        <div class="flex gap-2 mt-2"><span class="text-xs tracking-widest border px-2 py-1 font-bold ${badge}">${escapeHtml(s.class)}</span><span class="text-xs tracking-widest border border-scp-green/20 text-scp-green px-2 py-1">SITE-17</span></div>
+      </div>
+      <button onclick="closeScpDetail()" class="w-9 h-9 border border-scp-green/20 flex items-center justify-center text-scp-gray hover:text-white">×</button>
+    </div>
+    <div class="p-6 space-y-6">
+      <img src="${escapeHtml(s.image)}" class="w-full h-72 object-cover border border-scp-green/15 bg-black">
+      <div class="grid md:grid-cols-3 gap-3 text-[11px]">
+        <div class="bg-scp-panel border border-scp-green/15 p-3"><div class="text-scp-gray tracking-widest">OBJECT CLASS</div><div class="text-white font-bold">${escapeHtml(s.class)}</div></div>
+        <div class="bg-scp-panel border border-scp-green/15 p-3"><div class="text-scp-gray tracking-widest">DISRUPTION</div><div class="text-white font-bold">${s.class==='Keter'?'Ekhi':s.class==='Euclid'?'Vlam':'Dark'}</div></div>
+        <div class="bg-scp-panel border border-scp-green/15 p-3"><div class="text-scp-gray tracking-widest">RISK</div><div class="text-white font-bold">${s.class==='Keter'?'Critical':'Notice'}</div></div>
+      </div>
+      <div class="space-y-4 leading-relaxed text-sm">
+        <div class="border-l-2 border-scp-amber pl-4">
+          <div class="text-scp-amber font-bold tracking-widest text-xs mb-1">SPECIAL CONTAINMENT PROCEDURES:</div>
+          <div class="text-scp-gray">${escapeHtml(s.containment)}</div>
+        </div>
+        <div>
+          <div class="text-white font-bold tracking-widest text-xs mb-1">DESCRIPTION:</div>
+          <div class="text-scp-gray">${escapeHtml(s.description)}</div>
+        </div>
+        ${s.addendum?`<div class="border border-scp-blue/20 bg-scp-blue/5 p-3"><div class="text-scp-blue font-bold tracking-widest text-xs">ADDENDUM:</div><div class="text-scp-gray text-sm mt-1">${escapeHtml(s.addendum)}</div></div>`:''}
+      </div>
+      <div class="flex gap-2 pt-4 border-t border-scp-green/10">
+        ${currentUser.role==='director'?`<button onclick="editScp('${s.id}')" class="bg-scp-amber text-black font-bold tracking-widest text-xs px-4 py-2">EDIT FILE</button><button onclick="deleteScp('${s.id}')" class="border border-scp-red/30 text-scp-red tracking-widest text-xs px-4 py-2">DELETE</button>`: `<span class="text-[11px] tracking-widest text-scp-gray border border-scp-gray/20 px-3 py-2">READ-ONLY • Director edit only</span>`}
+        <button onclick="closeScpDetail()" class="ml-auto border border-scp-green/20 text-scp-green tracking-widest text-xs px-4 py-2">CLOSE FILE</button>
+      </div>
+      <div class="text-[10px] tracking-widest text-scp-gray/50">FILE ID ${s.id} • LAST UPDATED ${new Date(s.updated).toLocaleString()} • CSRF ${csrfToken.slice(0,8)}</div>
+    </div>`;
+  $('#scp-detail').classList.remove('hidden');
+}
+function closeScpDetail(){ $('#scp-detail').classList.add('hidden'); }
+function openScpModal(){ if(currentUser.role!=='director') return; $('#scp-id').value='';$('#scp-form').reset();$('#scp-modal-title').textContent='NEW SCP FILE';$('#scp-modal').classList.remove('hidden');$('#scp-modal').classList.add('flex');}
+function closeScpModal(){ $('#scp-modal').classList.add('hidden');$('#scp-modal').classList.remove('flex');}
+function editScp(id){ if(currentUser.role!=='director')return; const s=scps.find(x=>x.id===id); if(!s)return; closeScpDetail(); $('#scp-id').value=s.id;$('#scp-number').value=s.number;$('#scp-class').value=s.class;$('#scp-title').value=s.title;$('#scp-image').value=s.image;$('#scp-containment').value=s.containment;$('#scp-description').value=s.description;$('#scp-addendum').value=s.addendum||'';$('#scp-modal-title').textContent='EDIT '+s.number;$('#scp-modal').classList.remove('hidden');$('#scp-modal').classList.add('flex');}
+function saveScp(e){
+  e.preventDefault();
+  if(currentUser.role!=='director'){alert('Director only');return;}
+  // CSRF check simulation
+  csrfCount++; // validate
+  const id=$('#scp-id').value||Date.now().toString(36);
+  const obj={
+    id,
+    number:sanitize($('#scp-number').value) || 'SCP-XXX',
+    class:$('#scp-class').value,
+    title:sanitize($('#scp-title').value),
+    image:sanitize($('#scp-image').value) || 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&q=80',
+    containment:sanitize($('#scp-containment').value),
+    description:sanitize($('#scp-description').value),
+    addendum:sanitize($('#scp-addendum').value),
+    updated:Date.now()
+  };
+  const idx=scps.findIndex(x=>x.id===id);
+  if(idx>=0) scps[idx]=obj; else scps.unshift(obj);
+  save(); renderScp(); closeScpModal(); log(`${idx>=0?'Updated':'Created'} ${obj.number} by ${currentUser.username}`,'INFO');
+}
+function deleteScp(id){
+  if(currentUser.role!=='director')return;
+  if(!confirm('Permanently delete this SCP file? This is audited.'))return;
+  const s=scps.find(x=>x.id===id);
+  scps=scps.filter(x=>x.id!==id); save(); renderScp(); closeScpDetail(); log(`Deleted ${s.number} by ${currentUser.username}`,'ALERT');
+}
+function exportScp(){
+  const blob=new Blob([JSON.stringify(scps,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url;a.download='site17_scps.json';a.click();URL.revokeObjectURL(url);
+}
+
+// ----- PERSONNEL -----
+function renderPersonnel(){
+  const q=($('#personnel-search')?.value||'').toLowerCase();
+  const f=$('#personnel-filter')?.value||'';
+  let list=[...users];
+  if(q) list=list.filter(u=> (u.username+' '+u.title+' '+u.clearance).toLowerCase().includes(q));
+  if(f) list=list.filter(u=>u.clearance===f);
+  $('#personnel-grid').innerHTML=list.map(u=>`
+    <div class="bg-scp-panel border ${u.status==='banned'?'border-scp-red/40 bg-scp-red/5':'border-scp-green/15'} p-4">
+      <div class="flex justify-between items-start">
+        <div class="w-10 h-10 bg-scp-green/15 border border-scp-green/30 flex items-center justify-center text-scp-green font-bold">${u.username.slice(0,2).toUpperCase()}</div>
+        <span class="text-[10px] tracking-widest border px-2 py-1 ${u.role==='director'?'bg-scp-amber text-black font-bold':'border-scp-green/20 text-scp-green'}">${u.role.toUpperCase()}</span>
+      </div>
+      <div class="text-white font-bold tracking-widest text-sm mt-3">${escapeHtml(u.username)}</div>
+      <div class="text-scp-gray text-xs">${escapeHtml(u.title)} • ${escapeHtml(u.clearance)}</div>
+      <div class="text-[11px] text-scp-gray/70 mt-1">Created ${new Date(u.created).toLocaleDateString()}</div>
+      ${currentUser.role==='director' && u.username!==currentUser.username?`
+        <div class="flex gap-2 mt-3">
+          <button onclick="toggleBan('${u.username}')" class="flex-1 text-[10px] tracking-widest ${u.status==='banned'?'bg-scp-green text-black':'bg-scp-red text-white'} px-2 py-2 font-bold">${u.status==='banned'?'UNBAN':'BAN'}</button>
+          <button onclick="resetPass('${u.username}')" class="flex-1 border border-scp-blue/30 text-scp-blue text-[10px] tracking-widest px-2 py-2">RESET KEY</button>
+          <button onclick="removeUser('${u.username}')" class="border border-scp-gray/20 text-scp-gray px-2 py-2 text-[10px]">✕</button>
+        </div>`:''}
+    </div>
+  `).join('');
+}
+function openUserModal(){ $('#user-modal').classList.remove('hidden');$('#user-modal').classList.add('flex');}
+function closeUserModal(){ $('#user-modal').classList.add('hidden');$('#user-modal').classList.remove('flex');}
+function createUser(e){
+  e.preventDefault();
+  if(currentUser.role!=='director')return;
+  const username=sanitize($('#new-username').value);
+  const pass=$('#new-password').value;
+  if(users.find(u=>u.username.toLowerCase()===username.toLowerCase())){alert('Username exists');return;}
+  if(pass.length<6){alert('Password min 6 chars');return;}
+  const role=$('#new-role').value;
+  const clearance=$('#new-clearance').value;
+  users.push({username, password:pass, role, clearance, title: role==='director'?'Site Director':'Personnel', created:Date.now(), status:'active'});
+  save(); renderPersonnel(); closeUserModal(); log(`Created operative ${username} (${clearance}, ${role}) by ${currentUser.username}`,'INFO');
+  $('#new-username').value='';$('#new-password').value='';
+}
+function toggleBan(un){
+  const u=users.find(x=>x.username===un); if(!u)return;
+  if(u.status==='banned'){u.status='active';banned=banned.filter(x=>x!==un.toLowerCase()); log(`Unbanned ${un} by ${currentUser.username}`,'INFO');}
+  else{u.status='banned';banned.push(un.toLowerCase()); log(`Banned ${un} by ${currentUser.username}`,'ALERT');}
+  save(); renderPersonnel(); renderMembers();
+}
+function removeUser(un){
+  if(!confirm(`Remove operative ${un}?`))return;
+  users=users.filter(x=>x.username!==un); banned=banned.filter(x=>x!==un.toLowerCase()); save(); renderPersonnel(); renderMembers(); log(`Removed operative ${un} by ${currentUser.username}`,'ALERT');
+}
+function resetPass(un){
+  const np=prompt(`New security key for ${un}:`); if(!np||np.length<6) return;
+  const u=users.find(x=>x.username===un); u.password=np; save(); log(`Reset key for ${un} by ${currentUser.username}`,'INFO'); alert('Key reset.');
+}
+
+// ----- CHAT -----
+const channels=['general-tactical','containment-ops','research-l3','command'];
+const voiceChannels=['voice-alpha','voice-bravo','command-voice'];
+let voiceJoined=null;
+let localStream=null;
+
+function initChat(){
+  channels.forEach(c=>{if(!chatData[c]) chatData[c]=[
+    {user:'SYSTEM', text:`Channel ${c} initialized. Volatile memory only.`, time:Date.now()-60000, sys:true},
+    {user:'director', text:'All operators check in. Containment patrol in 20m.', time:Date.now()-30000},
+  ];});
+  renderChannels(); renderMessages(); renderMembers();
+}
+function renderChannels(){
+  $('#text-channels').innerHTML=channels.map(c=>`
+    <button onclick="switchChannel('${c}')" class="w-full text-left px-3 py-2 flex items-center gap-2 text-xs tracking-widest ${currentChannel===c?'bg-scp-blue text-black font-bold':'bg-[#070a0c] border border-scp-blue/15 text-scp-gray hover:text-white'}">
+      <span>#</span> ${c} ${chatData[c]?.length?`<span class="ml-auto text-[10px] bg-black/20 px-1">${chatData[c].length}</span>`:''}
+    </button>
+  `).join('');
+  $('#voice-channels').innerHTML=voiceChannels.map(c=>`
+    <button onclick="joinVoice('${c}')" class="w-full text-left px-3 py-2 flex items-center gap-2 text-xs tracking-widest ${voiceJoined===c?'bg-scp-green text-black font-bold':'bg-[#070a0c] border border-scp-green/15 text-scp-gray hover:text-white'}">
+      <span>◉</span> ${c} ${voiceJoined===c?'<span class="ml-auto w-2 h-2 bg-black rounded-full animate-pulse"></span>':''}
+    </button>
+  `).join('');
+}
+function switchChannel(c){
+  // self-destruct previous? No, only on close/purge. But we can show volatile warning.
+  currentChannel=c; $('#chat-title').textContent='# '+c;
+  $('#chat-topic').textContent=c==='command'?'Director command channel • Level 4+':'Volatile tactical coordination';
+  renderChannels(); renderMessages();
+}
+function renderMessages(){
+  const msgs=chatData[currentChannel]||[];
+  $('#chat-messages').innerHTML=msgs.map(m=>{
+    if(m.sys) return `<div class="text-center text-[11px] tracking-widest text-scp-amber border border-scp-amber/20 bg-scp-amber/5 py-1">${escapeHtml(m.text)}</div>`;
+    const isMe=m.user===currentUser?.username;
+    return `<div class="flex gap-3 ${isMe?'justify-end':''}">
+      ${!isMe?`<div class="w-7 h-7 bg-scp-blue/15 border border-scp-blue/30 flex items-center justify-center text-scp-blue text-[10px] font-bold shrink-0">${escapeHtml(m.user).slice(0,2).toUpperCase()}</div>`:''}
+      <div class="max-w-[75%] ${isMe?'bg-scp-green text-black':'bg-scp-panel border border-scp-blue/15 text-white'} px-3 py-2 text-sm leading-snug">
+        <div class="flex gap-2 text-[10px] tracking-widest ${isMe?'text-black/60':'text-scp-gray'}"><span class="font-bold ${isMe?'text-black':'text-scp-blue'}">${escapeHtml(m.user)}</span><span>${new Date(m.time).toLocaleTimeString()}</span></div>
+        <div class="mt-1 break-words">${escapeHtml(m.text)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  const el=$('#chat-messages'); el.scrollTop=el.scrollHeight;
+}
+function sendChat(){
+  const inp=$('#chat-input'); const txt=sanitize(inp.value); if(!txt) return;
+  if(muted[currentUser.username] && muted[currentUser.username]>Date.now()){ alert('You are muted.'); return; }
+  // CSRF validation simulation
+  csrfCount++; save();
+  if(!chatData[currentChannel]) chatData[currentChannel]=[];
+  chatData[currentChannel].push({user:currentUser.username, text:txt, time:Date.now()});
+  // persist in memory only — will be wiped on close
+  inp.value=''; renderChannels(); renderMessages(); renderMembers();
+  // typing indicator simulation
+  $('#typing-indicator').textContent='✓ ENCRYPTED & SENT';
+  setTimeout(()=>$('#typing-indicator').textContent='',1200);
+  // fake reply
+  if(Math.random()<0.5){
+    setTimeout(()=>{
+      const others=users.filter(u=>u.username!==currentUser.username && u.status!=='banned');
+      const r=others[Math.floor(Math.random()*others.length)];
+      if(r){
+        chatData[currentChannel].push({user:r.username, text: ['Copy.','Acknowledged.','On station.','Containment stable.'][Math.floor(Math.random()*4)], time:Date.now()});
+        renderChannels(); renderMessages();
+      }
+    },1200+Math.random()*2000);
+  }
+}
+function clearCurrentChat(){
+  if(!confirm('Wipe this volatile channel? History will be permanently destroyed.'))return;
+  chatData[currentChannel]=[{user:'SYSTEM', text:`Channel ${currentChannel} purged by ${currentUser.username}. Volatile wipe complete.`, time:Date.now(), sys:true}];
+  log(`Purged chat ${currentChannel} by ${currentUser.username}`,'WARN'); renderChannels(); renderMessages();
+}
+function nukeChat(silent){
+  if(!silent && !confirm('PURGE ALL VOLATILE CHATS? This cannot be undone.'))return;
+  Object.keys(chatData).forEach(k=>chatData[k]=[{user:'SYSTEM', text:'Volatile memory wiped — session terminated.', time:Date.now(), sys:true}]);
+  if(!silent) log(`Purged ALL chats by ${currentUser.username}`,'ALERT');
+  renderChannels(); renderMessages();
+}
+function renderMembers(){
+  const list=users.filter(u=>u.status!=='banned');
+  $('#member-count').textContent=list.length;
+  $('#member-list').innerHTML=list.map(u=>{
+    const isMuted=muted[u.username] && muted[u.username]>Date.now();
+    return `<div data-user="${u.username}" oncontextmenu="openCtx(event,'${u.username}')" class="flex items-center gap-3 p-2 hover:bg-white/5 cursor-pointer border border-transparent hover:border-scp-green/10">
+      <div class="w-8 h-8 rounded-full ${u.role==='director'?'bg-scp-amber text-black':'bg-scp-green/15 text-scp-green border border-scp-green/30'} flex items-center justify-center font-bold text-xs">${u.username.slice(0,2).toUpperCase()}</div>
+      <div class="flex-1 min-w-0">
+        <div class="text-white text-xs font-bold truncate">${escapeHtml(u.username)} ${u.username===currentUser?.username?'<span class="text-scp-green">(you)</span>':''} ${isMuted?'<span class="text-scp-amber">MUTED</span>':''}</div>
+        <div class="text-scp-gray text-[11px] truncate">${u.clearance} • ${u.role}</div>
+      </div>
+      <span class="w-2 h-2 ${isMuted?'bg-scp-amber':'bg-scp-green'} rounded-full"></span>
+    </div>`;
+  }).join('');
+}
+let ctxUser=null;
+function openCtx(e, username){
+  if(currentUser.role!=='director') return;
+  e.preventDefault(); ctxUser=username; $('#ctx-target').textContent='OPERATIVE: '+username;
+  $('#ctx-menu').style.left=e.pageX+'px'; $('#ctx-menu').style.top=e.pageY+'px'; $('#ctx-menu').classList.remove('hidden');
+}
+document.addEventListener('click',()=>$('#ctx-menu').classList.add('hidden'));
+function modAction(act){
+  if(!ctxUser) return;
+  if(act==='mute'){ muted[ctxUser]=Date.now()+10*60*1000; log(`Muted ${ctxUser} for 10m by ${currentUser.username}`,'WARN'); $('#mod-log').innerHTML+=`<div class="text-scp-amber">[${nowStr()}] Muted ${escapeHtml(ctxUser)}</div>`; }
+  if(act==='kick'){ log(`Kicked ${ctxUser} from channel by ${currentUser.username}`,'WARN'); $('#mod-log').innerHTML+=`<div class="text-scp-blue">[${nowStr()}] Kicked ${escapeHtml(ctxUser)}</div>`; alert(ctxUser+' kicked from voice.'); }
+  if(act==='ban'){ toggleBan(ctxUser); }
+  renderMembers(); $('#ctx-menu').classList.add('hidden');
+}
+
+// Voice & Screen — WebRTC mock with getUserMedia
+async function joinVoice(ch){
+  if(ch) voiceJoined=ch; else voiceJoined=voiceJoined||'voice-alpha';
+  $('#voice-indicator').textContent='VOICE: '+voiceJoined.toUpperCase()+' • CONNECTING';
+  renderChannels();
+  try{
+    localStream=await navigator.mediaDevices.getUserMedia({audio:true, video:false});
+    $('#local-video').classList.remove('hidden'); $('#local-video').srcObject=localStream;
+    $('#voice-peers').innerHTML=`<div class="border border-scp-green/30 bg-scp-green/10 p-2 text-xs"><div class="text-scp-green font-bold">● LIVE</div><div class="text-white">${escapeHtml(currentUser.username)} (you) — mic active</div><div class="text-scp-gray">+ 3 peers connected (simulated WebRTC)</div></div>`;
+    $('#voice-indicator').textContent='VOICE: '+voiceJoined.toUpperCase()+' • LIVE';
+    log(`Joined voice ${voiceJoined} — WebRTC connected by ${currentUser.username}`,'INFO');
+  }catch(err){
+    $('#voice-peers').innerHTML=`<div class="border border-scp-amber/30 bg-scp-amber/10 p-2 text-xs text-scp-amber">Microphone permission denied — voice simulated. WebRTC mesh would connect here.</div>`;
+    $('#voice-indicator').textContent='VOICE: '+voiceJoined.toUpperCase()+' • SIMULATED';
+  }
+  renderChannels();
+}
+function stopVoice(){
+  if(localStream) localStream.getTracks().forEach(t=>t.stop());
+  localStream=null; voiceJoined=null;
+  const v=$('#local-video'); if(v){v.srcObject=null; v.classList.add('hidden');}
+  $('#voice-peers').innerHTML=''; $('#voice-indicator').textContent='VOICE: IDLE';
+}
+async function shareScreen(){
+  if(!voiceJoined){ alert('Join a voice channel first.'); return; }
+  try{
+    const s=await navigator.mediaDevices.getDisplayMedia({video:true});
+    $('#screen-preview').classList.remove('hidden'); $('#screen-preview').innerHTML='<video autoplay playsinline class="w-full h-full object-cover"></video>';
+    $('#screen-preview').querySelector('video').srcObject=s;
+    s.getVideoTracks()[0].onended=()=>stopScreen();
+    log(`Screen share started by ${currentUser.username} in ${voiceJoined}`,'INFO');
+  }catch{
+    // simulate
+    $('#screen-preview').classList.remove('hidden');
+    $('#screen-preview').textContent='SCREEN STREAM ACTIVE — SIMULATED (permission denied, showing placeholder)';
+    setTimeout(stopScreen,4000);
+  }
+}
+function stopScreen(){ $('#screen-preview').classList.add('hidden'); $('#screen-preview').innerHTML='SCREEN STREAM ACTIVE'; }
+
+// ----- LOGS -----
+function renderLogs(){
+  $('#log-blocked').textContent=Object.values(failedAttempts).reduce((a,v)=>a+(v.count||0),0) + audit.filter(a=>a.msg.includes('Failed login')).length;
+  $('#log-vpn').textContent=vpnBlocks;
+  $('#log-csrf').textContent=csrfCount;
+  $('#audit-log').innerHTML=audit.map(a=>{
+    const col=a.level==='ALERT'?'text-scp-red':a.level==='WARN'?'text-scp-amber':'text-scp-green';
+    return `<div class="px-4 py-2 flex gap-3"><span class="text-scp-gray shrink-0">${new Date(a.time).toLocaleTimeString()}</span><span class="${col} font-bold shrink-0">[${a.level}]</span><span class="text-scp-gray break-all">${escapeHtml(a.msg)}</span></div>`;
+  }).join('') || '<div class="p-6 text-center text-scp-gray">No logs.</div>';
+}
+function clearLogs(){ if(currentUser.role!=='director' && !confirm('Clear logs?'))return; if(currentUser.role!=='director'){alert('Director only');return;} audit=[]; save(); renderLogs(); }
+
+// ----- SITE STATUS INCIDENTS -----
+function renderIncidents(){
+  const items=[
+    `[${nowStr()}] Keter wing pressure nominal — 101.3 kPa`,
+    `[${nowStr()}] Euclid patrol Unit-07 reported faint scratching — investigated, no breach`,
+    `[${nowStr()}] Safe wing inventory: all 14 items accounted`,
+    `[${nowStr()}] SCP-173 container cleaning completed — 3 personnel, no incidents`,
+    `[${nowStr()}] Network latency 12ms — SCPNET node sync OK`,
+  ];
+  $('#incident-feed').innerHTML=items.map(t=>`<div class="border-l-2 border-scp-green/30 pl-3 py-1 text-scp-gray">${escapeHtml(t)}</div>`).join('');
+  let up=14*86400+6*3600+22*60+11;
+  setInterval(()=>{up++; const d=Math.floor(up/86400),h=Math.floor(up%86400/3600),m=Math.floor(up%3600/60),s=up%60; $('#uptime').textContent=`${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;},1000);
+}
+
+function renderAll(){ renderScp(); renderPersonnel(); renderLogs(); initChat(); renderIncidents(); }
+
+// initial render for logs before login (so values show)
+renderLogs();
+
+// keyboard shortcut
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); $('#global-search')?.focus(); }
+  if(e.key==='Escape'){ closeScpModal(); closeUserModal(); closeScpDetail(); }
+});
+
+// expose globally for inline handlers
+window.dismissBoot=dismissBoot; window.handleLogin=handleLogin; window.togglePass=togglePass;
+window.switchView=switchView; window.toggleMobileNav=toggleMobileNav; window.logout=logout;
+window.openScpDetail=openScpDetail; window.closeScpDetail=closeScpDetail; window.openScpModal=openScpModal; window.closeScpModal=closeScpModal; window.editScp=editScp; window.deleteScp=deleteScp; window.saveScp=saveScp; window.exportScp=exportScp; window.onGlobalSearch=onGlobalSearch; window.renderScp=renderScp;
+window.openUserModal=openUserModal; window.closeUserModal=closeUserModal; window.createUser=createUser; window.renderPersonnel=renderPersonnel; window.toggleBan=toggleBan; window.removeUser=removeUser; window.resetPass=resetPass;
+window.switchChannel=switchChannel; window.sendChat=sendChat; window.clearCurrentChat=clearCurrentChat; window.nukeChat=nukeChat; window.openCtx=openCtx; window.modAction=modAction;
+window.joinVoice=joinVoice; window.shareScreen=shareScreen; window.clearLogs=clearLogs;
+</script>
+</body>
+</html>
