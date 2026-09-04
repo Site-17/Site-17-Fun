@@ -15,10 +15,10 @@ tailwind.config={theme:{extend:{colors:{'scp-black':'#070a0c','scp-charcoal':'#0
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:#0f1519}
 ::-webkit-scrollbar-thumb{background:#00ff8866;border-radius:999px}
-html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden;filter:contrast(1.06) sepia(0.08) brightness(0.97)}
-body{font-variant-ligatures:none;text-shadow:0 0 6px rgba(0,255,136,0.35),0 0 18px rgba(0,255,136,0.12)}
-.crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.22),rgba(0,0,0,0.22) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999;opacity:0.55}
-.crt::after{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 58%,rgba(0,0,0,0.68) 100%),linear-gradient(rgba(18,16,12,0) 50%,rgba(0,0,0,0.10) 50%);background-size:100% 100%,100% 3px;pointer-events:none;z-index:9998;opacity:0.95}
+html,body{background:#070a0c;color:#c8d6e5;overflow-x:hidden;filter:contrast(1.02) brightness(1)}
+body{font-variant-ligatures:none;text-shadow:0 0 4px rgba(0,255,136,0.25)}
+.crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.14),rgba(0,0,0,0.14) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999;opacity:0.32}
+.crt::after{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 65%,rgba(0,0,0,0.45) 100%),linear-gradient(rgba(18,16,12,0) 50%,rgba(0,0,0,0.06) 50%);background-size:100% 100%,100% 3px;pointer-events:none;z-index:9998;opacity:0.6}
 .grid-bg{background-image:linear-gradient(rgba(0,255,136,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,0.03) 1px,transparent 1px);background-size:32px 32px}
 .scanline{height:2px;background:linear-gradient(90deg,transparent,#00ff88,transparent);animation:scan 3.2s linear infinite;opacity:0.55;filter:blur(0.5px)}
 @keyframes scan{0%{transform:translateY(-100vh)}100%{transform:translateY(100vh)}}
@@ -29,31 +29,29 @@ body{font-variant-ligatures:none;text-shadow:0 0 6px rgba(0,255,136,0.35),0 0 18
 .flicker{animation:flicker 0.22s infinite alternate}
 .glitch:hover{animation:glitch 0.2s steps(2) infinite}
 .type-cursor::after{content:"█";animation:typeBlink 0.8s steps(1) infinite;margin-left:2px;color:#00ff88}
-/* Vintage bezel / chromatic subtle */
-body::before{content:"";position:fixed;inset:0;border:10px solid #0a0f0e;box-shadow:inset 0 0 70px rgba(0,0,0,0.8),inset 0 0 30px rgba(0,255,136,0.05),0 0 0 1px rgba(0,255,136,0.06);pointer-events:none;z-index:9997;opacity:0.55}
-@media(max-width:768px){body::before{border-width:6px}}
-/* Slight curvature + noise */
-body::after{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9996;opacity:0.45;mix-blend-mode:overlay}
-.crt{animation:subtleJitter 0.35s infinite alternate;transform:translateZ(0)}
+/* Vintage bezel / chromatic subtle — lightened to fix blackscreen */
+body::before{content:"";position:fixed;inset:0;border:6px solid #0a0f0e;box-shadow:inset 0 0 40px rgba(0,0,0,0.55),inset 0 0 16px rgba(0,255,136,0.04);pointer-events:none;z-index:9997;opacity:0.28}
+@media(max-width:768px){body::before{border-width:4px}}
+/* Slight noise — very subtle */
+body::after{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9996;opacity:0.22;mix-blend-mode:overlay}
+.crt{animation:subtleJitter 0.45s infinite alternate;transform:translateZ(0)}
 .object-safe{color:#00ff88;border-color:#00ff8866;background:rgba(0,255,136,0.08)}
 .object-euclid{color:#ffb800;border-color:#ffb80066;background:rgba(255,184,0,0.08)}
 .object-keter{color:#ff2b2b;border-color:#ff2b2b66;background:rgba(255,43,43,0.12)}
 .object-thaumiel{color:#b794f6;border-color:#b794f666;background:rgba(183,148,246,0.12)}
 .object-apollyon{color:#ff6b35;border-color:#ff6b3566;background:rgba(255,107,53,0.12)}
-.glow-green{box-shadow:0 0 22px rgba(0,255,136,0.20),inset 0 0 22px rgba(0,255,136,0.04);filter:saturate(0.92)}
-.glow-amber{box-shadow:0 0 20px rgba(255,184,0,0.22)}
+.glow-green{box-shadow:0 0 18px rgba(0,255,136,0.18),inset 0 0 18px rgba(0,255,136,0.03)}
+.glow-amber{box-shadow:0 0 18px rgba(255,184,0,0.18)}
 .view{display:none}
 .view.active{display:block}
 .biometric-ring{border:2px solid #00ff88;border-radius:50%;animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite}
 @keyframes ping{75%,100%{transform:scale(1.4);opacity:0}}
-/* Vintage aging — subtle */
+/* Vintage aging — lightened */
 .bg-scp-panel{position:relative}
-.bg-scp-panel::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 2px,rgba(0,0,0,0.06) 3px);pointer-events:none;opacity:0.45}
-#scp-grid img{filter:contrast(1.05) saturate(0.85) sepia(0.12) brightness(0.96) blur(0.2px)}
-#scp-detail img{filter:contrast(1.03) saturate(0.88) sepia(0.10)}
-header, nav, .bg-scp-panel{backdrop-filter:blur(0.5px)}
-h1{letter-spacing:0.12em; filter:blur(0.15px)}
-input, textarea, select{filter:contrast(1.02)}
+.bg-scp-panel::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 2px,rgba(0,0,0,0.04) 3px);pointer-events:none;opacity:0.22}
+#scp-grid img{filter:contrast(1.02) saturate(0.92) brightness(0.99)}
+#scp-detail img{filter:contrast(1.01) saturate(0.95)}
+h1{letter-spacing:0.10em}
 /* aged border wear */
 .border-scp-green\/20{border-color:rgba(0,255,136,0.18) !important}
 .border-scp-green\/15{border-color:rgba(0,255,136,0.13) !important}
