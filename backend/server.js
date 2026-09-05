@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, '../')));
 const dataDir = path.join(__dirname, 'data');
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
-const GH_REPO = process.env.GITHUB_REPO || ''; // e.g. mandosawyer77-stack/Site-17-Fun
+const GH_REPO = process.env.GITHUB_REPO || ''; // e.g. Site-17/Site-17-Fun
 const GH_BRANCH = process.env.GITHUB_BRANCH || 'main';
 const GH_TOKEN = process.env.GITHUB_TOKEN || '';
 const GH_PATH_PREFIX = 'backend/data/';
