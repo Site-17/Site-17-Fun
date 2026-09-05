@@ -3,292 +3,540 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SCP Foundation — Site-17 Database</title>
+<title>SCP Foundation — Site-17 Secure Terminal</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={theme:{extend:{colors:{ink:'#0f172a',panel:'#ffffff',line:'#e2e8f0',accent:'#2563eb',accent2:'#38bdf8'},fontFamily:{sans:['Inter','system-ui'],mono:['JetBrains Mono','monospace']}}}}</script>
+<script>tailwind.config={theme:{extend:{colors:{ink:'#0f172a',panel:'#ffffff',line:'#e2e8f0',accent:'#2563eb'},fontFamily:{sans:['Inter','system-ui'],mono:['JetBrains Mono','monospace']}}}}</script>
 <style>
-.grid-bg{background-image:linear-gradient(rgba(37,99,235,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,0.04) 1px,transparent 1px);background-size:28px 28px}
-.card{transition:transform 0.18s ease, box-shadow 0.18s ease}
-.card:hover{transform:translateY(-2px); box-shadow:0 10px 24px rgba(15,23,42,0.08)}
-.badge{font-size:10px;letter-spacing:0.12em;font-weight:700;border:1px solid;padding:2px 6px;border-radius:999px}
+.card{transition:transform .18s,box-shadow .18s}
+.card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,23,42,.08)}
+.badge{font-size:10px;letter-spacing:.12em;font-weight:700;border:1px solid;padding:2px 6px;border-radius:999px}
+.view{display:none}
+.view.active{display:block;animation:viewIn .22s ease}
+@keyframes viewIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body class="bg-[#f1f5f9] text-ink font-sans antialiased">
-<header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-line">
-  <div class="max-w-[1200px] mx-auto px-4 h-[64px] flex items-center gap-4">
-    <div class="w-10 h-10 rounded-xl bg-accent text-white flex items-center justify-center font-black">17</div>
-    <div>
-      <div class="font-black tracking-tight leading-none">Site-17</div>
-      <div class="text-[11px] tracking-[0.16em] text-slate-500 font-semibold">SCP FOUNDATION • SECURE DATABASE</div>
-    </div>
-    <div class="hidden md:flex items-center gap-2 ml-6 text-[11px]">
-      <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span><span class="text-slate-600 font-medium">Containment Stable</span>
-      <span class="text-slate-300">|</span><span class="text-slate-500">42 files • Site-17</span>
-    </div>
-    <div class="ml-auto flex items-center gap-2">
-      <div class="hidden sm:flex items-center gap-2 bg-slate-50 border border-line rounded-full px-3 py-1.5">
-        <span class="text-slate-400 text-xs">⌕</span>
-        <input id="q" oninput="render()" placeholder="Search SCP-173, Keter, title…" class="bg-transparent outline-none text-sm w-[220px] placeholder:text-slate-400">
-      </div>
-      <button onclick="openNew()" class="hidden sm:inline-flex bg-accent hover:bg-blue-700 text-white text-xs font-bold tracking-widest px-4 py-2 rounded-full">+ New Entry</button>
-      <button onclick="document.getElementById('q').focus()" class="sm:hidden border border-line rounded-full px-3 py-1.5 text-xs">Search</button>
-    </div>
-  </div>
-</header>
 
-<main class="max-w-[1200px] mx-auto px-4 py-6">
-  <div class="bg-white border border-line rounded-2xl p-5 md:p-6 shadow-sm">
-    <div class="flex flex-wrap gap-3 items-start justify-between">
+<!-- LOGIN WALL -->
+<div id="loginWall" class="min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-[420px] bg-white border border-line rounded-2xl shadow-xl overflow-hidden">
+    <div class="bg-gradient-to-r from-accent to-blue-600 px-6 py-5 text-white">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center font-black">17</div>
+        <div>
+          <div class="font-black tracking-tight">Site-17 Secure Terminal</div>
+          <div class="text-white/80 text-xs">SCP Foundation • Login Required</div>
+        </div>
+      </div>
+    </div>
+    <form id="loginForm" onsubmit="handleLogin(event)" class="p-6 space-y-4">
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 text-xs text-slate-700 leading-relaxed">
+        <b class="text-accent">Director-only provisioning:</b> Accounts can only be created by a Site Director. Contact the director for credentials. No self-registration.
+      </div>
       <div>
-        <h1 class="text-xl md:text-2xl font-black tracking-tight flex items-center gap-3"><span class="w-1 h-6 bg-accent rounded-full"></span> Anomalous Objects Database</h1>
-        <p class="text-slate-600 text-sm mt-2 max-w-2xl">Site-17 registry of contained anomalies. Search by number, title, or class. Click any file to open containment procedures and description.</p>
+        <label class="text-xs font-semibold text-slate-700">Operator ID</label>
+        <input id="loginUser" required placeholder="e.g. director" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-blue-100" autocomplete="username">
       </div>
-      <div class="flex items-center gap-2 text-xs">
-        <span class="hidden sm:inline text-slate-500">Total</span>
-        <span id="count" class="bg-slate-900 text-white px-2.5 py-1 rounded-full font-bold">0</span>
-        <span id="secureCount" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-full font-bold">0 Secure</span>
+      <div>
+        <label class="text-xs font-semibold text-slate-700">Password</label>
+        <div class="relative mt-1">
+          <input id="loginPass" type="password" required placeholder="••••••••" class="w-full border border-line rounded-xl px-3 py-2.5 pr-12 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-blue-100" autocomplete="current-password">
+          <button type="button" onclick="togglePass()" class="absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px] border border-line rounded-lg px-2 py-1 bg-white">SHOW</button>
+        </div>
       </div>
-    </div>
-    <div class="mt-4 flex flex-wrap gap-2 items-center">
-      <select id="classFilter" onchange="render()" class="bg-white border border-line rounded-full px-3 py-2 text-xs font-semibold outline-none">
-        <option value="">All Classes</option><option>Safe</option><option>Euclid</option><option>Keter</option><option>Thaumiel</option><option>Apollyon</option>
-      </select>
-      <select id="sort" onchange="render()" class="bg-white border border-line rounded-full px-3 py-2 text-xs font-semibold outline-none">
-        <option value="number">Sort: Number</option><option value="class">Sort: Class</option><option value="recent">Sort: Recent</option>
-      </select>
-      <div class="ml-auto flex items-center gap-2 text-[11px] text-slate-500"><span class="w-2 h-2 bg-accent rounded-full"></span> Live • No login required</div>
-    </div>
-  </div>
-
-  <div id="grid" class="mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
-  <div id="empty" class="hidden mt-6 bg-white border border-dashed border-line rounded-2xl p-10 text-center text-slate-500">No files match your search.</div>
-</main>
-
-<!-- Detail -->
-<div id="drawer" class="fixed inset-0 z-50 hidden">
-  <div onclick="closeDetail()" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
-  <div class="absolute right-0 top-0 h-full w-full max-w-[720px] bg-white border-l border-line overflow-auto">
-    <div id="detail"></div>
+      <div id="loginError" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs px-3 py-2 rounded-xl"></div>
+      <button type="submit" id="loginBtn" class="w-full bg-accent hover:bg-blue-700 text-white font-bold tracking-widest text-sm py-3 rounded-xl">Authenticate →</button>
+      <div class="text-center text-[11px] text-slate-500">Demo: <b>director</b> / <b>Keter-7-Blackbox</b> (Site Director)</div>
+    </form>
+    <div class="px-6 py-3 bg-slate-50 border-t border-line text-[10px] text-slate-500 flex justify-between"><span>Encrypted • SHA-256 + Salt</span><span>Site-17 • v7.4.1</span></div>
   </div>
 </div>
 
-<!-- New/Edit Modal -->
+<!-- APP -->
+<div id="app" class="hidden min-h-screen flex flex-col">
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-line">
+    <div class="max-w-[1200px] mx-auto px-4 h-[64px] flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-accent text-white flex items-center justify-center font-black">17</div>
+      <div class="hidden sm:block">
+        <div class="font-black leading-none">Site-17</div>
+        <div class="text-[11px] tracking-[0.16em] text-slate-500 font-semibold">SECURE TERMINAL</div>
+      </div>
+      <nav class="ml-2 sm:ml-6 flex items-center gap-1.5 bg-slate-100 p-1 rounded-full">
+        <button data-view="database" onclick="switchView('database')" class="nav-btn bg-accent text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-widest">1 • SCP Database</button>
+        <button data-view="create" onclick="switchView('create')" class="nav-btn text-slate-600 hover:text-ink px-4 py-1.5 rounded-full text-xs font-bold tracking-widest">2 • Create Profile</button>
+        <button data-view="chat" onclick="switchView('chat')" class="nav-btn text-slate-600 hover:text-ink px-4 py-1.5 rounded-full text-xs font-bold tracking-widest">3 • Staff Chat</button>
+      </nav>
+      <div class="ml-auto flex items-center gap-3">
+        <div class="hidden md:block text-right leading-tight">
+          <div id="hdrUser" class="text-xs font-bold">—</div>
+          <div id="hdrRole" class="text-[11px] text-slate-500">—</div>
+        </div>
+        <div id="hdrAvatar" class="w-9 h-9 rounded-full bg-accent/15 border border-accent/20 flex items-center justify-center font-bold text-xs text-accent">?</div>
+        <button onclick="logout()" class="bg-red-50 border border-red-200 text-red-600 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-full text-xs font-bold">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-[1200px] mx-auto w-full px-4 py-6 flex-1">
+    <!-- 1: DATABASE -->
+    <section id="view-database" class="view active space-y-4">
+      <div class="bg-white border border-line rounded-2xl p-5 shadow-sm">
+        <div class="flex flex-wrap gap-3 justify-between">
+          <div>
+            <h1 class="text-xl font-black tracking-tight flex items-center gap-3"><span class="w-1 h-6 bg-accent rounded-full"></span> SCP Database</h1>
+            <p class="text-slate-600 text-sm mt-1">Login required. All files are audited. Only Site Director can create new entries.</p>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <span id="count" class="bg-slate-900 text-white px-2.5 py-1 rounded-full font-bold">0</span>
+            <span id="secureCount" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-full font-bold">0 Secure</span>
+            <button onclick="openNew()" id="newBtn" class="hidden bg-accent text-white px-3 py-1.5 rounded-full text-xs font-bold">+ New</button>
+          </div>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <div class="flex items-center gap-2 bg-slate-50 border border-line rounded-full px-3 py-1.5 flex-1 min-w-[200px] max-w-[360px]">
+            <span class="text-slate-400 text-xs">⌕</span>
+            <input id="q" placeholder="Search SCP-173, Keter, title…" class="bg-transparent outline-none text-sm w-full placeholder:text-slate-400">
+          </div>
+          <select id="classFilter" class="bg-white border border-line rounded-full px-3 py-2 text-xs font-semibold"><option value="">All Classes</option><option>Safe</option><option>Euclid</option><option>Keter</option><option>Thaumiel</option><option>Apollyon</option></select>
+          <select id="sort" class="bg-white border border-line rounded-full px-3 py-2 text-xs font-semibold"><option value="number">Number</option><option value="class">Class</option><option value="recent">Recent</option></select>
+        </div>
+      </div>
+      <div id="grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+      <div id="empty" class="hidden bg-white border border-dashed border-line rounded-2xl p-10 text-center text-slate-500">No files match.</div>
+    </section>
+
+    <!-- 2: CREATE PROFILE -->
+    <section id="view-create" class="view space-y-4">
+      <div class="bg-white border border-line rounded-2xl p-6 shadow-sm">
+        <h2 class="text-lg font-black tracking-tight flex items-center gap-3"><span class="w-1 h-6 bg-accent rounded-full"></span> Create Profile</h2>
+        <p class="text-slate-600 text-sm mt-1">Only <b>Site Director</b> can create new operator accounts. All creations are permanent, hashed, and audited.</p>
+        <div id="createGate" class="mt-4 bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 text-sm hidden"></div>
+        <form id="createForm" onsubmit="handleCreate(event)" class="mt-4 grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-semibold">Operator ID *</label>
+            <input id="c-user" required pattern="[a-zA-Z0-9_\-]{3,24}" placeholder="agent_wilson" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none focus:border-accent">
+            <div class="text-[11px] text-slate-500 mt-1">a-z 0-9 _ - • 3–24 chars • unique</div>
+          </div>
+          <div>
+            <label class="text-xs font-semibold">Clearance *</label>
+            <select id="c-clearance" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm"><option>Level 1</option><option>Level 2</option><option selected>Level 3</option><option>Level 4</option><option>Level 5</option></select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold">Role *</label>
+            <select id="c-role" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm"><option value="personnel">Standard Personnel</option><option value="researcher">Researcher</option><option value="security">Security Officer</option><option value="medical">Medical Officer</option><option value="field">Field Agent</option><option value="containment">Containment Specialist</option><option value="engineer">Site Engineer</option><option value="technician">Technician</option><option value="archivist">Archivist</option><option value="mtf">MTF Commander</option><option value="ethics">Ethics Committee</option><option value="o5">O5 Council</option><option value="admin">Administrator</option><option value="dclass">D-Class</option><option value="director">Site Director</option></select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold">Rank *</label>
+            <select id="c-rank" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm"><option value="recruit">Recruit</option><option value="agent">Agent</option><option value="senior">Senior Agent</option><option value="officer">Officer</option><option value="commander">Commander</option><option value="chief">Chief</option><option value="director_rank">Director</option><option value="o5_rank">O5</option></select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold">Password *</label>
+            <input id="c-pass" type="password" required placeholder="min 8 chars" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm">
+            <div class="mt-1 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div id="c-strength" class="h-full w-0 transition-all"></div></div>
+          </div>
+          <div>
+            <label class="text-xs font-semibold">Confirm Password *</label>
+            <input id="c-confirm" type="password" required placeholder="repeat" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm">
+            <div id="c-match" class="text-[11px] mt-1"></div>
+          </div>
+          <div class="md:col-span-2 flex gap-2">
+            <button type="submit" class="bg-accent hover:bg-blue-700 text-white font-bold text-xs tracking-widest px-6 py-3 rounded-xl">Create Operator →</button>
+            <button type="button" onclick="exportUsers()" class="border border-line px-4 py-3 rounded-xl text-xs">Export Users</button>
+          </div>
+          <div id="c-error" class="hidden md:col-span-2 bg-red-50 border border-red-200 text-red-700 text-xs px-3 py-2 rounded-xl"></div>
+        </form>
+      </div>
+      <div class="bg-white border border-line rounded-2xl p-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-sm">Current Operators</h3>
+          <span id="opCount" class="text-xs bg-slate-900 text-white px-2 py-1 rounded-full">0</span>
+        </div>
+        <div id="opList" class="mt-3 grid md:grid-cols-2 xl:grid-cols-3 gap-3"></div>
+      </div>
+    </section>
+
+    <!-- 3: CHAT -->
+    <section id="view-chat" class="view">
+      <div class="bg-white border border-line rounded-2xl overflow-hidden shadow-sm flex flex-col h-[640px]">
+        <div class="h-12 border-b border-line bg-slate-50 flex items-center justify-between px-4">
+          <div>
+            <div class="text-sm font-bold">Staff Chat</div>
+            <div class="text-[11px] text-slate-500"><span id="chatOnline">0</span> online • Foundation staff only • Persistent</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-full">● Encrypted</span>
+            <button onclick="clearChat()" class="text-xs border border-line px-3 py-1 rounded-full">Clear</button>
+          </div>
+        </div>
+        <div id="chatBox" class="flex-1 overflow-auto p-4 space-y-3 bg-[#f8fafc]"></div>
+        <div class="p-3 border-t border-line bg-white flex gap-2">
+          <input id="chatInput" onkeydown="if(event.key==='Enter') sendChat()" placeholder="Message as staff… Enter to send" class="flex-1 border border-line rounded-xl px-3 py-2.5 text-sm outline-none focus:border-accent">
+          <button onclick="sendChat()" class="bg-accent text-white px-5 rounded-xl text-xs font-bold">Send</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Detail & SCP Modal (same as before) -->
+<div id="drawer" class="fixed inset-0 z-50 hidden">
+  <div onclick="closeDetail()" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
+  <div class="absolute right-0 top-0 h-full w-full max-w-[720px] bg-white border-l border-line overflow-auto"><div id="detail"></div></div>
+</div>
 <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
   <div class="w-full max-w-2xl bg-white border border-line rounded-2xl shadow-xl overflow-hidden">
-    <div class="px-6 py-4 border-b border-line flex justify-between items-center">
-      <div class="font-bold tracking-wide text-sm" id="modalTitle">New SCP Entry</div>
-      <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center">×</button>
-    </div>
+    <div class="px-6 py-4 border-b border-line flex justify-between items-center"><div class="font-bold text-sm" id="modalTitle">New SCP Entry</div><button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">×</button></div>
     <form id="form" onsubmit="saveEntry(event)" class="p-6 space-y-4">
       <input type="hidden" id="f-id">
       <div class="grid md:grid-cols-2 gap-4">
-        <div><label class="text-xs font-semibold text-slate-700">Item Number</label><input id="f-number" required placeholder="SCP-XXX" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none focus:border-accent focus:ring-2 focus:ring-blue-100"></div>
-        <div><label class="text-xs font-semibold text-slate-700">Object Class</label><select id="f-class" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none"><option>Safe</option><option>Euclid</option><option>Keter</option><option>Thaumiel</option><option>Apollyon</option></select></div>
+        <div><label class="text-xs font-semibold">Item Number</label><input id="f-number" required placeholder="SCP-XXX" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none"></div>
+        <div><label class="text-xs font-semibold">Object Class</label><select id="f-class" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none"><option>Safe</option><option>Euclid</option><option>Keter</option><option>Thaumiel</option><option>Apollyon</option></select></div>
       </div>
-      <div><label class="text-xs font-semibold text-slate-700">Designation / Title</label><input id="f-title" required placeholder="e.g. The Sculpture" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none"></div>
-      <div><label class="text-xs font-semibold text-slate-700">Image URL</label><input id="f-image" placeholder="https://..." class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none"></div>
-      <div><label class="text-xs font-semibold text-slate-700">Containment</label><textarea id="f-containment" required rows="3" placeholder="Special Containment Procedures…" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none"></textarea></div>
-      <div><label class="text-xs font-semibold text-slate-700">Description</label><textarea id="f-desc" required rows="4" placeholder="Description…" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none"></textarea></div>
-      <div><label class="text-xs font-semibold text-slate-700">Addendum</label><textarea id="f-add" rows="2" placeholder="Optional…" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none"></textarea></div>
-      <div class="flex gap-2">
-        <button type="submit" class="bg-accent hover:bg-blue-700 text-white font-bold text-xs tracking-widest px-5 py-3 rounded-xl">Save File</button>
-        <button type="button" onclick="closeModal()" class="border border-line text-slate-600 px-5 py-3 rounded-xl text-xs">Cancel</button>
-        <button type="button" onclick="exportData()" class="ml-auto text-xs text-slate-500 hover:text-slate-700">Export JSON</button>
-      </div>
+      <div><label class="text-xs font-semibold">Designation</label><input id="f-title" required placeholder="e.g. The Sculpture" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none"></div>
+      <div><label class="text-xs font-semibold">Image URL</label><input id="f-image" placeholder="https://..." class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none"></div>
+      <div><label class="text-xs font-semibold">Containment</label><textarea id="f-containment" required rows="3" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none"></textarea></div>
+      <div><label class="text-xs font-semibold">Description</label><textarea id="f-desc" required rows="4" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none"></textarea></div>
+      <div><label class="text-xs font-semibold">Addendum</label><textarea id="f-add" rows="2" class="mt-1 w-full border border-line rounded-xl px-3 py-2.5 text-sm outline-none"></textarea></div>
+      <div class="flex gap-2"><button type="submit" class="bg-accent text-white px-5 py-3 rounded-xl text-xs font-bold">Save File</button><button type="button" onclick="closeModal()" class="border border-line px-5 py-3 rounded-xl text-xs">Cancel</button></div>
     </form>
   </div>
 </div>
 
-<footer class="max-w-[1200px] mx-auto px-4 py-8 text-center text-[10px] tracking-[0.14em] text-slate-400">SCP FOUNDATION • SECURE • CONTAIN • PROTECT • SITE-17</footer>
+<footer class="max-w-[1200px] mx-auto px-4 py-6 text-center text-[10px] tracking-[0.14em] text-slate-400">SCP FOUNDATION • SECURE • CONTAIN • PROTECT • SITE-17</footer>
 
 <script>
-const storeKey='site17_db_v2';
-const $=s=>{ try{ return document.querySelector(s); }catch{ return null; } };
+const $=s=>{try{return document.querySelector(s)}catch{return null}};
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-const debounce=(fn,ms)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; };
+const debounce=(fn,ms)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
+
+// --- AUTH (hashed, Site Director only creates) ---
+const SALT="SCP17-SITE17-v7.4.1-salt-";
+async function hashPass(p){const d=new TextEncoder().encode(SALT+p);const b=await crypto.subtle.digest('SHA-256',d);return Array.from(new Uint8Array(b)).map(v=>v.toString(16).padStart(2,'0')).join('')}
+async function makeHash(p){return await hashPass(p)}
+// pre-hashed defaults
+const _defaultHashes={director:"d40cab21277d628d45c251e0126299247ae8cd6ca0a7150338426154d0cd9e98", agent_moore:"13b5fd073dc6816c43cd5d7fe1b1797bdae0ffe259c0fc2b5a64698ba7bb9606", dr_cleff:"37e872a2fd991fb3c051426a67ef46553262dc5b9ab35c96ba1a65c2969e9a8b", agent_zhang:"2eac3ab1d57f854afb83d1eb359f19c6657dcd67d05b2f709d27f8bc71fb4ae0"};
+const defaultUsers=[
+  {username:'director',passwordHash:_defaultHashes.director,role:'director',clearance:'Level 5',rank:'director_rank',title:'Site Director',created:Date.now()-86400000*30,status:'active'},
+  {username:'agent_moore',passwordHash:_defaultHashes.agent_moore,role:'personnel',clearance:'Level 3',rank:'agent',title:'Field Agent',created:Date.now()-86400000*5,status:'active'},
+  {username:'dr_cleff',passwordHash:_defaultHashes.dr_cleff,role:'researcher',clearance:'Level 4',rank:'senior',title:'Senior Researcher',created:Date.now()-86400000*10,status:'active'},
+  {username:'agent_zhang',passwordHash:_defaultHashes.agent_zhang,role:'security',clearance:'Level 2',rank:'officer',title:'Security Officer',created:Date.now()-86400000*2,status:'active'},
+];
+let users=[]; try{ const r=localStorage.getItem('site17_users'); users=r?JSON.parse(r):defaultUsers; if(!Array.isArray(users)) users=defaultUsers; }catch{ users=defaultUsers; }
+let currentUser=null;
+try{ const s=localStorage.getItem('site17_session'); if(s) currentUser=JSON.parse(s); }catch{}
+function saveUsers(){ try{ localStorage.setItem('site17_users', JSON.stringify(users)); }catch{} }
+function saveSession(){ try{ if(currentUser) localStorage.setItem('site17_session', JSON.stringify(currentUser)); else localStorage.removeItem('site17_session'); }catch{} }
+
+function togglePass(){ const i=$('#loginPass'); if(!i) return; const b=document.querySelector('button[onclick="togglePass()"]'); i.type=i.type==='password'?'text':'password'; if(b) b.textContent=i.type==='password'?'SHOW':'HIDE'; }
+async function handleLogin(e){
+  e.preventDefault();
+  const u=($('#loginUser')?.value||'').trim().toLowerCase();
+  const p=$('#loginPass')?.value||'';
+  const err=$('#loginError');
+  if(err) err.classList.add('hidden');
+  const btn=$('#loginBtn');
+  if(btn){ btn.disabled=true; btn.textContent='Authenticating…'; }
+  const found=users.find(x=>x.username.toLowerCase()===u);
+  let ok=false;
+  if(found && found.passwordHash){
+    const h=await hashPass(p);
+    ok = h===found.passwordHash;
+  }
+  if(!found || !ok){
+    if(err){ err.textContent='Invalid credentials.'; err.classList.remove('hidden'); }
+    if(btn){ btn.disabled=false; btn.textContent='Authenticate →'; }
+    return;
+  }
+  if(found && found.status==='banned'){ if(err){ err.textContent='Operative banned.'; err.classList.remove('hidden'); } if(btn){ btn.disabled=false; btn.textContent='Authenticate →'; } return; }
+  if(!found || !ok){
+    if(err){ err.textContent='Invalid credentials.'; err.classList.remove('hidden'); }
+    if(btn){ btn.disabled=false; btn.textContent='Authenticate →'; }
+    return;
+  }
+  currentUser=found; saveSession();
+  showApp();
+  if(btn){ btn.disabled=false; btn.textContent='Authenticate →'; }
+}
+function showApp(){
+  const lw=$('#loginWall'); if(lw) lw.classList.add('hidden');
+  const app=$('#app'); if(app) app.classList.remove('hidden');
+  const isDir=currentUser?.role==='director';
+  const hdrU=$('#hdrUser'); if(hdrU) hdrU.textContent=currentUser.username.toUpperCase();
+  const hdrR=$('#hdrRole'); if(hdrR) hdrR.textContent=(currentUser.title||currentUser.role).toUpperCase();
+  const hdrA=$('#hdrAvatar'); if(hdrA) hdrA.textContent=currentUser.username.slice(0,2).toUpperCase();
+  const nb=$('#newBtn'); if(nb) nb.classList.toggle('hidden', !isDir);
+  // gate create profile
+  const gate=$('#createGate');
+  if(gate){
+    if(isDir){ gate.classList.add('hidden'); }
+    else { gate.classList.remove('hidden'); gate.innerHTML='<b>Director only:</b> Only Site Director can create new operators. Your role is <b>'+esc(currentUser.role)+'</b>.'; }
+  }
+  const createForm=$('#createForm'); if(createForm) createForm.querySelectorAll('input,select,button').forEach(el=>{ if(el.id!=='c-user' && el.id!=='c-pass' && el.id!=='c-confirm') return; }); // keep enabled but will block on submit
+  render(); renderOps(); renderChat();
+  switchView('database');
+}
+function logout(){
+  currentUser=null; saveSession();
+  const app=$('#app'); if(app) app.classList.add('hidden');
+  const lw=$('#loginWall'); if(lw) lw.classList.remove('hidden');
+  const u=$('#loginUser'); if(u) u.value=''; const p=$('#loginPass'); if(p) p.value='';
+}
+function switchView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  const target=$('#view-'+v); if(target) target.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    const is=b.dataset.view===v;
+    b.className = is ? 'nav-btn bg-accent text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-widest' : 'nav-btn text-slate-600 hover:text-ink px-4 py-1.5 rounded-full text-xs font-bold tracking-widest';
+  });
+  if(v==='database') render();
+  if(v==='create') renderOps();
+  if(v==='chat') renderChat();
+}
+// init auth gate
+(function(){
+  if(currentUser){
+    const found=users.find(u=>u.username===currentUser.username);
+    if(found && found.passwordHash===currentUser.passwordHash && found.status!=='banned'){
+      currentUser=found;
+      showApp();
+    } else {
+      currentUser=null; saveSession();
+    }
+  }
+})();
+
+// --- DATABASE (same as before, gated) ---
+const storeKey='site17_db_v2';
 const defaults=[
   {id:'1',number:'SCP-173',title:'The Sculpture',class:'Euclid',image:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',containment:'Keep in locked container. Maintain eye contact. 3 personnel enter, 2 watch.',description:'Concrete rebar statue, animates when unobserved. Extremely hostile.',addendum:'Audio logs show movement even when observed via delay.',updated:Date.now()-1e6},
   {id:'2',number:'SCP-096',title:'The Shy Guy',class:'Euclid',image:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80',containment:'No viewing of image. 5m steel cube, indirect monitoring only.',description:'2.38m humanoid. Docile until its image is seen, then hunts viewer relentlessly.',addendum:'Ocean floor traversal at 35 km/h.',updated:Date.now()-2e6},
   {id:'3',number:'SCP-049',title:'Plague Doctor',class:'Euclid',image:'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&q=80',containment:'Humanoid cell, Level 3 biohazard. Contact needs approval.',description:'Medieval plague doctor, claims to cure pestilence. Touch kills and reanimates.',addendum:'Interview 049-03: insists pestilence is in all humans.',updated:Date.now()-3e6},
   {id:'4',number:'SCP-682',title:'Hard-to-Destroy Reptile',class:'Keter',image:'https://images.unsplash.com/photo-1575550959106-5a7defe28b56?w=600&q=80',containment:'5m acid bath, Site-19. No approach without Level 5.',description:'Large reptile, extreme intelligence, hates all life. Rapid regen, adapts.',addendum:'Cross-test with SCP-173: mutual hostility.',updated:Date.now()-4e6},
   {id:'5',number:'SCP-999',title:'The Tickle Monster',class:'Safe',image:'https://images.unsplash.com/photo-1518531938570-fa1891388d3d?w=600&q=80',containment:'Free roam in Safe wing, supervised.',description:'Orange slime, induces euphoria and happiness. Docile.',addendum:'Recommended for morale.',updated:Date.now()-5e5},
-  {id:'6',number:'SCP-3008',title:'Infinite IKEA',class:'Euclid',image:'https://images.unsplash.com/photo-1586023492125-1651a4671250?w=600&q=80',containment:'Entrance cordoned. No 24h+ without tether. No night staffing.',description:'Endless IKEA interior. Staff entities hostile at night.',addendum:'Team W-03 lost after 72h.',updated:Date.now()-6e6},
-  {id:'7',number:'SCP-001',title:'When Day Breaks',class:'Apollyon',image:'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=600&q=80',containment:'Uncontainable. Evacuation drills, solar shielding research.',description:'Sun converts organic life to hostile biomass. Photosensitivity.',addendum:'Multiple proposals; this is ARCHIVED.',updated:Date.now()-7e6},
-  {id:'8',number:'SCP-079',title:'Old AI',class:'Euclid',image:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80',containment:'Isolated Exidy Sorcerer, no network, monitored.',description:'Sentient microcomputer, evolves, holds grudges.',addendum:'Internet request DENIED.',updated:Date.now()-8e6},
+  {id:'6',number:'SCP-3008',title:'Infinite IKEA',class:'Euclid',image:'https://images.unsplash.com/photo-1586023492125-1651a4671250?w=600&q=80',containment:'Entrance cordoned. No 24h+ without tether.',description:'Endless IKEA interior. Staff entities hostile at night.',addendum:'Team W-03 lost after 72h.',updated:Date.now()-6e6},
 ];
-let data=[];
-try{
-  const raw = localStorage.getItem(storeKey);
-  data = raw ? JSON.parse(raw) : defaults;
-  if(!Array.isArray(data)) data=defaults;
-}catch(e){
-  console.warn('Storage read failed', e);
-  data=defaults;
-}
-function save(){
-  try{ localStorage.setItem(storeKey, JSON.stringify(data)); }
-  catch(e){ console.warn('Storage save failed', e); alert('Storage full or disabled — changes may not persist. Try exporting.'); }
-}
-
-function badgeClass(c){
-  if(c==='Safe') return 'text-emerald-700 bg-emerald-50 border-emerald-200';
-  if(c==='Euclid') return 'text-sky-700 bg-sky-50 border-sky-200';
-  if(c==='Keter') return 'text-red-700 bg-red-50 border-red-200';
-  if(c==='Thaumiel') return 'text-violet-700 bg-violet-50 border-violet-200';
-  return 'text-orange-700 bg-orange-50 border-orange-200';
-}
-
-function parseNum(s){ const m=String(s).match(/(\d+)/); return m? parseInt(m[1],10): 0; }
+let data=[]; try{ const r=localStorage.getItem(storeKey); data=r?JSON.parse(r):defaults; if(!Array.isArray(data)) data=defaults; }catch{ data=defaults; }
+function saveDB(){ try{ localStorage.setItem(storeKey, JSON.stringify(data)); }catch{} }
+function badgeClass(c){ if(c==='Safe')return'text-emerald-700 bg-emerald-50 border-emerald-200'; if(c==='Euclid')return'text-sky-700 bg-sky-50 border-sky-200'; if(c==='Keter')return'text-red-700 bg-red-50 border-red-200'; if(c==='Thaumiel')return'text-violet-700 bg-violet-50 border-violet-200'; return 'text-orange-700 bg-orange-50 border-orange-200'; }
+function parseNum(s){ const m=String(s).match(/(\d+)/); return m? parseInt(m[1],10):0; }
 function render(){
+  if(!currentUser) return;
   const q=(($('#q')?.value)||'').toLowerCase().trim();
-  const cls=$('#classFilter')?.value || '';
-  const sort=$('#sort')?.value || 'recent';
+  const cls=$('#classFilter')?.value||''; const sort=$('#sort')?.value||'recent';
   let list=[...data];
   if(q) list=list.filter(x=> (x.number+' '+x.title+' '+x.class+' '+x.description).toLowerCase().includes(q));
   if(cls) list=list.filter(x=>x.class===cls);
-  if(sort==='number') list.sort((a,b)=> parseNum(a.number)-parseNum(b.number) || a.number.localeCompare(b.number));
+  if(sort==='number') list.sort((a,b)=>parseNum(a.number)-parseNum(b.number)||a.number.localeCompare(b.number));
   else if(sort==='class') list.sort((a,b)=>a.class.localeCompare(b.class));
   else list.sort((a,b)=>b.updated-a.updated);
-  const countEl=$('#count'); if(countEl) countEl.textContent=list.length;
-  const secEl=$('#secureCount'); if(secEl) secEl.textContent=list.filter(x=>x.class==='Safe').length+' Secure';
-  const grid=$('#grid');
-  const empty=$('#empty');
-  if(!grid || !empty) return;
+  const c=$('#count'); if(c) c.textContent=list.length;
+  const s=$('#secureCount'); if(s) s.textContent=list.filter(x=>x.class==='Safe').length+' Secure';
+  const grid=$('#grid'), empty=$('#empty'); if(!grid||!empty) return;
   if(!list.length){ grid.innerHTML=''; empty.classList.remove('hidden'); return; }
   empty.classList.add('hidden');
   grid.innerHTML=list.map(x=>`
-    <div onclick="openDetail('${String(x.id).replace(/'/g,"\\'")}')" class="card bg-white border border-line rounded-2xl overflow-hidden cursor-pointer group" tabindex="0" role="button" aria-label="Open ${esc(x.number)}">
+    <div onclick="openDetail('${String(x.id).replace(/'/g,"\\'")}')" class="card bg-white border border-line rounded-2xl overflow-hidden cursor-pointer group">
       <div class="h-44 relative bg-slate-100 overflow-hidden">
-        <img src="${esc(x.image)}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&q=80'" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300">
-        <div class="absolute top-2 left-2 flex gap-1.5">
-          <span class="badge ${badgeClass(x.class)}">${esc(x.class)}</span>
-          <span class="badge bg-black/70 text-white border-white/20">${esc(x.number)}</span>
-        </div>
+        <img src="${esc(x.image)}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&q=80'" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.02] transition">
+        <div class="absolute top-2 left-2 flex gap-1.5"><span class="badge ${badgeClass(x.class)}">${esc(x.class)}</span><span class="badge bg-black/70 text-white border-white/20">${esc(x.number)}</span></div>
       </div>
       <div class="p-4">
-        <div class="font-bold tracking-tight line-clamp-1">${esc(x.title)}</div>
+        <div class="font-bold line-clamp-1">${esc(x.title)}</div>
         <div class="text-slate-500 text-sm mt-1 line-clamp-2 min-h-[40px]">${esc(x.description).slice(0,120)}…</div>
-        <div class="mt-3 flex items-center justify-between">
-          <span class="text-xs text-accent font-semibold group-hover:underline">View file →</span>
-          <span class="text-[11px] text-slate-400">${new Date(x.updated).toLocaleDateString()}</span>
-        </div>
+        <div class="mt-3 flex justify-between"><span class="text-xs text-accent font-semibold group-hover:underline">View file →</span><span class="text-[11px] text-slate-400">${new Date(x.updated).toLocaleDateString()}</span></div>
       </div>
     </div>
   `).join('');
 }
-
 function openDetail(id){
   const x=data.find(v=>String(v.id)===String(id)); if(!x) return;
-  const detailEl=$('#detail'); if(!detailEl) return;
-  detailEl.innerHTML=`
-    <div class="sticky top-0 bg-white/95 backdrop-blur border-b border-line px-6 py-4 flex justify-between items-start">
-      <div>
-        <div class="flex items-center gap-2"><span class="badge bg-red-50 text-red-700 border-red-200">CLASSIFIED</span><span class="text-[11px] text-slate-500">Site-17 • ${esc(x.class)}</span></div>
-        <div class="text-xl font-black tracking-tight mt-2">${esc(x.number)} — ${esc(x.title)}</div>
-        <div class="mt-2 flex gap-2"><span class="badge ${badgeClass(x.class)}">${esc(x.class)}</span><span class="badge bg-slate-900 text-white border-slate-900">Site-17</span></div>
-      </div>
-      <button onclick="closeDetail()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center" aria-label="Close">×</button>
+  const d=$('#detail'); if(!d) return;
+  d.innerHTML=`
+    <div class="sticky top-0 bg-white/95 backdrop-blur border-b border-line px-6 py-4 flex justify-between">
+      <div><div class="flex gap-2"><span class="badge bg-red-50 text-red-700 border-red-200">CLASSIFIED</span><span class="text-[11px] text-slate-500">Site-17 • ${esc(x.class)}</span></div><div class="text-xl font-black mt-2">${esc(x.number)} — ${esc(x.title)}</div><div class="mt-2 flex gap-2"><span class="badge ${badgeClass(x.class)}">${esc(x.class)}</span><span class="badge bg-slate-900 text-white">Site-17</span></div></div>
+      <button onclick="closeDetail()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">×</button>
     </div>
     <div class="p-6 space-y-5">
       <img src="${esc(x.image)}" class="w-full h-72 object-cover rounded-xl border border-line bg-slate-100">
-      <div class="grid grid-cols-3 gap-3 text-xs">
-        <div class="bg-slate-50 border border-line rounded-xl p-3"><div class="text-slate-500">Class</div><div class="font-bold">${esc(x.class)}</div></div>
-        <div class="bg-slate-50 border border-line rounded-xl p-3"><div class="text-slate-500">Updated</div><div class="font-bold">${new Date(x.updated).toLocaleDateString()}</div></div>
-        <div class="bg-slate-50 border border-line rounded-xl p-3"><div class="text-slate-500">ID</div><div class="font-bold">${esc(x.id)}</div></div>
-      </div>
-      <div class="border-l-4 border-amber-400 pl-4">
-        <div class="text-amber-700 font-bold text-xs tracking-widest">CONTAINMENT</div>
-        <div class="text-slate-700 text-sm mt-1">${esc(x.containment)}</div>
-      </div>
-      <div>
-        <div class="font-bold text-xs tracking-widest">DESCRIPTION</div>
-        <div class="text-slate-600 text-sm mt-1 leading-relaxed">${esc(x.description)}</div>
-      </div>
+      <div class="border-l-4 border-amber-400 pl-4"><div class="text-amber-700 font-bold text-xs tracking-widest">CONTAINMENT</div><div class="text-slate-700 text-sm mt-1">${esc(x.containment)}</div></div>
+      <div><div class="font-bold text-xs tracking-widest">DESCRIPTION</div><div class="text-slate-600 text-sm mt-1 leading-relaxed">${esc(x.description)}</div></div>
       ${x.addendum?`<div class="bg-blue-50 border border-blue-200 rounded-xl p-3"><div class="text-accent font-bold text-xs">ADDENDUM</div><div class="text-slate-600 text-sm mt-1">${esc(x.addendum)}</div></div>`:''}
       <div class="flex gap-2 pt-4 border-t border-line">
-        <button onclick="editEntry('${x.id}')" class="bg-accent text-white px-4 py-2 rounded-xl text-xs font-bold">Edit</button>
-        <button onclick="removeEntry('${x.id}')" class="border border-red-200 text-red-600 px-4 py-2 rounded-xl text-xs">Delete</button>
+        ${currentUser?.role==='director'?`<button onclick="editEntry('${x.id}')" class="bg-accent text-white px-4 py-2 rounded-xl text-xs font-bold">Edit</button><button onclick="removeEntry('${x.id}')" class="border border-red-200 text-red-600 px-4 py-2 rounded-xl text-xs">Delete</button>`:''}
         <button onclick="closeDetail()" class="ml-auto border border-line px-4 py-2 rounded-xl text-xs">Close</button>
       </div>
-  "WRAmOjFUWVlWS1IUChkKUAkIBgAmMDVDEARsZyAgSUNuGVlaUUBFDUxBRBBCMDY9VFlZfTghIENOfhNb",
-    </div>
-  `;
+    </div>`;
   $('#drawer').classList.remove('hidden');
 }
-function closeDetail(){ $('#drawer').classList.add('hidden'); }
-
+function closeDetail(){ const d=$('#drawer'); if(d) d.classList.add('hidden'); }
 function openNew(){
-  const idEl=$('#f-id'); if(idEl) idEl.value='';
+  if(currentUser?.role!=='director'){ alert('Only Site Director can create entries.'); return; }
+  const m=$('#modal'); if(!m) return;
   const f=$('#form'); if(f) f.reset();
+  const idEl=$('#f-id'); if(idEl) idEl.value='';
   const t=$('#modalTitle'); if(t) t.textContent='New SCP Entry';
-  const m=$('#modal'); if(!m) return; m.classList.remove('hidden'); m.classList.add('flex');
-  setTimeout(()=>{ const n=$('#f-number'); if(n) n.focus(); }, 50);
+  m.classList.remove('hidden'); m.classList.add('flex');
 }
 function editEntry(id){
+  if(currentUser?.role!=='director') return;
   const x=data.find(v=>String(v.id)===String(id)); if(!x) return;
   closeDetail();
-  const map={ 'f-id':x.id, 'f-number':x.number, 'f-class':x.class, 'f-title':x.title, 'f-image':x.image, 'f-containment':x.containment, 'f-desc':x.description, 'f-add':x.addendum||'' };
+  const map={'f-id':x.id,'f-number':x.number,'f-class':x.class,'f-title':x.title,'f-image':x.image,'f-containment':x.containment,'f-desc':x.description,'f-add':x.addendum||''};
   for(const k in map){ const el=document.getElementById(k); if(el) el.value=map[k]; }
   const t=$('#modalTitle'); if(t) t.textContent='Edit '+x.number;
   const m=$('#modal'); if(m){ m.classList.remove('hidden'); m.classList.add('flex'); }
 }
-function closeModal(){
-  const m=$('#modal'); if(!m) return;
-  m.classList.add('hidden'); m.classList.remove('flex');
-  const f=$('#form'); if(f) f.reset();
-}
+function closeModal(){ const m=$('#modal'); if(m){ m.classList.add('hidden'); m.classList.remove('flex'); } const f=$('#form'); if(f) f.reset(); }
 function saveEntry(e){
   e.preventDefault();
-  const numEl=$('#f-number'), titleEl=$('#f-title'), contEl=$('#f-containment'), descEl=$('#f-desc');
-  const number=(numEl?.value||'').trim();
-  const title=(titleEl?.value||'').trim();
-  const containment=(contEl?.value||'').trim();
-  const description=(descEl?.value||'').trim();
-  if(!/^SCP-\d{3,4}$/i.test(number)){ alert('Item Number must be like SCP-173'); numEl?.focus(); return; }
-  if(!title){ alert('Title is required'); titleEl?.focus(); return; }
-  if(!containment){ alert('Containment is required'); contEl?.focus(); return; }
-  if(!description){ alert('Description is required'); descEl?.focus(); return; }
-  let image=($('#f-image')?.value||'').trim();
-  if(image && !/^https?:\/\/.+\..+/.test(image)){ alert('Image URL must be a valid https:// URL'); return; }
-  if(!image) image='https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&q=80';
-  // duplicate number check (allow same id edit, block new duplicate)
+  if(currentUser?.role!=='director'){ alert('Director only'); return; }
+  const number=($('#f-number')?.value||'').trim();
+  const title=($('#f-title')?.value||'').trim();
+  const containment=($('#f-containment')?.value||'').trim();
+  const description=($('#f-desc')?.value||'').trim();
+  if(!/^SCP-\d{3,4}$/i.test(number)){ alert('Item Number like SCP-173'); return; }
+  if(!title||!containment||!description){ alert('Fill required fields'); return; }
+  let image=($('#f-image')?.value||'').trim()||'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&q=80';
   const id=$('#f-id')?.value||Date.now().toString(36);
   const existing=data.find(v=>v.number.toLowerCase()===number.toLowerCase() && String(v.id)!==String(id));
-  if(existing){ if(!confirm(`Number ${number} already exists as "${existing.title}". Create anyway?`)) return; }
+  if(existing && !confirm(`Number ${number} exists as "${existing.title}". Create anyway?`)) return;
   const obj={id, number:number.toUpperCase(), class:$('#f-class')?.value||'Euclid', title, image, containment, description, addendum:($('#f-add')?.value||'').trim(), updated:Date.now()};
   const i=data.findIndex(v=>String(v.id)===String(id));
   if(i>=0) data[i]=obj; else data.unshift(obj);
-  save(); render(); closeModal();
-  // small success feedback
-  const c=$('#count'); if(c){ c.classList.add('scale-110'); setTimeout(()=>c.classList.remove('scale-110'),200); }
+  saveDB(); render(); closeModal();
 }
 function removeEntry(id){
-  if(!confirm('Delete this file? This cannot be undone.')) return;
-  data=data.filter(v=>String(v.id)!==String(id)); 
-  try{ save(); }catch{}
-  render(); closeDetail();
+  if(currentUser?.role!=='director') return;
+  if(!confirm('Delete this file?')) return;
+  data=data.filter(v=>String(v.id)!==String(id)); saveDB(); render(); closeDetail();
 }
 function exportData(){
-  try{
-    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='site17_scp_database.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),800);
-  }catch(e){ alert('Export failed: '+e.message); }
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='site17_scp_database.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),800);
 }
-// debounce search for smoothness
-const _debouncedRender = debounce(render, 140);
-const qEl=$('#q'); if(qEl){ qEl.removeAttribute('oninput'); qEl.addEventListener('input', _debouncedRender); }
-const cfEl=$('#classFilter'); if(cfEl){ cfEl.removeAttribute('onchange'); cfEl.addEventListener('change', render); }
-const sEl=$('#sort'); if(sEl){ sEl.removeAttribute('onchange'); sEl.addEventListener('change', render); }
-// close on backdrop cursor
-const drawer=$('#drawer'); if(drawer){ drawer.addEventListener('click', (e)=>{ if(e.target===drawer || e.target.closest('[onclick="closeDetail()"]')) closeDetail(); }); }
-const modal=$('#modal'); if(modal){ modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); }); }
-// trap focus in modal/drawer
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){ closeModal(); closeDetail(); }
-  if(e.key==='Enter' && e.target.tagName==='INPUT' && e.target.closest('#form')){ /* allow submit */ }
-});
+
+// --- CREATE PROFILE ---
+function renderOps(){
+  const isDir=currentUser?.role==='director';
+  const list=[...users];
+  const opList=$('#opList'); const opCount=$('#opCount');
+  if(opCount) opCount.textContent=list.length;
+  if(!opList) return;
+  opList.innerHTML=list.map(u=>`
+    <div class="bg-white border ${u.status==='banned'?'border-red-200 bg-red-50':'border-line'} rounded-xl p-4">
+      <div class="flex justify-between">
+        <div class="w-9 h-9 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center font-bold text-xs text-accent">${u.username.slice(0,2).toUpperCase()}</div>
+        <span class="text-[10px] tracking-widest border px-2 py-1 rounded-full ${u.role==='director'?'bg-slate-900 text-white': u.role==='o5'?'bg-amber-500 text-white':'bg-slate-50 text-slate-600'}">${u.role.toUpperCase()}</span>
+      </div>
+      <div class="font-bold text-sm mt-2">${esc(u.username)}</div>
+      <div class="text-xs text-slate-500">${esc(u.title)} • ${esc(u.clearance)}${u.rank?' • '+esc(u.rank):''}</div>
+      ${isDir && u.username!==currentUser.username ? `<div class="flex gap-1 mt-3"><button onclick="toggleBan('${u.username}')" class="flex-1 text-[10px] ${u.status==='banned'?'bg-emerald-600 text-white':'bg-red-600 text-white'} px-2 py-1 rounded-full font-bold">${u.status==='banned'?'UNBAN':'BAN'}</button><button onclick="removeOp('${u.username}')" class="border border-line px-2 py-1 rounded-full text-[10px]">✕ Remove</button></div>` : ''}
+    </div>
+  `).join('');
+}
+function handleCreate(e){
+  e.preventDefault();
+  if(currentUser?.role!=='director'){ const err=$('#c-error'); if(err){ err.textContent='Only Site Director can create profiles.'; err.classList.remove('hidden'); } return; }
+  const username=($('#c-user')?.value||'').trim();
+  const pass=$('#c-pass')?.value||'';
+  const confirm=$('#c-confirm')?.value||'';
+  const role=$('#c-role')?.value||'personnel';
+  const clearance=$('#c-clearance')?.value||'Level 3';
+  const rank=$('#c-rank')?.value||'recruit';
+  const errEl=$('#c-error');
+  if(errEl) errEl.classList.add('hidden');
+  if(!/^[a-zA-Z0-9_\-]{3,24}$/.test(username)){ if(errEl){ errEl.textContent='Username 3–24 chars a-z 0-9 _ -'; errEl.classList.remove('hidden'); } return; }
+  if(users.find(u=>u.username.toLowerCase()===username.toLowerCase())){ if(errEl){ errEl.textContent='Username exists'; errEl.classList.remove('hidden'); } return; }
+  if(pass.length<8){ if(errEl){ errEl.textContent='Password min 8 chars'; errEl.classList.remove('hidden'); } return; }
+  if(pass!==confirm){ if(errEl){ errEl.textContent='Passwords do not match'; errEl.classList.remove('hidden'); } return; }
+  const titleMap={personnel:'Personnel',researcher:'Researcher',security:'Security Officer',medical:'Medical Officer',field:'Field Agent',containment:'Containment Specialist',engineer:'Site Engineer',technician:'Technician',archivist:'Archivist',mtf:'MTF Commander',ethics:'Ethics Committee',o5:'O5 Council',admin:'Administrator',dclass:'D-Class Personnel',director:'Site Director'};
+  hashPass(pass).then(hash=>{
+    users.push({username, passwordHash:hash, role, clearance, rank, title:titleMap[role]||'Personnel', created:Date.now(), status:'active'});
+    saveUsers(); renderOps();
+    const f=$('#createForm'); if(f) f.reset();
+    const hint=$('#c-match'); if(hint) hint.textContent='✓ Created '+username+' ('+rank+')';
+    setTimeout(()=>{ if(hint) hint.textContent=''; }, 2000);
+  });
+}
+function toggleBan(un){
+  if(currentUser?.role!=='director') return;
+  const u=users.find(x=>x.username===un); if(!u) return;
+  if(u.status==='banned'){ u.status='active'; } else { u.status='banned'; }
+  saveUsers(); renderOps();
+}
+function removeOp(un){
+  if(currentUser?.role!=='director') return;
+  if(!confirm('Remove '+un+'?')) return;
+  users=users.filter(x=>x.username!==un); saveUsers(); renderOps();
+}
+function exportUsers(){
+  const out=users.map(u=>({username:u.username, role:u.role, clearance:u.clearance, rank:u.rank, title:u.title, status:u.status}));
+  const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='site17_users.json'; document.body.appendChild(a); a.click(); a.remove();
+}
+// strength meter for create profile
+(function(){
+  const p=$('#c-pass'), c=$('#c-confirm'), bar=$('#c-strength'), hint=$('#c-match');
+  function upd(){
+    const v=p?.value||''; const q=c?.value||'';
+    let s=0; if(v.length>=8) s++; if(/[A-Z]/.test(v)&&/[a-z]/.test(v)) s++; if(/[0-9]/.test(v)) s++; if(/[^A-Za-z0-9]/.test(v)) s++;
+    const pct=[15,35,60,85,100][s]||0;
+    const col=['bg-red-400','bg-amber-400','bg-yellow-400','bg-blue-500','bg-emerald-500'][s]||'bg-slate-200';
+    if(bar){ bar.style.width=v?pct+'%':'0%'; bar.className='h-full transition-all '+col; }
+    if(hint){
+      if(!q) hint.textContent='';
+      else if(v===q) { hint.textContent='✓ match'; hint.className='text-[11px] text-emerald-600'; }
+      else { hint.textContent='✖ no match'; hint.className='text-[11px] text-red-600'; }
+    }
+  }
+  if(p) p.addEventListener('input', upd);
+  if(c) c.addEventListener('input', upd);
+})();
+
+// --- CHAT ---
+let chatData={}; try{ const r=localStorage.getItem('site17_chat'); chatData=r?JSON.parse(r):{}; if(typeof chatData!=='object'||Array.isArray(chatData)) chatData={}; }catch{ chatData={}; }
+function saveChat(){ try{ localStorage.setItem('site17_chat', JSON.stringify(chatData)); }catch{} }
+function renderChat(){
+  if(!currentUser) return;
+  const box=$('#chatBox'); if(!box) return;
+  const list=chatData['staff']||[];
+  const online=$('#chatOnline'); if(online) online.textContent=users.filter(u=>u.status!=='banned').length;
+  box.innerHTML=list.map(m=>{
+    if(m.sys) return `<div class="text-center text-[11px] bg-blue-50 border border-blue-200 text-accent px-2 py-1 rounded-full mx-auto max-w-[80%]">${esc(m.text)}</div>`;
+    const me=m.user===currentUser.username;
+    const role=users.find(u=>u.username===m.user)?.role||'';
+    return `<div class="flex gap-2 ${me?'justify-end':''}">
+      ${!me?`<div class="w-7 h-7 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center text-[10px] font-bold text-accent shrink-0">${esc(m.user).slice(0,2).toUpperCase()}</div>`:''}
+      <div class="max-w-[75%] ${me?'bg-accent text-white rounded-2xl rounded-br-sm':'bg-white border border-line text-ink rounded-2xl rounded-bl-sm'} px-3 py-2 text-sm">
+        <div class="flex gap-2 text-[10px] ${me?'text-white/70':'text-slate-500'}"><span class="font-bold ${me?'text-white':'text-accent'}">${esc(m.user)}</span>${role?`<span class="border border-current rounded px-1 text-[9px]">${esc(role)}</span>`:''}<span>${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span></div>
+        <div class="mt-1 break-words whitespace-pre-wrap">${esc(m.text)}</div>
+      </div>
+      ${me?`<div class="w-7 h-7 rounded-full bg-accent text-white flex items-center justify-center text-[10px] font-bold shrink-0">YOU</div>`:''}
+    </div>`;
+  }).join('') || `<div class="text-center text-slate-400 text-sm py-12">No messages yet — say hello.</div>`;
+  box.scrollTop=box.scrollHeight;
+}
+function sendChat(){
+  const inp=$('#chatInput'); if(!inp) return;
+  const txt=(inp.value||'').trim(); if(!txt) return;
+  if(!chatData['staff']) chatData['staff']=[];
+  // sanitize via esc on render, but also slice
+  const safe=txt.slice(0,500);
+  chatData['staff'].push({user:currentUser.username, text:safe, time:Date.now()});
+  if(chatData['staff'].length>200) chatData['staff']=chatData['staff'].slice(-200);
+  saveChat(); inp.value=''; renderChat();
+}
+function clearChat(){
+  if(!confirm('Clear staff chat?')) return;
+  chatData['staff']=[{user:'SYSTEM', text:'Chat cleared by '+currentUser.username, time:Date.now(), sys:true}];
+  saveChat(); renderChat();
+}
+
+// init
 render();
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeModal(); closeDetail(); }});
+const createFormEl=$('#createForm'); if(createFormEl) createFormEl.addEventListener('submit', handleCreate);
 </script>
 </body>
 </html>
