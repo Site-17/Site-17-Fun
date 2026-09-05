@@ -56,7 +56,8 @@ body::after{display:none}
 .glow-green{box-shadow:0 4px 16px rgba(37,99,235,0.12)}
 .glow-amber{box-shadow:0 4px 16px rgba(14,165,232,0.12)}
 .view{display:none}
-.view.active{display:block}
+.view.active{display:block; animation:viewIn 0.28s ease}
+@keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .biometric-ring{border:2px solid #2563eb;border-radius:50%;animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite}
 @keyframes ping{75%,100%{transform:scale(1.4);opacity:0}}
 .bg-scp-panel{position:relative;background:#ffffff;border:1px solid #e2e8f0}
@@ -472,7 +473,7 @@ h1{letter-spacing:0.06em; color:#0f172a}
     </div>
     <form id="scp-form" onsubmit="saveScp(event)" class="p-6 space-y-4">
       <input type="hidden" id="scp-id">
-      <div class="grid md:grid-cols-2 gap-4">
+      <div class="grid md:grid-cols-3 gap-3">
         <div><label class="text-[10px] tracking-[0.16em] font-bold text-slate-700">ITEM NUMBER</label><input id="scp-number" required placeholder="SCP-XXX" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm placeholder:text-slate-400 focus:border-scp-green focus:ring-2 focus:ring-blue-100 outline-none"></div>
         <div><label class="text-[10px] tracking-[0.16em] font-bold text-slate-700">OBJECT CLASS</label><select id="scp-class" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm outline-none focus:border-scp-green focus:ring-2 focus:ring-blue-100"><option>Safe</option><option>Euclid</option><option>Keter</option><option>Thaumiel</option><option>Apollyon</option></select></div>
       </div>
@@ -522,7 +523,7 @@ h1{letter-spacing:0.06em; color:#0f172a}
         </div>
       </div>
       <!-- passwords -->
-      <div class="grid md:grid-cols-2 gap-4">
+      <div class="grid md:grid-cols-3 gap-3">
         <div>
           <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">SECURITY KEY <span class="text-red-500">*</span></label>
           <div class="mt-1 relative">
@@ -538,8 +539,8 @@ h1{letter-spacing:0.06em; color:#0f172a}
           <div id="pw-match" class="mt-1 text-[11px]"></div>
         </div>
       </div>
-      <!-- role + clearance -->
-      <div class="grid md:grid-cols-2 gap-4">
+      <!-- role + clearance + rank -->
+      <div class="grid md:grid-cols-3 gap-3">
         <div>
           <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">ROLE</label>
           <select id="new-role" onchange="onNewUserInput()" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm outline-none focus:border-scp-green focus:ring-2 focus:ring-blue-100"><option value="personnel">Standard Personnel</option><option value="researcher">Researcher</option><option value="security">Security Officer</option><option value="medical">Medical Officer</option><option value="field">Field Agent</option><option value="containment">Containment Specialist</option><option value="engineer">Site Engineer</option><option value="technician">Technician</option><option value="archivist">Archivist</option><option value="mtf">MTF Commander</option><option value="ethics">Ethics Committee</option><option value="o5">O5 Council</option><option value="admin">Administrator</option><option value="dclass">D-Class</option><option value="director">Site Director</option></select>
@@ -549,9 +550,16 @@ h1{letter-spacing:0.06em; color:#0f172a}
           <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">CLEARANCE</label>
           <select id="new-clearance" onchange="onNewUserInput()" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm outline-none focus:border-scp-green focus:ring-2 focus:ring-blue-100"><option>Level 1</option><option>Level 2</option><option selected>Level 3</option><option>Level 4</option><option>Level 5</option></select>
           <div id="clearance-desc" class="mt-1.5 text-[11px] leading-snug text-slate-600 bg-blue-50 border border-blue-200 rounded p-2">Level 3: Standard access â€” most SCP files.</div>
-          <label class="mt-2 block text-[10px] tracking-[0.18em] font-bold text-slate-700">DISPLAY TITLE (optional)</label>
-          <input id="new-title" placeholder="auto from role" oninput="onNewUserInput()" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-xs placeholder:text-slate-400 outline-none">
         </div>
+        <div>
+          <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">RANK</label>
+          <select id="new-rank" onchange="onNewUserInput()" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm outline-none focus:border-scp-green focus:ring-2 focus:ring-blue-100"><option value="recruit">Recruit</option><option value="agent">Agent</option><option value="senior">Senior Agent</option><option value="officer">Officer</option><option value="commander">Commander</option><option value="chief">Chief</option><option value="director_rank">Director Rank</option><option value="o5_rank">O5 Rank</option></select>
+          <div id="rank-desc" class="mt-1.5 text-[11px] leading-snug text-slate-600 bg-amber-50 border border-amber-200 rounded p-2">Rank: hierarchy for promotions.</div>
+        </div>
+      </div>
+      <div>
+        <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">DISPLAY TITLE (optional)</label>
+        <input id="new-title" placeholder="auto from role/rank" oninput="onNewUserInput()" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm placeholder:text-slate-400 focus:border-scp-green focus:ring-2 focus:ring-blue-100 outline-none">
       </div>
       <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-[11px] leading-relaxed text-slate-700">
         <span class="font-bold text-amber-700">PERMANENT:</span> Creation is hashed (SHA-256 + salt), audited, and stored forever in encrypted localStorage. Use <b>EXPORT FOREVER</b> to commit to GitHub.
@@ -1764,56 +1772,251 @@ h1{letter-spacing:0.06em; color:#0f172a}
     "Session: JWT ephemeral • Timeout 5m • Audit ON",
     "All systems nominal. Awaiting authentication."
   ];
-  // kill old boot timeouts (clear all pending)
-  try{ for(let _t=0;_t<30000;_t++) clearTimeout(_t); }catch{}
-  // override global bootLines for new terminal
+  // kill old boot — flag only (smooth, no heavy loop)
   try{ window.bootLines = termLines; }catch{}
-  // clear any existing boot timeouts by resetting idx and restarting
   try{ window.bootIdx = 9999; }catch{}
   const logEl=document.getElementById('boot-log');
   const pctEl=document.getElementById('boot-pct');
   const barEl=document.getElementById('boot-bar');
   const statusEl=document.getElementById('boot-status');
   if(logEl) logEl.innerHTML='';
+  // robust enter — fixes bug where dismissBoot fails
+  function _enterTerminal(){
+    const b=document.getElementById('boot');
+    const lw=document.getElementById('login-wall');
+    if(!b) return;
+    // prevent double
+    if(b.dataset.entered) return; b.dataset.entered='1';
+    b.style.transition='opacity 0.35s ease';
+    b.style.opacity='0';
+    setTimeout(()=>{
+      b.classList.add('hidden');
+      b.style.display='none';
+      if(lw){
+        lw.classList.remove('hidden');
+        lw.style.opacity='0';
+        requestAnimationFrame(()=>{ lw.style.transition='opacity 0.3s'; lw.style.opacity='1'; });
+      }
+      const ip=document.getElementById('login-ip');
+      if(ip) ip.textContent='198.51.100.'+Math.floor(17+Math.random()*80);
+      const u=document.getElementById('login-user');
+      if(u) setTimeout(()=>u.focus(),120);
+      try{ if(typeof dismissBoot==='function') dismissBoot(); }catch{}
+    },360);
+  }
+  // expose for button
+  try{ window.dismissBoot = _enterTerminal; }catch{}
+  // make whole terminal clickable
+  bootEl.addEventListener('click', (e)=>{
+    const pr=document.getElementById('boot-prompt');
+    if(pr && !pr.classList.contains('hidden')) _enterTerminal();
+  });
   let idx=0;
   const start=Date.now();
-  const maxMs=9800; // 10s max
+  const maxMs=9600;
+  function typeLine(line, done){
+    const d=document.createElement('div');
+    d.className='flex gap-2';
+    const prompt=document.createElement('span'); prompt.className='text-green-700 shrink-0'; prompt.textContent='›';
+    const text=document.createElement('span'); text.className='text-green-400 break-all';
+    const cursor=document.createElement('span'); cursor.textContent='█'; cursor.style.animation='typeBlink 0.7s steps(1) infinite'; cursor.style.marginLeft='2px'; cursor.style.color='#22c55e';
+    d.appendChild(prompt); d.appendChild(text); d.appendChild(cursor);
+    if(logEl) logEl.appendChild(d);
+    let i=0;
+    function typeChar(){
+      if(Date.now()-start > maxMs){ done(); return; }
+      if(i < line.length){
+        text.textContent += line[i];
+        i++;
+        logEl.scrollTop=logEl.scrollHeight;
+        setTimeout(typeChar, 16+Math.random()*22);
+      } else {
+        cursor.remove();
+        done();
+      }
+    }
+    typeChar();
+  }
   function termTick(){
     if(idx>=termLines.length){
       const pr=document.getElementById('boot-prompt');
       if(pr) pr.classList.remove('hidden');
-      if(statusEl) statusEl.textContent='SECURE SHELL READY';
+      if(statusEl) statusEl.textContent='SECURE SHELL READY — PRESS ENTER';
+      // auto-enter after 1.2s if idle (fixes bug where user doesn't know to press Enter)
+      setTimeout(()=>{ const b=document.getElementById('boot'); if(b && !b.classList.contains('hidden')) _enterTerminal(); }, 1800);
       return;
     }
-    // auto-fail after 10s
     if(Date.now()-start > maxMs){
       const pr=document.getElementById('boot-prompt');
       if(pr) pr.classList.remove('hidden');
       return;
     }
-    const d=document.createElement('div');
-    d.className='flex gap-2';
-    d.innerHTML=`<span class="text-green-700 shrink-0">$</span><span class="text-green-400">${termLines[idx].replace(/</g,'&lt;')}</span>`;
-    if(logEl) logEl.appendChild(d);
-    idx++;
-    if(pctEl) pctEl.textContent=Math.round(idx/termLines.length*100)+'%';
-    if(barEl) barEl.style.width=Math.round(idx/termLines.length*100)+'%';
-    if(statusEl && idx < termLines.length) statusEl.textContent='LOADING… '+termLines[idx].slice(0,22);
-    logEl.scrollTop=logEl.scrollHeight;
-    setTimeout(termTick, 280+Math.random()*220);
+    if(pctEl) pctEl.textContent=Math.round((idx+1)/termLines.length*100)+'%';
+    if(barEl) barEl.style.width=Math.round((idx+1)/termLines.length*100)+'%';
+    if(statusEl) statusEl.textContent='EXECUTING… '+termLines[idx].slice(0,28);
+    typeLine(termLines[idx], ()=>{
+      idx++;
+      logEl.scrollTop=logEl.scrollHeight;
+      setTimeout(termTick, 90+Math.random()*120);
+    });
   }
   // hijack original bootTick
   try{ window.bootTick = termTick; }catch{}
-  setTimeout(termTick, 180);
-  // absolute 10s fallback — force show prompt
+  setTimeout(termTick, 260);
+  // absolute 10s fallback — force show prompt and enable entry
   setTimeout(()=>{
     const pr=document.getElementById('boot-prompt');
-    if(pr && pr.classList.contains('hidden')){ pr.classList.remove('hidden'); if(pctEl) pctEl.textContent='100%'; if(barEl) barEl.style.width='100%'; }
+    if(pr && pr.classList.contains('hidden')){ pr.classList.remove('hidden'); if(pctEl) pctEl.textContent='100%'; if(barEl) barEl.style.width='100%'; if(statusEl) statusEl.textContent='READY'; }
   }, 10000);
-  // allow Enter to dismiss
-  document.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ const pr=document.getElementById('boot-prompt'); if(pr && !pr.classList.contains('hidden')){ try{dismissBoot();}catch{}} } });
+  // allow Enter to dismiss any time after start
+  document.addEventListener('keydown', (e)=>{
+    if(e.key==='Enter'){
+      const pr=document.getElementById('boot-prompt');
+      // if prompt visible, enter; else if near end, also allow
+      if(pr && !pr.classList.contains('hidden')) _enterTerminal();
+      else if(idx>=termLines.length-1) _enterTerminal();
+    }
+  });
+})();
+</script>
+<script>
+// RANK + SMOOTHNESS PATCH — overrides encrypted payload
+(function(){
+  const _rankOpts = {recruit:'Recruit',agent:'Agent',senior:'Senior Agent',officer:'Officer',commander:'Commander',chief:'Chief',director_rank:'Director',o5_rank:'O5'};
+  const _rankDes = {recruit:'Entry — basic access',agent:'Field-ready — standard duties',senior:'Experienced — leads small teams',officer:'Officer — manages operations',commander:'Commander — oversees site',chief:'Chief — senior command',director_rank:'Director — site authority',o5_rank:'O5 — council level'};
+  window.onNewUserInput = function(){
+    const u=(document.getElementById('new-username')?.value||'').trim()||'agent_wilson';
+    const r=document.getElementById('new-role')?.value||'personnel';
+    const c=document.getElementById('new-clearance')?.value||'Level 3';
+    const rk=document.getElementById('new-rank')?.value||'recruit';
+    const t=document.getElementById('new-title')?.value?.trim();
+    const roleNames={personnel:'Standard Personnel',researcher:'Researcher',security:'Security Officer',medical:'Medical Officer',field:'Field Agent',containment:'Containment Specialist',engineer:'Site Engineer',technician:'Technician',archivist:'Archivist',mtf:'MTF Commander',ethics:'Ethics Committee',o5:'O5 Council',admin:'Administrator',dclass:'D-Class',director:'Site Director'};
+    const titles={personnel:'Personnel',researcher:'Researcher',security:'Security Officer',medical:'Medical Officer',field:'Field Agent',containment:'Containment Specialist',engineer:'Site Engineer',technician:'Technician',archivist:'Archivist',mtf:'MTF Commander',ethics:'Ethics Committee',o5:'O5 Council',admin:'Administrator',dclass:'D-Class Personnel',director:'Site Director'};
+    const av=document.getElementById('new-avatar'); if(av) av.textContent=u.slice(0,2).toUpperCase()||'--';
+    const pn=document.getElementById('new-preview-name'); if(pn) pn.textContent=u;
+    const pr=document.getElementById('new-preview-role'); if(pr) pr.textContent=(roleNames[r]||r)+' • '+c+' • '+(_rankOpts[rk]||rk);
+    const pt=document.getElementById('new-preview-title'); if(pt) pt.textContent=t||titles[r]||'Personnel';
+    const rc=document.getElementById('role-desc'); if(rc){
+      const des={personnel:'General access — mess hall, safe SCP viewing.',researcher:'Lab access — research logs, safe/euclid files.',security:'Security — armory, keter wing escort.',medical:'Medical — medbay, biohazard protocols.',field:'Field — off-site missions, retrieval.',containment:'Containment — specialist procedures, breach drills.',engineer:'Engineering — maintenance, SCP containment engineering.',technician:'Technical — systems, SCP tech support.',archivist:'Archives — documents, redacted files.',mtf:'MTF — rapid response, high clearance ops.',ethics:'Ethics — oversight, termination review.',o5:'O5 — top command, all files.',admin:'Admin — site systems, user management.',dclass:'D-Class — expendable, limited access.',director:'Director — full control, permanent edits.'};
+      rc.textContent=des[r]||'Select a role.';
+    }
+    const cd=document.getElementById('clearance-desc'); if(cd){
+      const cms={'Level 1':'Level 1: Public — orientation only.','Level 2':'Level 2: Confined — safe SCPs.','Level 3':'Level 3: Confidential — most SCP files.','Level 4':'Level 4: Secret — keter, personnel files.','Level 5':'Level 5: Top Secret — all files, director locks.'};
+      cd.textContent=cms[c]||c;
+    }
+    const rkd=document.getElementById('rank-desc'); if(rkd) rkd.textContent=_rankDes[rk]||'Rank: hierarchy';
+    const hint=document.getElementById('username-hint'); if(hint){
+      const exists= (window.users||[]).some(x=>x.username.toLowerCase()===u.toLowerCase());
+      hint.textContent= exists ? '⚠ username already taken' : (u.length<3 ? 'too short' : '✓ available');
+      hint.className= exists ? 'mt-1 text-[11px] text-red-600' : (u.length<3 ? 'mt-1 text-[11px] text-amber-600' : 'mt-1 text-[11px] text-emerald-600');
+    }
+  };
+  window.onPasswordInput = window.onPasswordInput || function(){
+    const p=document.getElementById('new-password')?.value||''; const c=document.getElementById('new-password-confirm')?.value||'';
+    const bar=document.getElementById('pw-strength'); const hint=document.getElementById('pw-hint'); const match=document.getElementById('pw-match');
+    let score=0; if(p.length>=8) score++; if(/[A-Z]/.test(p) && /[a-z]/.test(p)) score++; if(/[0-9]/.test(p)) score++; if(/[^A-Za-z0-9]/.test(p)) score++;
+    const pct=[15,35,60,85,100][score]||0; const col=['bg-red-400','bg-amber-400','bg-yellow-400','bg-blue-500','bg-emerald-500'][score]||'bg-slate-300'; const txt=['Very weak','Weak','Fair','Strong','Very strong'][score]||'—';
+    if(bar){ bar.style.width=p?pct+'%':'0%'; bar.className='h-full transition-all '+col; }
+    if(hint) { hint.textContent=p?('Strength: '+txt):'Strength: —'; }
+    if(match){ if(!c) match.textContent=''; else if(p===c) { match.textContent='✓ keys match'; match.className='mt-1 text-[11px] text-emerald-600'; } else { match.textContent='✖ keys do not match'; match.className='mt-1 text-[11px] text-red-600'; } }
+  };
+  window.toggleNewPass = window.toggleNewPass || function(){ const a=document.getElementById('new-password'), b=document.getElementById('new-password-confirm'), btn=document.querySelector('button[onclick="toggleNewPass()"]'); const t=a.type==='password'?'text':'password'; a.type=t; if(b) b.type=t; if(btn) btn.textContent=t==='password'?'SHOW':'HIDE'; };
+  // smoother createUser with rank
+  const _origCreate = window.createUser;
+  window.createUser = async function(e){
+    e.preventDefault();
+    if(!window.currentUser || window.currentUser.role!=='director'){ if(typeof showUserError==='function') showUserError('Director only'); else alert('Director only'); return; }
+    const username=(document.getElementById('new-username')?.value||'').trim();
+    const san = (window.sanitize||(s=>s))(username);
+    const pass=document.getElementById('new-password')?.value||'';
+    const confirm=document.getElementById('new-password-confirm')?.value||'';
+    const customTitle=(document.getElementById('new-title')?.value||'').trim();
+    const role=document.getElementById('new-role')?.value||'personnel';
+    const clearance=document.getElementById('new-clearance')?.value||'Level 3';
+    const rank=document.getElementById('new-rank')?.value||'recruit';
+    function err(m){ const el=document.getElementById('user-create-error'); if(el){ el.textContent=m; el.classList.remove('hidden'); setTimeout(()=>el.classList.add('hidden'),4000);} else alert(m); }
+    if(!/^[a-zA-Z0-9_\-]{3,24}$/.test(username)){ err('Username 3–24 chars, a-z 0-9 _ - only'); return; }
+    if((window.users||[]).find(u=>u.username.toLowerCase()===username.toLowerCase())){ err('Username already exists'); return; }
+    if(pass.length<8){ err('Security key min 8 chars'); return; }
+    if(pass!==confirm){ err('Keys do not match'); return; }
+    const titleMap={personnel:'Personnel',researcher:'Researcher',security:'Security Officer',medical:'Medical Officer',field:'Field Agent',containment:'Containment Specialist',engineer:'Site Engineer',technician:'Technician',archivist:'Archivist',mtf:'MTF Commander',ethics:'Ethics Committee',o5:'O5 Council',admin:'Administrator',dclass:'D-Class Personnel',director:'Site Director'};
+    const finalTitle = customTitle || titleMap[role] || 'Personnel';
+    const btn=document.getElementById('create-btn'); if(btn){ btn.disabled=true; btn.textContent='HASHING…'; }
+    const hash = await window.hashPass(pass);
+    const newUser={username, passwordHash:hash, role, clearance, rank, title:finalTitle, created:Date.now(), status:'active'};
+    window.users.push(newUser);
+    try{ window.save(); window.renderPersonnel(); window.renderMembers(); }catch{}
+    try{ window.closeUserModal(); window.log(`Created operative ${username} (${clearance}, ${role}, rank ${rank}) by ${window.currentUser.username}`,'INFO'); }catch{}
+    const a=document.getElementById('new-username'); if(a) a.value=''; const b=document.getElementById('new-password'); if(b) b.value=''; const cp=document.getElementById('new-password-confirm'); if(cp) cp.value=''; const nt=document.getElementById('new-title'); if(nt) nt.value='';
+    if(btn){ btn.disabled=false; btn.textContent='AUTHORIZE & CREATE →'; }
+    // smooth toast
+    const toast=document.createElement('div'); toast.textContent='✓ Operative '+username+' created ('+rank+')'; toast.style.cssText='position:fixed;bottom:20px;right:20px;background:#2563eb;color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999'; document.body.appendChild(toast); setTimeout(()=>toast.remove(),2200);
+  };
+  // smoother renderPersonnel with rank
+  const _origRender = window.renderPersonnel;
+  window.renderPersonnel = function(){
+    if(!window.currentUser) return;
+    const q=(document.getElementById('personnel-search')?.value||'').toLowerCase();
+    const f=document.getElementById('personnel-filter')?.value||'';
+    let list=[...window.users];
+    if(q) list=list.filter(u=> (u.username+' '+u.title+' '+u.clearance+' '+u.role+' '+(u.rank||'')).toLowerCase().includes(q));
+    if(f) list=list.filter(u=>u.clearance===f);
+    const roleLabel = r => ({personnel:'PERSONNEL',researcher:'RESEARCHER',security:'SECURITY',medical:'MEDICAL',field:'FIELD AGENT',containment:'CONTAINMENT',engineer:'ENGINEER',technician:'TECHNICIAN',archivist:'ARCHIVIST',mtf:'MTF',ethics:'ETHICS',o5:'O5',admin:'ADMIN',dclass:'D-CLASS',director:'DIRECTOR'}[r]||r.toUpperCase());
+    const rankLabel = rk => ({recruit:'RECRUIT',agent:'AGENT',senior:'SR AGENT',officer:'OFFICER',commander:'COMMANDER',chief:'CHIEF',director_rank:'DIRECTOR',o5_rank:'O5'}[rk]||(rk||'').toUpperCase());
+    const roleBadge = r => r==='director'?'bg-scp-green text-white font-bold':r==='o5'?'bg-amber-500 text-white font-bold':r==='ethics'?'bg-slate-800 text-white font-bold':r==='mtf'?'bg-scp-red text-white font-bold':r==='researcher'?'bg-blue-50 border border-blue-200 text-scp-green':r==='containment'?'bg-orange-50 border border-orange-200 text-orange-700':r==='engineer'?'bg-slate-100 border border-slate-300 text-slate-700':'border border-slate-200 text-slate-600';
+    const grid=document.getElementById('personnel-grid'); if(!grid) return;
+    grid.innerHTML=list.map(u=>`
+      <div class="bg-scp-panel border ${u.status==='banned'?'border-scp-red/40 bg-scp-red/5':'border-scp-green/15'} p-4 rounded-xl hover:shadow-md transition">
+        <div class="flex justify-between items-start">
+          <div class="w-10 h-10 bg-scp-green/15 border border-scp-green/30 flex items-center justify-center text-scp-green font-bold rounded-full">${u.username.slice(0,2).toUpperCase()}</div>
+          <div class="flex flex-col gap-1 items-end">
+            <span class="text-[10px] tracking-widest border px-2 py-1 rounded ${roleBadge(u.role)}">${roleLabel(u.role)}</span>
+            <span class="text-[9px] tracking-widest bg-slate-900 text-white px-1.5 py-0.5 rounded">${rankLabel(u.rank)}</span>
+          </div>
+        </div>
+        <div class="text-slate-900 font-bold tracking-widest text-sm mt-3">${u.username}</div>
+        <div class="text-scp-gray text-xs">${u.title} • ${u.clearance} ${u.rank? '• '+u.rank:''}</div>
+        <div class="text-[11px] text-scp-gray/70 mt-1">Created ${new Date(u.created).toLocaleDateString()}</div>
+        ${window.currentUser.role==='director' && u.username!==window.currentUser.username?`
+          <div class="flex gap-1.5 mt-3 flex-wrap">
+            <button onclick="toggleBan('${u.username}')" class="flex-1 text-[10px] tracking-widest ${u.status==='banned'?'bg-scp-green text-white':'bg-scp-red text-white'} px-2 py-1.5 rounded font-bold">${u.status==='banned'?'UNBAN':'BAN'}</button>
+            <button onclick="resetPass('${u.username}')" class="flex-1 border border-slate-300 text-slate-700 text-[10px] tracking-widest px-2 py-1.5 rounded hover:bg-slate-50">RESET KEY</button>
+            <button onclick="changeRole('${u.username}')" class="flex-1 border border-slate-300 text-slate-700 text-[10px] tracking-widest px-2 py-1.5 rounded hover:bg-slate-50">ROLE</button>
+            <button onclick="changeRank('${u.username}')" class="flex-1 border border-amber-300 text-amber-700 text-[10px] tracking-widest px-2 py-1.5 rounded hover:bg-amber-50">RANK</button>
+            <button onclick="removeUser('${u.username}')" class="border border-slate-200 text-slate-500 px-2 py-1.5 rounded text-[10px]">✕</button>
+          </div>`:''}
+      </div>
+    `).join('');
+  };
+  window.changeRank = function(un){
+    if(!window.currentUser || window.currentUser.role!=='director') return;
+    const u=window.users.find(x=>x.username===un); if(!u) return;
+    const opts=['recruit','agent','senior','officer','commander','chief','director_rank','o5_rank'];
+    const choice=prompt(`Change rank for ${un}:\nOptions: ${opts.join(', ')}\nCurrent: ${u.rank||'recruit'}\n\nEnter new rank:` , u.rank||'recruit');
+    if(!choice) return;
+    const nr=choice.trim().toLowerCase();
+    if(!opts.includes(nr)){ alert('Invalid rank. Valid: '+opts.join(', ')); return; }
+    u.rank=nr;
+    try{ window.save(); window.renderPersonnel(); window.renderMembers(); window.log(`Changed rank for ${un} to ${nr} by ${window.currentUser.username}`,'INFO'); }catch{}
+  };
+  // fix writing colors: ensure inputs have proper contrast
+  try{
+    document.querySelectorAll('input, textarea, select').forEach(el=>{
+      el.style.color='#0f172a';
+      if(el.placeholder) el.placeholder=''+el.placeholder;
+    });
+  }catch{}
+  // smoothness: debounce global search & SCP search
+  try{
+    const _debounce=(fn, wait)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), wait); }; };
+    if(window.onGlobalSearch) window.onGlobalSearch = _debounce((v)=>{ const e=document.getElementById('scp-search'); if(e) e.value=v; if(window.switchView) window.switchView('database'); if(window.renderScp) window.renderScp(); }, 180);
+    const _origRenderScp = window.renderScp;
+    if(_origRenderScp) window.renderScp = _debounce(_origRenderScp, 120);
+  }catch{}
+  console.log('Rank patch loaded — smooth operator system ready');
 })();
 </script>
 </body>
 </html>
+
 
