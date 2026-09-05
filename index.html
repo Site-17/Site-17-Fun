@@ -1721,6 +1721,99 @@ h1{letter-spacing:0.06em; color:#0f172a}
   _0xF();
 })();
 </script>
+<script>
+// REMADE TERMINAL BOOT — 10s max, looks like entering a terminal
+(function(){
+  const bootEl=document.getElementById('boot');
+  if(!bootEl) return;
+  // replace with terminal UI
+  bootEl.className='fixed inset-0 z-[100] bg-black flex items-center justify-center p-4 md:p-8 overflow-hidden';
+  bootEl.innerHTML=`
+  <div class="absolute inset-0 opacity-[0.03]" style="background:repeating-linear-gradient(0deg,transparent,transparent 2px,#00ff00 3px)"></div>
+  <div class="w-full max-w-[760px] bg-[#0a0a0a] border border-green-500/30 rounded-lg overflow-hidden shadow-[0_0_40px_rgba(0,255,0,0.12)] relative">
+    <div class="flex items-center justify-between px-4 py-2.5 bg-[#111] border-b border-green-900/40">
+      <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500/90"></span><span class="w-3 h-3 rounded-full bg-yellow-500/90"></span><span class="w-3 h-3 rounded-full bg-green-500/90"></span><span class="ml-3 text-green-500/80 text-[11px] font-mono tracking-widest">root@site17:~ — ssh scpnet</span></div>
+      <span id="boot-time" class="text-green-700 text-[11px] font-mono"></span>
+    </div>
+    <div class="px-5 py-4">
+      <div class="text-green-600 text-[11px] font-mono tracking-widest mb-3">SCP SECURE TERMINAL v7.4.1 — SITE-17 — CLASSIFIED</div>
+      <div id="boot-log" class="font-mono text-[13px] leading-[1.7] text-green-400 min-h-[260px] space-y-1"></div>
+    </div>
+    <div class="px-5 py-3 border-t border-green-900/30 bg-black/50">
+      <div class="flex justify-between text-[10px] font-mono tracking-widest text-green-700 mb-1.5"><span id="boot-status">INITIALIZING SECURE SHELL…</span><span id="boot-pct" class="text-green-400 font-bold">0%</span></div>
+      <div class="h-1.5 bg-[#111] border border-green-900/30 rounded-full overflow-hidden relative"><div id="boot-bar" class="h-full bg-green-500 transition-all duration-150" style="width:0%"></div></div>
+      <div id="boot-prompt" class="hidden mt-4 text-center">
+        <div class="inline-block border border-green-500/40 bg-green-500/10 px-6 py-2.5"><span class="text-green-400 tracking-[0.2em] text-xs font-mono">▶ PRESS ENTER TO ACCESS TERMINAL</span></div>
+        <button onclick="dismissBoot()" class="mt-3 block mx-auto text-[11px] font-mono tracking-widest text-green-600 hover:text-green-400 border border-green-800 hover:border-green-600 px-6 py-1.5 transition">INITIALIZE LOGIN [ENTER]</button>
+      </div>
+    </div>
+  </div>
+  <div class="scanline fixed left-0 right-0 pointer-events-none" style="height:2px;background:linear-gradient(90deg,transparent,#00ff88,transparent);opacity:0.4"></div>
+  `;
+  // new terminal lines — looks like entering a terminal
+  const termLines=[
+    "> ssh scpnet@site17.scp.foundation -p 2222",
+    "Connecting to SITE-17 … [OK] 198.51.100.17",
+    "> auth --handshake TLS1.3 ECDHE-RSA-AES256-GCM",
+    "Verifying certificate CN=site17.scpnet.internal … VALID",
+    "> decrypt /mnt/scp17_encrypted [AES-256-GCM] …",
+    "Mounting classified datastore … ENCRYPTED",
+    "> load containment grid — 42 anomalies indexed",
+    "> check RBAC — Director:1 Personnel:3",
+    "> enable hardening: brute-force ✓ vpn ✓ csrf ✓",
+    "Session: JWT ephemeral • Timeout 5m • Audit ON",
+    "All systems nominal. Awaiting authentication."
+  ];
+  // kill old boot timeouts (clear all pending)
+  try{ for(let _t=0;_t<30000;_t++) clearTimeout(_t); }catch{}
+  // override global bootLines for new terminal
+  try{ window.bootLines = termLines; }catch{}
+  // clear any existing boot timeouts by resetting idx and restarting
+  try{ window.bootIdx = 9999; }catch{}
+  const logEl=document.getElementById('boot-log');
+  const pctEl=document.getElementById('boot-pct');
+  const barEl=document.getElementById('boot-bar');
+  const statusEl=document.getElementById('boot-status');
+  if(logEl) logEl.innerHTML='';
+  let idx=0;
+  const start=Date.now();
+  const maxMs=9800; // 10s max
+  function termTick(){
+    if(idx>=termLines.length){
+      const pr=document.getElementById('boot-prompt');
+      if(pr) pr.classList.remove('hidden');
+      if(statusEl) statusEl.textContent='SECURE SHELL READY';
+      return;
+    }
+    // auto-fail after 10s
+    if(Date.now()-start > maxMs){
+      const pr=document.getElementById('boot-prompt');
+      if(pr) pr.classList.remove('hidden');
+      return;
+    }
+    const d=document.createElement('div');
+    d.className='flex gap-2';
+    d.innerHTML=`<span class="text-green-700 shrink-0">$</span><span class="text-green-400">${termLines[idx].replace(/</g,'&lt;')}</span>`;
+    if(logEl) logEl.appendChild(d);
+    idx++;
+    if(pctEl) pctEl.textContent=Math.round(idx/termLines.length*100)+'%';
+    if(barEl) barEl.style.width=Math.round(idx/termLines.length*100)+'%';
+    if(statusEl && idx < termLines.length) statusEl.textContent='LOADING… '+termLines[idx].slice(0,22);
+    logEl.scrollTop=logEl.scrollHeight;
+    setTimeout(termTick, 280+Math.random()*220);
+  }
+  // hijack original bootTick
+  try{ window.bootTick = termTick; }catch{}
+  setTimeout(termTick, 180);
+  // absolute 10s fallback — force show prompt
+  setTimeout(()=>{
+    const pr=document.getElementById('boot-prompt');
+    if(pr && pr.classList.contains('hidden')){ pr.classList.remove('hidden'); if(pctEl) pctEl.textContent='100%'; if(barEl) barEl.style.width='100%'; }
+  }, 10000);
+  // allow Enter to dismiss
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ const pr=document.getElementById('boot-prompt'); if(pr && !pr.classList.contains('hidden')){ try{dismissBoot();}catch{}} } });
+})();
+</script>
 </body>
 </html>
 
