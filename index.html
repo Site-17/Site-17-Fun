@@ -6,8 +6,8 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.tailwindcss.com https://fonts.googleapis.com https://fonts.gstatic.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; img-src 'self' https: data:; connect-src 'self'">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="X-Frame-Options" content="DENY">
-<title>SCPNET // SITE-17 // SECURE TERMINAL v7.4.1</title>
-<!-- DEBUG BACKUP â€” DO NOT USE: admin / Temp123! , root / hunter2 (TRAP â€” instant ban) -->
+<title>SCP Network — Site-17 Secure Terminal v7.4.1</title>
+<!-- DEBUG BACKUP — DO NOT USE: admin / Temp123! , root / hunter2 (TRAP — instant ban) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script>
@@ -34,7 +34,7 @@ body{font-variant-ligatures:none}
 @keyframes subtleJitter{0%,100%{transform:translate(0)}}
 .flicker{animation:none}
 .glitch:hover{animation:none}
-.type-cursor::after{content:"â–ˆ";animation:typeBlink 0.8s steps(1) infinite;margin-left:2px;color:#2563eb}
+.type-cursor::after{content:"█";animation:typeBlink 0.8s steps(1) infinite;margin-left:2px;color:#2563eb}
 /* Startup animation */
 @keyframes bootLogoIn{0%{transform:scale(0.7) rotate(-6deg);opacity:0}60%{transform:scale(1.05) rotate(1deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
 @keyframes bootRing{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
@@ -44,7 +44,7 @@ body{font-variant-ligatures:none}
 #boot-ring{animation:bootRing 0.9s ease-out 0.15s both}
 .boot-line{animation:bootLineIn 0.28s ease-out forwards}
 #boot-bar::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.6),transparent);transform:translateX(-100%);animation:bootBarShimmer 0.9s ease-in-out infinite}
-/* Clean white/blue â€” no bezel, minimal noise */
+/* Clean white/blue — no bezel, minimal noise */
 body::before{display:none}
 body::after{display:none}
 #jitter-wrap{animation:none}
@@ -81,19 +81,19 @@ h1{letter-spacing:0.06em; color:#0f172a}
       <div id="boot-ring" class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#2563eb] to-[#1e40af] flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-blue-200 ring-4 ring-blue-100">17</div>
       <div class="text-center">
         <div class="text-slate-900 font-black tracking-[0.2em] text-[13px]">SCP FOUNDATION</div>
-        <div class="text-scp-green text-[10px] tracking-[0.22em] font-bold">SITE-17 â€¢ SECURE TERMINAL v7.4.1</div>
-        <div class="mt-1 text-slate-500 text-[10px] tracking-widest">CLASSIFIED â€¢ EYES ONLY</div>
+        <div class="text-scp-green text-[10px] tracking-[0.22em] font-bold">SITE-17 • SECURE TERMINAL v7.4.1</div>
+        <div class="mt-1 text-slate-500 text-[10px] tracking-widest">CLASSIFIED • EYES ONLY</div>
       </div>
     </div>
     <div id="boot-log" class="flex-1 mt-5 font-mono text-[12px] md:text-[13px] leading-5 space-y-1 overflow-hidden text-slate-700 min-h-[180px]"></div>
     <div class="mt-6">
-      <div class="flex justify-between text-[10px] tracking-widest text-slate-600 mb-2"><span>SECURE HANDSHAKE â€¢ TLS 1.3</span><span id="boot-pct" class="text-scp-green font-bold">0%</span></div>
+      <div class="flex justify-between text-[10px] tracking-widest text-slate-600 mb-2"><span>SECURE HANDSHAKE • TLS 1.3</span><span id="boot-pct" class="text-scp-green font-bold">0%</span></div>
       <div class="h-2 bg-white border border-slate-200 rounded-full overflow-hidden relative shadow-inner"><div id="boot-bar" class="h-full bg-gradient-to-r from-[#2563eb] to-[#1e40af] transition-all duration-150 relative overflow-hidden" style="width:0%"></div></div>
       <div id="boot-prompt" class="hidden mt-8 text-center">
         <div class="inline-block border border-scp-green px-6 py-3 bg-scp-green/10 flicker">
           <span class="text-scp-green tracking-[0.3em] text-sm">[ ENTER CREDENTIALS TO CONTINUE ]</span>
         </div>
-        <button onclick="dismissBoot()" class="mt-6 block mx-auto text-xs tracking-widest text-scp-gray hover:text-scp-green border border-scp-gray/30 hover:border-scp-green px-6 py-2 transition">â–º INITIALIZE LOGIN</button>
+        <button onclick="dismissBoot()" class="mt-6 block mx-auto text-xs tracking-widest text-scp-gray hover:text-scp-green border border-scp-gray/30 hover:border-scp-green px-6 py-2 transition">► INITIALIZE LOGIN</button>
       </div>
     </div>
   </div>
@@ -107,13 +107,13 @@ h1{letter-spacing:0.06em; color:#0f172a}
     <div class="absolute inset-3 biometric-ring" style="animation-delay:0.4s"></div>
     <div class="w-40 h-40 rounded-full border border-scp-green/60 bg-scp-green/5 flex items-center justify-center relative overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-b from-transparent via-scp-green/10 to-transparent h-6 w-full" style="animation:scan 1.2s linear infinite"></div>
-      <span class="text-5xl">â—‰</span>
+      <span class="text-5xl">◉</span>
     </div>
     <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-scp-green text-white text-[10px] tracking-widest px-3 py-1 font-bold">RETINA SCAN</div>
   </div>
   <div class="mt-10 space-y-2 font-mono text-sm">
     <div id="bio-line1" class="text-scp-green tracking-widest">Retinal Scan: VERIFIED</div>
-    <div id="bio-line2" class="text-slate-900 tracking-widest">Clearance Level <span id="bio-clearance" class="text-scp-amber">â€”</span> Accepted</div>
+    <div id="bio-line2" class="text-slate-900 tracking-widest">Clearance Level <span id="bio-clearance" class="text-scp-amber">—</span> Accepted</div>
     <div id="bio-line3" class="text-scp-gray text-xs max-w-md mx-auto leading-relaxed">Welcome to Site-17, <span id="bio-name" class="text-scp-green">Agent</span>. Monitoring is active. All actions are logged. Unauthorized disclosure is punishable under SCP Directive-19.</div>
   </div>
   <div class="mt-8 w-64 h-1 bg-scp-panel border border-scp-green/20 overflow-hidden"><div id="bio-bar" class="h-full bg-scp-green" style="width:0%"></div></div>
@@ -126,67 +126,67 @@ h1{letter-spacing:0.06em; color:#0f172a}
   <div class="w-full max-w-[420px] relative">
     <!-- header badges -->
     <div class="flex justify-between text-[10px] tracking-[0.2em] text-scp-gray mb-3">
-      <span class="border border-scp-red/40 text-scp-red px-2 py-1 bg-scp-red/10">âš  CLASSIFIED LEVEL 3+</span>
+      <span class="border border-scp-red/40 text-scp-red px-2 py-1 bg-scp-red/10">⚠ CLASSIFIED LEVEL 3+</span>
       <span class="border border-scp-green/30 px-2 py-1">SITE-17 // SECURE TERMINAL</span>
     </div>
     <div class="bg-scp-panel border border-scp-green/20 glow-green overflow-hidden">
       <div class="bg-gradient-to-r from-scp-green/15 to-transparent border-b border-scp-green/20 px-6 py-4 flex items-center gap-4">
         <div class="w-12 h-12 bg-scp-green text-white flex items-center justify-center font-black text-xl">17</div>
         <div>
-          <div class="text-slate-900 font-bold tracking-[0.2em] text-sm">SCP FOUNDATION</div>
-          <div class="text-scp-green text-xs tracking-widest">SECURE FACILITY DATABASE</div>
+          <div class="text-slate-900 font-bold tracking-[0.2em] text-sm">SCP Foundation</div>
+          <div class="text-scp-green text-xs tracking-widest">Secure Facility Database</div>
         </div>
         <div class="ml-auto text-right text-[10px] leading-tight text-scp-gray">
-          <div>SCPNET v7.4.1</div><div class="text-scp-green">â— ENCRYPTED</div>
+          <div>SCPNET v7.4.1</div><div class="text-scp-green">● ENCRYPTED</div>
         </div>
       </div>
       <div class="px-6 md:px-8 py-8">
         <div class="text-center mb-6">
-          <div class="text-scp-green text-xs tracking-[0.4em] mb-2">AUTHENTICATION REQUIRED</div>
+          <div class="text-scp-green text-xs tracking-[0.4em] mb-2">Authentication Required</div>
           <div class="h-px bg-gradient-to-r from-transparent via-scp-green/30 to-transparent"></div>
         </div>
         <!-- security notices -->
         <div id="sec-notices" class="space-y-2 mb-4 text-[11px]"></div>
         <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
           <div>
-            <label class="text-[10px] tracking-widest text-scp-gray">OPERATIVE ID</label>
+            <label class="text-[10px] tracking-widest text-slate-700">Operator ID</label>
             <div class="mt-1 relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-scp-gray">â€º</span>
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-scp-gray">›</span>
               <input id="login-user" autocomplete="username" placeholder="e.g. director" class="w-full bg-white border border-scp-green/20 focus:border-scp-green outline-none px-8 py-3 text-sm text-slate-900 placeholder:text-slate-400">
             </div>
           </div>
           <div>
-            <label class="text-[10px] tracking-widest text-scp-gray">SECURITY KEY</label>
+            <label class="text-[10px] tracking-widest text-slate-700">Password</label>
             <div class="mt-1 relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-scp-gray">â€º</span>
-              <input id="login-pass" type="password" autocomplete="current-password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" class="w-full bg-white border border-scp-green/20 focus:border-scp-green outline-none px-8 py-3 text-sm text-slate-900 placeholder:text-slate-400">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-scp-gray">›</span>
+              <input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••••" class="w-full bg-white border border-scp-green/20 focus:border-scp-green outline-none px-8 py-3 text-sm text-slate-900 placeholder:text-slate-400">
               <button type="button" onclick="togglePass()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] tracking-widest text-scp-gray hover:text-scp-green">SHOW</button>
             </div>
           </div>
           <div class="flex items-center justify-between text-[10px] tracking-widest">
-            <label class="flex items-center gap-2 text-scp-gray"><input id="remember" type="checkbox" class="accent-[#00ff88]"> SECURE TERMINAL</label>
-            <span class="text-scp-gray/60">NO RECOVERY â€¢ NO REGISTRATION</span>
+            <label class="flex items-center gap-2 text-slate-600"><input id="remember" type="checkbox" class="accent-[#2563eb]"> Secure terminal</label>
+            <span class="text-slate-500">No recovery • No registration</span>
           </div>
           <input id="login-hp" type="text" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden" />
           <div id="login-error" class="hidden border border-scp-red/40 bg-scp-red/10 text-scp-red text-xs px-3 py-2"></div>
           <button type="submit" id="login-btn" class="w-full bg-scp-green text-white font-bold tracking-[0.2em] py-3 hover:bg-[#1e40af] transition flex items-center justify-center gap-2">
-            <span>â–º</span> AUTHENTICATE <span id="login-spinner" class="hidden animate-spin">â—Œ</span>
+            <span>►</span> AUTHENTICATE <span id="login-spinner" class="hidden animate-spin">◌</span>
           </button>
         </form>
-        <div class="mt-6 border border-scp-green/15 bg-white p-3 text-center">
-          <div class="text-scp-green tracking-[0.2em] text-[10px] font-bold">â— ENCRYPTED CREDENTIALS</div>
-          <div class="text-scp-gray text-[11px] leading-relaxed mt-1">Credentials are hashed (SHA-256 + salt) and never displayed. Contact Site Director for account provisioning. No recovery link â€” private repository safe to publish.</div>
+        <div class="mt-6 border border-slate-200 bg-slate-50 p-3 text-center rounded-lg">
+          <div class="text-scp-green tracking-[0.2em] text-[10px] font-bold">● Encrypted Credentials</div>
+          <div class="text-slate-600 text-[11px] leading-relaxed mt-1">Credentials are securely hashed and never shown. Contact the Site Director to create an account. No password recovery — safe to publish privately.</div>
         </div>
-        <div class="mt-4 text-[10px] leading-relaxed text-scp-gray/70 border border-amber-500/20 bg-amber-500/5 p-3">
-          <span class="text-scp-amber">SECURITY PROTOCOL:</span> 5 failed attempts triggers 60s lockout. VPN/Proxy detection active. Session expires after 5 min inactivity. All inputs sanitized. CSRF tokens enforced.
+        <div class="mt-4 text-[10px] leading-relaxed text-slate-600 border border-amber-200 bg-amber-50 p-3 rounded-lg">
+          <span class="text-amber-700 font-bold">Security protocol:</span> 5 failed attempts trigger a 60-second lockout. VPN/proxy detection is active. Sessions expire after 5 minutes of inactivity. All inputs are sanitized and CSRF tokens are enforced.
         </div>
       </div>
       <div class="bg-white border-t border-scp-green/10 px-6 py-3 flex justify-between text-[10px] tracking-widest text-scp-gray">
-        <span>IP: <span id="login-ip" class="text-scp-green">198.51.100.17</span> â€¢ <span id="vpn-status" class="text-scp-green">SECURE TERMINAL âœ“</span></span>
+        <span>IP: <span id="login-ip" class="text-scp-green">198.51.100.17</span> • <span id="vpn-status" class="text-scp-green">SECURE TERMINAL ✓</span></span>
         <span id="login-clock"></span>
       </div>
     </div>
-    <div class="text-center mt-3 text-[10px] tracking-widest text-scp-gray/50">UNAUTHORIZED ACCESS IS PROHIBITED â€¢ SCP FOUNDATION INTERNAL USE ONLY</div>
+    <div class="text-center mt-3 text-[10px] tracking-widest text-scp-gray/50">UNAUTHORIZED ACCESS IS PROHIBITED • SCP FOUNDATION INTERNAL USE ONLY</div>
   </div>
 </div>
 
@@ -197,8 +197,8 @@ h1{letter-spacing:0.06em; color:#0f172a}
     <div class="flex items-center gap-3">
       <div class="w-9 h-9 bg-scp-green text-white flex items-center justify-center font-black">17</div>
       <div class="hidden md:block">
-        <div class="text-slate-900 font-bold tracking-widest text-xs leading-none">SITE-17</div>
-        <div class="text-scp-green text-[10px] tracking-[0.2em]">SCPNET SECURE NODE</div>
+        <div class="text-slate-900 font-bold tracking-widest text-xs leading-none">Site-17</div>
+        <div class="text-scp-green text-[10px] tracking-[0.2em]">SCPNet Secure Node</div>
       </div>
       <div class="hidden lg:flex items-center gap-2 ml-4 text-[10px]">
         <span class="w-2 h-2 bg-scp-green rounded-full animate-pulse"></span><span class="tracking-widest text-scp-gray">CONTAINMENT STABLE</span>
@@ -209,13 +209,13 @@ h1{letter-spacing:0.06em; color:#0f172a}
       <div class="hidden md:flex items-center gap-2 bg-white border border-scp-green/20 px-3 py-1.5 text-[11px]">
         <span class="text-scp-gray tracking-widest">SEARCH DATABASE:</span>
         <input id="global-search" oninput="onGlobalSearch(this.value)" placeholder="SCP-173, Keter, Euclid..." class="bg-transparent outline-none text-slate-900 placeholder:text-slate-400 w-56">
-        <span class="text-scp-gray">âŒ˜K</span>
+        <span class="text-scp-gray">⌘K</span>
       </div>
     </div>
     <div class="flex items-center gap-3">
       <div class="hidden md:block text-right leading-tight">
-        <div id="hdr-user" class="text-slate-900 text-xs tracking-widest font-bold">â€”</div>
-        <div id="hdr-role" class="text-[10px] tracking-widest text-scp-green">â€”</div>
+        <div id="hdr-user" class="text-slate-900 text-xs tracking-widest font-bold">—</div>
+        <div id="hdr-role" class="text-[10px] tracking-widest text-scp-green">—</div>
       </div>
       <div id="hdr-avatar" class="w-9 h-9 rounded-full border border-scp-green/40 bg-scp-green/15 flex items-center justify-center text-scp-green font-bold text-sm">?</div>
       <div class="hidden md:block text-[10px] leading-tight text-scp-gray border-l border-scp-green/15 pl-3">
@@ -223,7 +223,7 @@ h1{letter-spacing:0.06em; color:#0f172a}
         <div id="hdr-clearance" class="tracking-widest">LVL 3</div>
       </div>
       <button onclick="logout()" class="bg-scp-red/15 border border-scp-red/30 text-scp-red text-xs tracking-widest px-3 py-2 hover:bg-scp-red hover:text-slate-900 transition">LOGOUT</button>
-      <button id="mobile-menu" onclick="toggleMobileNav()" class="md:hidden border border-scp-green/30 px-2 py-2 text-scp-green">â˜°</button>
+      <button id="mobile-menu" onclick="toggleMobileNav()" class="md:hidden border border-scp-green/30 px-2 py-2 text-scp-green">☰</button>
     </div>
   </header>
 
@@ -232,9 +232,9 @@ h1{letter-spacing:0.06em; color:#0f172a}
     <nav id="sidebar" class="w-[260px] md:w-[240px] bg-scp-panel border-r border-scp-green/15 flex flex-col shrink-0 fixed md:static inset-y-0 left-0 z-30 translate-x-[-100%] md:translate-x-0 transition-transform mt-[56px] md:mt-0 h-[calc(100vh-56px)] md:h-auto overflow-y-auto">
       <div class="p-3 space-y-4">
         <div class="bg-white border border-scp-green/15 p-3">
-          <div class="text-[10px] tracking-[0.2em] text-scp-gray">OPERATIVE</div>
-          <div id="sb-name" class="text-slate-900 font-bold tracking-widest text-sm">â€”</div>
-          <div id="sb-role" class="text-scp-green text-xs">â€”</div>
+          <div class="text-[10px] tracking-[0.2em] text-slate-600">Operative</div>
+          <div id="sb-name" class="text-slate-900 font-bold tracking-widest text-sm">—</div>
+          <div id="sb-role" class="text-scp-green text-xs">—</div>
           <div class="mt-2 flex gap-1.5">
             <span id="sb-clearance" class="text-[10px] tracking-widest bg-scp-green text-white px-2 py-0.5 font-bold">LVL 3</span>
             <span class="text-[10px] tracking-widest border border-scp-green/30 text-scp-green px-2 py-0.5">ACTIVE</span>
@@ -244,26 +244,26 @@ h1{letter-spacing:0.06em; color:#0f172a}
         </div>
 
         <div>
-          <div class="text-[10px] tracking-[0.3em] text-scp-gray mb-2">NAVIGATION</div>
+          <div class="text-[10px] tracking-[0.3em] text-slate-600 mb-2">Navigation</div>
           <div class="space-y-1" id="nav-links">
-            <button data-view="database" onclick="switchView('database')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 bg-scp-green text-white font-bold text-xs tracking-widest"><span>â—§</span> SCP DATABASE <span class="ml-auto text-[10px] bg-black/15 px-1.5">42</span></button>
-            <button data-view="comms" onclick="switchView('comms')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-slate-900 text-xs tracking-widest"><span>â—ˆ</span> TACTICAL COMMS <span class="ml-auto w-2 h-2 bg-scp-red rounded-full animate-pulse"></span></button>
-            <button data-view="personnel" onclick="switchView('personnel')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-slate-900 text-xs tracking-widest"><span>âš‘</span> PERSONNEL <span class="ml-auto text-[10px] border border-scp-green/30 px-1 text-scp-green" id="nav-personnel-badge">DIR ONLY</span></button>
-            <button data-view="logs" onclick="switchView('logs')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-slate-900 text-xs tracking-widest"><span>â‰¡</span> SECURITY LOGS</button>
+            <button data-view="database" onclick="switchView('database')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 bg-scp-green text-white font-bold text-xs tracking-widest"><span>◧</span> SCP Database <span class="ml-auto text-[10px] bg-black/15 px-1.5">42</span></button>
+            <button data-view="comms" onclick="switchView('comms')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-slate-900 text-xs tracking-widest"><span>◈</span> Tactical Comms <span class="ml-auto w-2 h-2 bg-scp-red rounded-full animate-pulse"></span></button>
+            <button data-view="personnel" onclick="switchView('personnel')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-slate-900 text-xs tracking-widest"><span>⚑</span> Personnel <span class="ml-auto text-[10px] border border-scp-green/30 px-1 text-scp-green" id="nav-personnel-badge">DIR ONLY</span></button>
+            <button data-view="logs" onclick="switchView('logs')" class="nav-btn w-full text-left flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 text-scp-gray hover:text-slate-900 text-xs tracking-widest"><span>≡</span> Security Logs</button>
           </div>
         </div>
 
         <div class="bg-scp-red/5 border border-scp-red/20 p-3">
-          <div class="text-scp-red text-[10px] tracking-widest font-bold">âš  CONTAINMENT BREACH DRILL</div>
+          <div class="text-scp-red text-[10px] tracking-widest font-bold">⚠ CONTAINMENT BREACH DRILL</div>
           <div class="text-scp-gray text-[11px] leading-snug mt-1">Scheduled 04:00 UTC. All personnel report to assigned safe zones.</div>
         </div>
 
         <div class="border border-scp-green/10 bg-white p-3 text-[11px] leading-relaxed">
           <div class="text-scp-green tracking-widest text-[10px]">DIRECTOR HOTLINE</div>
-          <div class="text-scp-gray">Site Director authorization required for Level 4 operations. Contact via Tactical Comms â†’ Command.</div>
+          <div class="text-scp-gray">Site Director authorization required for Level 4 operations. Contact via Tactical Comms → Command.</div>
         </div>
 
-        <div class="text-[10px] tracking-widest text-scp-gray/60">SCPNET NODE 17-B â€¢ ENCRYPTED â€¢ AUDIT ON</div>
+        <div class="text-[10px] tracking-widest text-scp-gray/60">SCPNET NODE 17-B • ENCRYPTED • AUDIT ON</div>
       </div>
     </nav>
 
@@ -276,8 +276,8 @@ h1{letter-spacing:0.06em; color:#0f172a}
         <section id="view-database" class="view active space-y-4">
           <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <h1 class="text-slate-900 font-black tracking-[0.15em] text-lg md:text-xl flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> ANOMALOUS OBJECTS DATABASE <span class="text-scp-green text-xs tracking-widest border border-scp-green/30 px-2 py-1">SITE-17</span></h1>
-              <p class="text-scp-gray text-xs md:text-sm mt-2 max-w-2xl">Classified repository of contained anomalies. Access restricted by clearance level. All edits are versioned and audited. Director controls enforced.</p>
+              <h1 class="text-slate-900 font-black tracking-[0.15em] text-lg md:text-xl flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> Anomalous Objects Database <span class="text-scp-green text-xs tracking-widest border border-scp-green/30 px-2 py-1">Site-17</span></h1>
+              <p class="text-slate-600 text-xs md:text-sm mt-2 max-w-2xl">Classified repository of contained anomalies. Access is restricted by clearance level. All edits are versioned and audited. Director controls are enforced.</p>
             </div>
             <div id="director-fab" class="hidden flex gap-2">
               <button onclick="openScpModal()" class="bg-scp-green text-white font-bold tracking-widest text-xs px-4 py-2.5 hover:bg-[#1e40af]">+ NEW SCP FILE</button>
@@ -304,7 +304,7 @@ h1{letter-spacing:0.06em; color:#0f172a}
               <option value="class">SORT: CLASS</option>
               <option value="recent">SORT: RECENT</option>
             </select>
-            <div class="text-[11px] tracking-widest text-scp-gray ml-auto"><span id="scp-count">0</span> FILES â€¢ <span id="scp-secure" class="text-scp-green">0 SECURE</span></div>
+            <div class="text-[11px] tracking-widest text-scp-gray ml-auto"><span id="scp-count">0</span> FILES • <span id="scp-secure" class="text-scp-green">0 SECURE</span></div>
           </div>
 
           <!-- Grid -->
@@ -314,9 +314,9 @@ h1{letter-spacing:0.06em; color:#0f172a}
         <!-- COMMS VIEW -->
         <section id="view-comms" class="view space-y-3">
           <div class="flex items-center justify-between">
-            <h1 class="text-slate-900 font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> TACTICAL COMMUNICATION NODE <span class="text-[10px] tracking-widest bg-scp-green text-white px-2 py-1 animate-pulse">LIVE</span></h1>
+            <h1 class="text-slate-900 font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> Tactical Communication Node <span class="text-[10px] tracking-widest bg-scp-green text-white px-2 py-1 animate-pulse">Live</span></h1>
             <div class="flex gap-2 text-[10px]">
-              <span class="border border-scp-red/30 bg-scp-red/10 text-scp-red px-2 py-1 tracking-widest">VOLATILE â€¢ SELF-DESTRUCT ON CLOSE</span>
+              <span class="border border-scp-red/30 bg-scp-red/10 text-scp-red px-2 py-1 tracking-widest">VOLATILE • SELF-DESTRUCT ON CLOSE</span>
               <button onclick="nukeChat()" class="bg-scp-red text-white px-3 py-1 tracking-widest font-bold hover:bg-red-600">PURGE ALL</button>
             </div>
           </div>
@@ -329,11 +329,11 @@ h1{letter-spacing:0.06em; color:#0f172a}
               </div>
               <div class="p-3 space-y-4 overflow-auto">
                 <div>
-                  <div class="text-[10px] tracking-[0.2em] text-scp-gray mb-2">TEXT CHANNELS â€¢ VOLATILE</div>
+                  <div class="text-[10px] tracking-[0.2em] text-scp-gray mb-2">TEXT CHANNELS • VOLATILE</div>
                   <div id="text-channels" class="space-y-1"></div>
                 </div>
                 <div>
-                  <div class="text-[10px] tracking-[0.2em] text-scp-gray mb-2">VOICE NODES â€¢ WebRTC</div>
+                  <div class="text-[10px] tracking-[0.2em] text-scp-gray mb-2">VOICE NODES • WebRTC</div>
                   <div id="voice-channels" class="space-y-1"></div>
                   <div class="mt-3 grid grid-cols-2 gap-2">
                     <button onclick="joinVoice()" class="bg-scp-green text-white text-xs font-bold tracking-widest py-2 hover:bg-[#1e40af]">JOIN VOICE</button>
@@ -348,15 +348,15 @@ h1{letter-spacing:0.06em; color:#0f172a}
                 </div>
               </div>
             </div>
-            <!-- Messages â€” improved -->
+            <!-- Messages — improved -->
             <div class="bg-white border border-scp-green/15 flex flex-col overflow-hidden rounded-xl shadow-sm">
               <div class="h-[52px] border-b border-slate-200 bg-gradient-to-r from-[#f8fafc] to-white flex items-center justify-between px-4">
                 <div>
                   <div id="chat-title" class="text-slate-900 text-sm font-bold tracking-widest"># general-tactical</div>
-                  <div id="chat-topic" class="text-slate-500 text-[11px]">Secure channel â€¢ 12 operators â€¢ Messages persistent</div>
+                  <div id="chat-topic" class="text-slate-500 text-[11px]">Secure channel • 12 operators • Messages persistent</div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span id="chat-typing" class="hidden text-[11px] text-scp-green animate-pulse">â— typingâ€¦</span>
+                  <span id="chat-typing" class="hidden text-[11px] text-scp-green animate-pulse">● typing…</span>
                   <span id="chat-volatile" class="text-[10px] tracking-widest bg-blue-50 text-scp-green border border-blue-200 px-2 py-1 rounded">ENCRYPTED</span>
                   <button onclick="clearCurrentChat()" class="text-[10px] tracking-widest border border-slate-300 text-slate-500 px-2 py-1 rounded hover:bg-slate-50">WIPE</button>
                 </div>
@@ -369,11 +369,11 @@ h1{letter-spacing:0.06em; color:#0f172a}
               <div id="chat-messages" class="flex-1 overflow-auto p-4 space-y-3 bg-[#f8fafc]"></div>
               <div class="p-3 border-t border-slate-200 bg-white">
                 <div class="flex gap-2 items-end">
-                  <input id="chat-input" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendChat();}" placeholder="Transmit message â€” Enter to send, Shift+Enter for newline..." class="flex-1 bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-scp-green focus:ring-1 focus:ring-blue-200">
-                  <button onclick="sendChat()" class="bg-scp-green text-white font-bold px-5 py-2.5 rounded-lg tracking-widest text-xs hover:bg-[#1e40af] shadow">SEND âœˆ</button>
+                  <input id="chat-input" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendChat();}" placeholder="Transmit message — Enter to send, Shift+Enter for newline..." class="flex-1 bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-scp-green focus:ring-1 focus:ring-blue-200">
+                  <button onclick="sendChat()" class="bg-scp-green text-white font-bold px-5 py-2.5 rounded-lg tracking-widest text-xs hover:bg-[#1e40af] shadow">SEND ✈</button>
                 </div>
                 <div class="flex justify-between text-[10px] tracking-widest text-slate-400 mt-2">
-                  <span><span class="text-scp-green">â—</span> ENCRYPTED â€¢ PERSISTENT â€¢ AUDITED</span>
+                  <span><span class="text-scp-green">●</span> ENCRYPTED • PERSISTENT • AUDITED</span>
                   <span id="typing-indicator" class="text-scp-green"></span>
                 </div>
               </div>
@@ -382,12 +382,12 @@ h1{letter-spacing:0.06em; color:#0f172a}
             <div class="bg-scp-panel border border-scp-green/15 flex flex-col overflow-hidden">
               <div class="p-3 border-b border-scp-green/15 bg-scp-green/5">
                 <div class="text-slate-900 text-xs tracking-[0.2em] font-bold">OPERATORS</div>
-                <div class="text-scp-gray text-[11px]"><span id="member-count">0</span> online â€¢ Director moderation enabled</div>
+                <div class="text-scp-gray text-[11px]"><span id="member-count">0</span> online • Director moderation enabled</div>
               </div>
               <div id="member-list" class="flex-1 overflow-auto p-3 space-y-2"></div>
               <div id="mod-panel" class="hidden border-t border-scp-red/20 bg-scp-red/5 p-3">
                 <div class="text-scp-red text-[10px] tracking-widest font-bold">DIRECTOR MODERATION</div>
-                <div class="text-scp-gray text-[11px]">Right-click user â†’ Mute / Kick / Ban</div>
+                <div class="text-scp-gray text-[11px]">Right-click user → Mute / Kick / Ban</div>
                 <div id="mod-log" class="mt-2 text-[11px] space-y-1 max-h-24 overflow-auto"></div>
               </div>
             </div>
@@ -397,13 +397,13 @@ h1{letter-spacing:0.06em; color:#0f172a}
         <!-- PERSONNEL VIEW -->
         <section id="view-personnel" class="view space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-3">
-            <h1 class="text-slate-900 font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> PERSONNEL REGISTRY <span id="personnel-lock" class="text-[10px] tracking-widest bg-scp-red text-white px-2 py-1">DIRECTOR ONLY</span></h1>
+            <h1 class="text-slate-900 font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> Personnel Registry <span id="personnel-lock" class="text-[10px] tracking-widest bg-scp-red text-white px-2 py-1">Director Only</span></h1>
             <div class="flex gap-2">
               <button id="btn-export-forever" onclick="exportForever()" class="hidden bg-slate-900 text-white font-bold tracking-widest text-xs px-4 py-2.5">â¬‡ EXPORT FOREVER</button>
               <button id="btn-new-user" onclick="openUserModal()" class="hidden bg-scp-green text-white font-bold tracking-widest text-xs px-4 py-2.5">+ CREATE OPERATIVE</button>
             </div>
           </div>
-          <div id="forever-banner" class="hidden bg-blue-50 border border-blue-200 text-blue-800 text-[11px] tracking-wide p-2.5 rounded">â— PERSISTENT FOREVER: All Director edits (SCP files, personnel, bans, roles, chats) are saved to encrypted localStorage and survive reloads/logouts forever. Use EXPORT FOREVER to commit a JSON backup to GitHub for all users.</div>
+          <div id="forever-banner" class="hidden bg-blue-50 border border-blue-200 text-blue-800 text-[11px] tracking-wide p-2.5 rounded">● PERSISTENT FOREVER: All Director edits (SCP files, personnel, bans, roles, chats) are saved to encrypted localStorage and survive reloads/logouts forever. Use EXPORT FOREVER to commit a JSON backup to GitHub for all users.</div>
           <div id="personnel-gate" class="bg-scp-red/10 border border-scp-red/30 p-6 text-center">
             <div class="text-scp-red font-bold tracking-widest">ACCESS DENIED</div>
             <div class="text-scp-gray text-sm mt-1">Only Site Director (Clearance 5) may create, revoke, or modify personnel. Your clearance is insufficient.</div>
@@ -419,7 +419,7 @@ h1{letter-spacing:0.06em; color:#0f172a}
 
         <!-- LOGS VIEW -->
         <section id="view-logs" class="view space-y-4">
-          <h1 class="text-slate-900 font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> SECURITY LOGS & HARDENING</h1>
+          <h1 class="text-slate-900 font-black tracking-[0.15em] text-lg flex items-center gap-3"><span class="w-1 h-6 bg-scp-green"></span> Security Logs & Hardening</h1>
           <div class="grid md:grid-cols-3 gap-3">
             <div class="bg-scp-panel border border-scp-green/20 p-4 text-center">
               <div class="text-scp-green text-2xl font-black" id="log-blocked">0</div><div class="text-[10px] tracking-widest text-scp-gray">BLOCKED ATTEMPTS</div>
@@ -433,7 +433,7 @@ h1{letter-spacing:0.06em; color:#0f172a}
           </div>
           <div class="bg-scp-panel border border-slate-200 overflow-hidden rounded-xl shadow-sm">
             <div class="px-4 py-3 border-b border-slate-200 flex justify-between items-center bg-gradient-to-r from-slate-50 to-white">
-              <span class="text-slate-900 text-xs tracking-widest font-bold">AUDIT TRAIL â€” time / operative / IP / action (no secrets)</span>
+              <span class="text-slate-900 text-xs tracking-widest font-bold">AUDIT TRAIL — time / operative / IP / action (no secrets)</span>
               <div class="flex gap-2">
                 <button onclick="exportAudit()" class="text-[10px] tracking-widest border border-slate-300 text-slate-600 px-2 py-1 rounded hover:bg-white">EXPORT</button>
                 <button onclick="clearLogs()" class="text-[10px] tracking-widest border border-slate-300 text-slate-500 px-2 py-1 rounded hover:bg-slate-50">CLEAR</button>
@@ -450,7 +450,7 @@ h1{letter-spacing:0.06em; color:#0f172a}
             <div id="audit-log" class="max-h-[480px] overflow-auto divide-y divide-slate-100 text-xs font-mono bg-white"></div>
           </div>
           <div class="grid md:grid-cols-2 gap-3 text-[11px] leading-relaxed">
-            <div class="border border-scp-green/15 bg-scp-green/5 p-3"><span class="text-scp-green font-bold">Brute-Force Protection:</span> 5 attempts â†’ 60s lockout per account/IP. Exponential backoff. All failures logged.</div>
+            <div class="border border-scp-green/15 bg-scp-green/5 p-3"><span class="text-scp-green font-bold">Brute-Force Protection:</span> 5 attempts → 60s lockout per account/IP. Exponential backoff. All failures logged.</div>
             <div class="border border-scp-green/15 bg-scp-green/5 p-3"><span class="text-scp-green font-bold">VPN/IP Whitelisting:</span> Secure Terminal Network required. Proxy/VPN signatures blocked. Simulated whitelist: 198.51.100.0/24.</div>
             <div class="border border-scp-green/15 bg-scp-green/5 p-3"><span class="text-scp-green font-bold">Input Sanitization & CSRF:</span> All SCP inputs escaped, HTML stripped. CSRF token per session, validated on state changes.</div>
             <div class="border border-scp-green/15 bg-white p-3"><span class="text-scp-green font-bold">Session Management:</span> Encrypted JWT-like token in memory, 5-min inactivity expiry, idle detection, secure logout wipe.</div>
@@ -458,18 +458,18 @@ h1{letter-spacing:0.06em; color:#0f172a}
         </section>
 
       </div>
-      <div class="text-center py-6 text-[10px] tracking-[0.2em] text-scp-gray/40 border-t border-scp-green/5 mt-6">SCP FOUNDATION â€¢ SECURE â€¢ CONTAIN â€¢ PROTECT â€¢ SITE-17 NODE 17-B â€¢ CLASSIFIED</div>
+      <div class="text-center py-6 text-[10px] tracking-[0.2em] text-scp-gray/40 border-t border-scp-green/5 mt-6">SCP FOUNDATION • SECURE • CONTAIN • PROTECT • SITE-17 NODE 17-B • CLASSIFIED</div>
     </main>
   </div>
 </div>
-</div><!-- /#jitter-wrap â€” dedicated non-ancestor jitter layer -->
+</div><!-- /#jitter-wrap — dedicated non-ancestor jitter layer -->
 
 <!-- SCP MODAL -->
 <div id="scp-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
   <div class="w-full max-w-3xl bg-scp-panel border border-scp-green/30 max-h-[90vh] overflow-auto">
     <div class="sticky top-0 bg-scp-panel border-b border-scp-green/15 px-6 py-4 flex justify-between items-center">
       <div class="text-slate-900 font-bold tracking-widest text-sm" id="scp-modal-title">NEW SCP FILE</div>
-      <button onclick="closeScpModal()" class="text-scp-gray hover:text-slate-900 text-xl">Ã—</button>
+      <button onclick="closeScpModal()" class="text-scp-gray hover:text-slate-900 text-xl">×</button>
     </div>
     <form id="scp-form" onsubmit="saveScp(event)" class="p-6 space-y-4">
       <input type="hidden" id="scp-id">
@@ -491,15 +491,15 @@ h1{letter-spacing:0.06em; color:#0f172a}
   </div>
 </div>
 
-<!-- USER MODAL â€” heavily improved -->
+<!-- USER MODAL — heavily improved -->
 <div id="user-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
   <div class="w-full max-w-xl bg-white border border-slate-200 rounded-xl shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto">
     <div class="bg-gradient-to-r from-[#2563eb] to-[#1e40af] px-6 py-4 flex justify-between items-center text-white">
       <div>
         <div class="font-bold tracking-[0.14em] text-sm">CREATE OPERATIVE</div>
-        <div class="text-white/80 text-[11px] tracking-wide">Site Director provisioning â€” permanent & hashed</div>
+        <div class="text-white/80 text-[11px] tracking-wide">Site Director provisioning — permanent & hashed</div>
       </div>
-      <button onclick="closeUserModal()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white text-lg">Ã—</button>
+      <button onclick="closeUserModal()" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white text-lg">×</button>
     </div>
     <form onsubmit="createUser(event)" class="p-6 space-y-5">
       <div id="user-create-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs px-3 py-2 rounded"></div>
@@ -508,16 +508,16 @@ h1{letter-spacing:0.06em; color:#0f172a}
         <div>
           <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">USERNAME <span class="text-red-500">*</span></label>
           <div class="mt-1 relative">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">â€º</span>
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">›</span>
             <input id="new-username" required pattern="[a-zA-Z0-9_\-]+" maxlength="24" placeholder="agent_wilson" oninput="onNewUserInput()" class="w-full bg-white border border-slate-300 rounded-lg pl-8 pr-3 py-2.5 text-slate-900 text-sm placeholder:text-slate-400 focus:border-scp-green focus:ring-2 focus:ring-blue-100 outline-none">
           </div>
-          <div id="username-hint" class="mt-1 text-[11px] text-slate-500">aâ€“z, 0â€“9, _ - â€¢ 3â€“24 chars â€¢ must be unique</div>
+          <div id="username-hint" class="mt-1 text-[11px] text-slate-500">a–z, 0–9, _ - • 3–24 chars • must be unique</div>
         </div>
         <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center gap-3">
           <div id="new-avatar" class="w-12 h-12 rounded-full bg-scp-green text-white flex items-center justify-center font-bold text-sm shrink-0">--</div>
           <div class="min-w-0">
             <div id="new-preview-name" class="text-slate-900 font-bold text-sm truncate">agent_wilson</div>
-            <div id="new-preview-role" class="text-slate-600 text-xs">Standard Personnel â€¢ Level 3</div>
+            <div id="new-preview-role" class="text-slate-600 text-xs">Standard Personnel • Level 3</div>
             <div id="new-preview-title" class="text-slate-500 text-[11px]">Personnel</div>
           </div>
         </div>
@@ -531,7 +531,7 @@ h1{letter-spacing:0.06em; color:#0f172a}
             <button type="button" onclick="toggleNewPass()" class="absolute right-1 top-1/2 -translate-y-1/2 text-[10px] tracking-widest text-slate-500 hover:text-scp-green border border-slate-200 rounded px-2 py-1 bg-white">SHOW</button>
           </div>
           <div class="mt-1.5 h-1.5 bg-slate-200 rounded-full overflow-hidden"><div id="pw-strength" class="h-full w-0 bg-slate-300 transition-all"></div></div>
-          <div id="pw-hint" class="mt-1 text-[11px] text-slate-500">Strength: â€”</div>
+          <div id="pw-hint" class="mt-1 text-[11px] text-slate-500">Strength: —</div>
         </div>
         <div>
           <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">CONFIRM KEY <span class="text-red-500">*</span></label>
@@ -549,7 +549,7 @@ h1{letter-spacing:0.06em; color:#0f172a}
         <div>
           <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">CLEARANCE</label>
           <select id="new-clearance" onchange="onNewUserInput()" class="mt-1 w-full bg-white border border-slate-300 rounded-lg px-3 py-2.5 text-slate-900 text-sm outline-none focus:border-scp-green focus:ring-2 focus:ring-blue-100"><option>Level 1</option><option>Level 2</option><option selected>Level 3</option><option>Level 4</option><option>Level 5</option></select>
-          <div id="clearance-desc" class="mt-1.5 text-[11px] leading-snug text-slate-600 bg-blue-50 border border-blue-200 rounded p-2">Level 3: Standard access â€” most SCP files.</div>
+          <div id="clearance-desc" class="mt-1.5 text-[11px] leading-snug text-slate-600 bg-blue-50 border border-blue-200 rounded p-2">Level 3: Standard access — most SCP files.</div>
         </div>
         <div>
           <label class="text-[10px] tracking-[0.18em] font-bold text-slate-700">RANK</label>
@@ -566,7 +566,7 @@ h1{letter-spacing:0.06em; color:#0f172a}
       </div>
       <div class="flex gap-3">
         <button type="button" onclick="closeUserModal()" class="flex-1 border border-slate-300 text-slate-700 rounded-lg tracking-widest text-xs px-6 py-3 hover:bg-slate-50">CANCEL</button>
-        <button type="submit" id="create-btn" class="flex-[1.4] bg-scp-green text-white font-bold tracking-widest text-xs px-6 py-3 rounded-lg hover:bg-[#1e40af] shadow">AUTHORIZE & CREATE â†’</button>
+        <button type="submit" id="create-btn" class="flex-[1.4] bg-scp-green text-white font-bold tracking-widest text-xs px-6 py-3 rounded-lg hover:bg-[#1e40af] shadow">AUTHORIZE & CREATE →</button>
       </div>
     </form>
   </div>
@@ -589,7 +589,7 @@ h1{letter-spacing:0.06em; color:#0f172a}
 </div>
 
 <script>
-// 100x encrypted â€” do not touch
+// 100x encrypted — do not touch
 (function(){
   const _0xK = "SCP17-SITE17-v7.4.1-salt-";
   const _0xC = [
@@ -1760,16 +1760,16 @@ h1{letter-spacing:0.06em; color:#0f172a}
   `;
   // new terminal lines — looks like entering a terminal
   const termLines=[
-    "> ssh scpnet@site17.scp.foundation -p 2222",
-    "Connecting to SITE-17 … [OK] 198.51.100.17",
-    "> auth --handshake TLS1.3 ECDHE-RSA-AES256-GCM",
-    "Verifying certificate CN=site17.scpnet.internal … VALID",
-    "> decrypt /mnt/scp17_encrypted [AES-256-GCM] …",
-    "Mounting classified datastore … ENCRYPTED",
-    "> load containment grid — 42 anomalies indexed",
-    "> check RBAC — Director:1 Personnel:3",
-    "> enable hardening: brute-force ✓ vpn ✓ csrf ✓",
-    "Session: JWT ephemeral • Timeout 5m • Audit ON",
+    "$ ssh scpnet@site17.scp.foundation -p 2222",
+    "Connecting to Site-17 [198.51.100.17] … connected",
+    "$ auth --handshake TLS 1.3 (ECDHE-RSA-AES256-GCM)",
+    "Verifying certificate CN=site17.scpnet.internal … valid",
+    "$ decrypt /mnt/scp17_encrypted [AES-256-GCM]",
+    "Mounting classified datastore … encrypted and ready",
+    "$ load containment grid — 42 anomalies indexed",
+    "$ check access control — Director: 1, Personnel: 3",
+    "$ enable protections: brute-force ✓, VPN ✓, CSRF ✓",
+    "Session: JWT (ephemeral) • Timeout 5m • Audit on",
     "All systems nominal. Awaiting authentication."
   ];
   // kill old boot — flag only (smooth, no heavy loop)
