@@ -316,8 +316,8 @@ const defaults=[
   {id:'5',number:'SCP-999',title:'The Tickle Monster',class:'Safe',image:'https://images.unsplash.com/photo-1518531938570-fa1891388d3d?w=600&q=80',containment:'Free roam in Safe wing, supervised.',description:'Orange slime, induces euphoria and happiness. Docile.',addendum:'Recommended for morale.',updated:Date.now()-5e5},
   {id:'6',number:'SCP-3008',title:'Infinite IKEA',class:'Euclid',image:'https://images.unsplash.com/photo-1586023492125-1651a4671250?w=600&q=80',containment:'Entrance cordoned. No 24h+ without tether.',description:'Endless IKEA interior. Staff entities hostile at night.',addendum:'Team W-03 lost after 72h.',updated:Date.now()-6e6},
 ];
-let data=[]; try{ const r=localStorage.getItem(storeKey); data=r?JSON.parse(r):defaults; if(!Array.isArray(data)) data=defaults; }catch{ data=defaults; }
-function saveDB(){ try{ localStorage.setItem(storeKey, JSON.stringify(data)); }catch{} }
+let data=[]; try{ const r=localStorage.getItem(storeKey); const b=localStorage.getItem(storeKey+'_backup'); const src=r||b; data=src?JSON.parse(src):defaults; if(!Array.isArray(data)) data=defaults; if(!r&&b) try{ localStorage.setItem(storeKey,b); }catch{} }catch{ data=defaults; }
+function saveDB(){ try{ const s=JSON.stringify(data); localStorage.setItem(storeKey, s); localStorage.setItem(storeKey+'_backup', s); localStorage.setItem(storeKey+'_forever', String(Date.now())); }catch{} }
 function badgeClass(c){ if(c==='Safe')return'text-emerald-700 bg-emerald-50 border-emerald-200'; if(c==='Euclid')return'text-sky-700 bg-sky-50 border-sky-200'; if(c==='Keter')return'text-red-700 bg-red-50 border-red-200'; if(c==='Thaumiel')return'text-violet-700 bg-violet-50 border-violet-200'; return 'text-orange-700 bg-orange-50 border-orange-200'; }
 function parseNum(s){ const m=String(s).match(/(\d+)/); return m? parseInt(m[1],10):0; }
 function render(){
@@ -534,6 +534,232 @@ function clearChat(){
 }
 
 // init
+/* --- BACKEND WIRED (overrides localStorage) --- */
+const API_BASE = localStorage.getItem('site17_api') || 'http://localhost:3000';
+let _token = localStorage.getItem('site17_token') || null;
+function authHeaders(){ return _token ? { 'Authorization':'Bearer '+_token, 'Content-Type':'application/json'} : {'Content-Type':'application/json'}; }
+async function apiLogin(u,p){
+  const r=await fetch(API_BASE+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+  const j=await r.json(); if(!r.ok) throw new Error(j.error||'Login failed'); return j;
+}
+async function apiGet(path){
+  const r=await fetch(API_BASE+path,{headers:authHeaders()});
+  const j=await r.json(); if(!r.ok) throw new Error(j.error||'Failed'); return j;
+}
+async function apiPost(path,body){
+  const r=await fetch(API_BASE+path,{method:'POST',headers:authHeaders(),body:JSON.stringify(body)});
+  const j=await r.json(); if(!r.ok) throw new Error(j.error||'Failed'); return j;
+}
+async function apiPut(path,body){
+  const r=await fetch(API_BASE+path,{method:'PUT',headers:authHeaders(),body:JSON.stringify(body)});
+  const j=await r.json(); if(!r.ok) throw new Error(j.error||'Failed'); return j;
+}
+async function apiDelete(path){
+  const r=await fetch(API_BASE+path,{method:'DELETE',headers:authHeaders()});
+  const j=await r.json().catch(()=>({})); if(!r.ok) throw new Error(j.error||'Failed'); return j;
+}
+// override handleLogin to use backend
+const _origHandleLogin = handleLogin;
+window.handleLogin = async function(e){
+  e.preventDefault();
+  const u=($('#loginUser')?.value||'').trim().toLowerCase();
+  const p=$('#loginPass')?.value||'';
+  const err=$('#loginError');
+  if(err) err.classList.add('hidden');
+  const btn=$('#loginBtn'); if(btn){ btn.disabled=true; btn.textContent='Authenticating…'; }
+  try{
+    const {token,user}=await apiLogin(u,p);
+    _token=token; localStorage.setItem('site17_token', token);
+    currentUser=user; saveSession();
+    showApp();
+    // load DB and chat from backend
+    try{ data=await apiGet('/api/scp'); }catch{}
+    try{ const c=await apiGet('/api/chat'); chatData={staff:c}; }catch{}
+    render(); renderChat(); renderOps();
+  }catch(err){
+    const eEl=$('#loginError'); if(eEl){ eEl.textContent=err.message; eEl.classList.remove('hidden'); }
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent='Authenticate →'; }
+  }
+};
+// override logout to clear token
+const _origLogout = logout;
+window.logout = function(){
+  _token=null; localStorage.removeItem('site17_token');
+  // keep local users for fallback, but clear session
+  _origLogout();
+};
+// override Create Profile to use backend
+const _origHandleCreate = handleCreate;
+window.handleCreate = async function(e){
+  e.preventDefault();
+  const errEl=$('#c-error'); if(errEl) errEl.classList.add('hidden');
+  const username=($('#c-user')?.value||'').trim();
+  const pass=$('#c-pass')?.value||'';
+  const confirm=$('#c-confirm')?.value||'';
+  const role=$('#c-role')?.value||'personnel';
+  const clearance=$('#c-clearance')?.value||'Level 3';
+  const rank=$('#c-rank')?.value||'recruit';
+  if(!/^[a-zA-Z0-9_\-]{3,24}$/.test(username)){ if(errEl){ errEl.textContent='Username 3–24 a-z0-9 _ -'; errEl.classList.remove('hidden'); } return; }
+  if(pass.length<8){ if(errEl){ errEl.textContent='Password min 8'; errEl.classList.remove('hidden'); } return; }
+  if(pass!==confirm){ if(errEl){ errEl.textContent='Passwords do not match'; errEl.classList.remove('hidden'); } return; }
+  try{
+    const u=await apiPost('/api/users', {username,password:pass,role,clearance,rank});
+    // refresh users list
+    try{ const list=await apiGet('/api/users'); users=list; }catch{}
+    renderOps();
+    const f=$('#createForm'); if(f) f.reset();
+    const hint=$('#c-match'); if(hint){ hint.textContent='✓ Created '+username; setTimeout(()=>hint.textContent='',2000); }
+  }catch(err){
+    if(errEl){ errEl.textContent=err.message; errEl.classList.remove('hidden'); }
+  }
+};
+// override DB saveEntry/remove to use backend
+const _origSaveEntry = saveEntry;
+window.saveEntry = async function(e){
+  e.preventDefault();
+  const number=($('#f-number')?.value||'').trim();
+  const title=($('#f-title')?.value||'').trim();
+  if(!/^SCP-\d{3,4}$/i.test(number)){ alert('Item Number like SCP-173'); return; }
+  if(!title){ alert('Title required'); return; }
+  const id=$('#f-id')?.value||'';
+  const payload={ number, title, class:$('#f-class')?.value||'Euclid', image:($('#f-image')?.value||'').trim(), containment:($('#f-containment')?.value||'').trim(), description:($('#f-desc')?.value||'').trim(), addendum:($('#f-add')?.value||'').trim() };
+  try{
+    if(id){
+      const updated=await apiPut('/api/scp/'+id, payload);
+      const i=data.findIndex(v=>String(v.id)===String(id));
+      if(i>=0) data[i]=updated; else data.unshift(updated);
+    } else {
+      const created=await apiPost('/api/scp', payload);
+      data.unshift(created);
+    }
+    render(); closeModal();
+  }catch(err){ alert(err.message); }
+};
+const _origRemoveEntry = removeEntry;
+window.removeEntry = async function(id){
+  if(!confirm('Delete this file?')) return;
+  try{
+    await apiDelete('/api/scp/'+id);
+    data=data.filter(v=>String(v.id)!==String(id));
+    render(); closeDetail();
+  }catch(err){ alert(err.message); }
+};
+// override chat to use backend
+window.sendChat = async function(){
+  const inp=$('#chatInput'); if(!inp) return;
+  const txt=(inp.value||'').trim().slice(0,500); if(!txt) return;
+  try{
+    await apiPost('/api/chat', {text:txt});
+    const c=await apiGet('/api/chat');
+    chatData={staff:c};
+    inp.value=''; renderChat();
+  }catch(err){ alert(err.message); }
+};
+window.clearChat = async function(){
+  if(!confirm('Clear staff chat?')) return;
+  try{ await apiDelete('/api/chat'); const c=await apiGet('/api/chat'); chatData={staff:c}; renderChat(); }catch(err){ alert(err.message); }
+};
+// on app show, refresh from backend
+const _origShowApp = showApp;
+window.showApp = async function(){
+  _origShowApp();
+  try{ data=await apiGet('/api/scp'); render(); }catch{}
+  try{ const c=await apiGet('/api/chat'); chatData={staff:c}; renderChat(); }catch{}
+  try{ const list=await apiGet('/api/users'); users=list; renderOps(); }catch{}
+};
+// init: if token exists, try to restore session via backend
+(async()=>{
+  if(_token){
+    try{
+      const c=await apiGet('/api/scp');
+      data=c; render();
+    }catch{
+      // token invalid
+      _token=null; localStorage.removeItem('site17_token');
+    }
+  }
+})();
+/* backend persistence — not per-browser, free, safe with source revealed */
+const API_BASE = localStorage.getItem('site17_api') || 'http://localhost:3000';
+let _token = localStorage.getItem('site17_token') || null;
+function authHeaders(){ return _token ? { 'Authorization':'Bearer '+_token, 'Content-Type':'application/json'} : {'Content-Type':'application/json'}; }
+async function apiLogin(u,p){ const r=await fetch(API_BASE+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})}); const j=await r.json(); if(!r.ok) throw new Error(j.error); return j; }
+async function apiGet(path){ const r=await fetch(API_BASE+path,{headers:authHeaders()}); const j=await r.json(); if(!r.ok) throw new Error(j.error); return j; }
+async function apiPost(path,body){ const r=await fetch(API_BASE+path,{method:'POST',headers:authHeaders(),body:JSON.stringify(body)}); const j=await r.json(); if(!r.ok) throw new Error(j.error); return j; }
+async function apiPut(path,body){ const r=await fetch(API_BASE+path,{method:'PUT',headers:authHeaders(),body:JSON.stringify(body)}); const j=await r.json(); if(!r.ok) throw new Error(j.error); return j; }
+async function apiDelete(path){ const r=await fetch(API_BASE+path,{method:'DELETE',headers:authHeaders()}); const j=await r.json().catch(()=>({})); if(!r.ok) throw new Error(j.error); return j; }
+// warm up backend data after login
+const _origShowApp2 = showApp;
+window.showApp = async function(){
+  _origShowApp2();
+  try{ data=await apiGet('/api/scp'); render(); }catch{}
+  try{ const c=await apiGet('/api/chat'); if(c) { localStorage.setItem('site17_chat', JSON.stringify({staff:c})); } }catch{}
+  try{ const list=await apiGet('/api/users'); users=list; if(typeof renderOps==='function') renderOps(); }catch{}
+};
+// override login to use backend
+const _origHandleLogin2 = handleLogin;
+window.handleLogin = async function(e){
+  e.preventDefault();
+  const u=($('#loginUser')?.value||'').trim().toLowerCase();
+  const p=$('#loginPass')?.value||'';
+  const err=$('#loginError'); if(err) err.classList.add('hidden');
+  const btn=$('#loginBtn'); if(btn){ btn.disabled=true; btn.textContent='Authenticating…'; }
+  try{
+    const {token,user}=await apiLogin(u,p);
+    _token=token; localStorage.setItem('site17_token', token);
+    currentUser=user; try{ localStorage.setItem('site17_session', JSON.stringify(user)); }catch{}
+    showApp();
+  }catch(err){
+    const eEl=$('#loginError'); if(eEl){ eEl.textContent=err.message; eEl.classList.remove('hidden'); }
+  }finally{ const b=$('#loginBtn'); if(b){ b.disabled=false; b.textContent='Authenticate →'; } }
+};
+const _origLogout2 = logout;
+window.logout = function(){
+  _token=null; localStorage.removeItem('site17_token'); localStorage.removeItem('site17_session');
+  _origLogout2();
+};
+// make DB operations go through backend when logged in
+const _origSaveEntry2 = saveEntry;
+window.saveEntry = async function(e){
+  e.preventDefault();
+  if(currentUser?.role!=='director'){ alert('Director only'); return; }
+  const number=($('#f-number')?.value||'').trim();
+  const title=($('#f-title')?.value||'').trim();
+  if(!/^SCP-\d{3,4}$/i.test(number)){ alert('Item Number like SCP-173'); return; }
+  if(!title){ alert('Title required'); return; }
+  const id=$('#f-id')?.value||'';
+  const payload={ number, title, class:$('#f-class')?.value||'Euclid', image:($('#f-image')?.value||'').trim(), containment:($('#f-containment')?.value||'').trim(), description:($('#f-desc')?.value||'').trim(), addendum:($('#f-add')?.value||'').trim() };
+  try{
+    if(id){
+      const updated=await apiPut('/api/scp/'+id, payload);
+      const i=data.findIndex(v=>String(v.id)===String(id)); if(i>=0) data[i]=updated; else data.unshift(updated);
+    } else {
+      const created=await apiPost('/api/scp', payload);
+      data.unshift(created);
+    }
+    try{ localStorage.setItem(storeKey, JSON.stringify(data)); }catch{}
+    render(); closeModal();
+  }catch(err){ alert(err.message); }
+};
+const _origRemoveEntry2 = removeEntry;
+window.removeEntry = async function(id){
+  if(currentUser?.role!=='director') return;
+  if(!confirm('Delete this file?')) return;
+  try{ await apiDelete('/api/scp/'+id); data=data.filter(v=>String(v.id)!==String(id)); try{ localStorage.setItem(storeKey, JSON.stringify(data)); }catch{} render(); closeDetail(); }catch(err){ alert(err.message); }
+};
+// try to restore session and warm data
+(async()=>{
+  if(_token){
+    try{
+      const me=JSON.parse(localStorage.getItem('site17_session')||'null');
+      if(me) currentUser=me;
+      const c=await apiGet('/api/scp'); data=c; render();
+    }catch{
+      _token=null; localStorage.removeItem('site17_token');
+    }
+  }
+})();
 render();
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeModal(); closeDetail(); }});
 const createFormEl=$('#createForm'); if(createFormEl) createFormEl.addEventListener('submit', handleCreate);
